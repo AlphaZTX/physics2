@@ -1,0 +1,96 @@
+%% 
+%% This is file `phy-ab.sty',
+%% the `ab' module of `physics2' package.
+%% 
+%% ******************************************************
+%% * This work may be distributed and/or modified under *
+%% * the conditions of the LaTeX Project Public License *
+%% *                                                    *
+%% *     http://www.latex-project.org/lppl.txt          *
+%% *                                                    *
+%% * either version 1.3c of this license or any later   *
+%% * version.                                           *
+%% ******************************************************
+%% 
+%% This work has the LPPL maintenance status `maintained'.
+%% 
+%% The Current Maintainer of this work is Zhang Tingxuan.
+%% 
+\ProvidesFile{phy-ab.sty}
+  [2023/1/25 `ab' (autobraces) module of `physics2.sty']
+% \phy@requiremodule{common}
+% The `tightbraces' bool option, true or false.
+\phy@define@key{ab}{tightbraces}[true]{\def\@phy@abtight{#1}}
+% Execute the default values to keys in this module.
+\phy@setkeys{ab}{tightbraces=true}
+\phy@processkeyopt{ab}
+% \phy@abopen and \phy@abclose,
+% internal definition for all commands in this module.
+\ifx\@phy@abtight\phy@true
+  \let\phy@abopen\delopen
+  \let\phy@abclose\delclose
+\else
+  \let\phy@abopen\left
+  \let\phy@abclose\right
+\fi
+% The internal version of \ab. #1: `ab' or `mb'; #2: open symbol; (#3: arg-spec; #4: definition)
+\def\phy@AB@gen#1#2{\expandafter\DeclareDocumentCommand\csname phy@#1@\string#2\endcsname}
+% #1 (r<token1><token2>): inner content.
+\phy@AB@gen{ab}({r()}{\phy@abopen(#1\phy@abclose)}
+\phy@AB@gen{ab}[{r[]}{\phy@abopen[#1\phy@abclose]}
+\phy@AB@gen{ab}\{{r\{\}}{\phy@abopen\{#1\phy@abclose\}}
+\phy@AB@gen{ab}|{r||}{\phy@abopen|#1\phy@abclose|}
+\phy@AB@gen{ab}\|{r\|\|}{\phy@abopen\|#1\phy@abclose\|}
+\phy@AB@gen{ab}<{r<>}{\phy@abopen<#1\phy@abclose>}
+\phy@AB@gen{ab}\lbrace{r\lbrace\rbrace}{\phy@abopen\lbrace#1\phy@abclose\rbrace}
+\phy@AB@gen{ab}\vert{r\vert\vert}{\phy@abopen\vert#1\phy@abclose\vert}
+\phy@AB@gen{ab}\Vert{r\Vert\Vert}{\phy@abopen\Vert#1\phy@abclose\Vert}
+\phy@AB@gen{ab}\langle{r\langle\rangle}{\phy@abopen\langle#1\phy@abclose\rangle}
+% #1 (m): \biggg; #2 (r<token1><token2>): inner content.
+\phy@AB@gen{mb}({mr()}{\mathopen#1(#2\mathclose#1)}
+\phy@AB@gen{mb}[{mr[]}{\mathopen#1[#2\mathclose#1]}
+\phy@AB@gen{mb}\{{mr\{\}}{\mathopen#1\lbrace#2\mathclose#1\rbrace}
+\phy@AB@gen{mb}|{mr||}{\mathopen#1\vert#2\mathclose#1\vert}
+\phy@AB@gen{mb}\|{mr\|\|}{\mathopen#1\Vert#2\mathclose#1\Vert}
+\phy@AB@gen{mb}<{mr<>}{\mathopen#1\langle#2\mathclose#1\rangle}
+\phy@AB@gen{mb}\lbrace{mr\lbrace\rbrace}{\mathopen#1\lbrace#2\mathclose#1\rbrace}
+\phy@AB@gen{mb}\vert{mr\vert\vert}{\mathopen#1\vert#2\mathclose#1\vert}
+\phy@AB@gen{mb}\Vert{mr\Vert\Vert}{\mathopen#1\Vert#2\mathclose#1\Vert}
+\phy@AB@gen{mb}\langle{mr\langle\rangle}{\mathopen#1\langle#2\mathclose#1\rangle}
+% \phy@del, the automatic
+\def\phy@del#1#2#3{\phy@abopen#1#3\phy@abclose#2}
+\expandafter\def\csname phy@del\string*\endcsname#1#2#3{\mathopen#1#3\mathclose#2}
+\expandafter\def\csname phy@del\string\big\endcsname#1#2#3{\bigl#1#3\bigr#2}
+\expandafter\def\csname phy@del\string\Big\endcsname#1#2#3{\Bigl#1#3\Bigr#2}
+\expandafter\def\csname phy@del\string\bigg\endcsname#1#2#3{\biggl#1#3\biggr#2}
+\expandafter\def\csname phy@del\string\Bigg\endcsname#1#2#3{\Biggl#1#3\Biggr#2}
+\expandafter\def\csname phy@del\string\biggg\endcsname#1#2#3{\bigggl#1#3\bigggr#2}
+\expandafter\def\csname phy@del\string\Biggg\endcsname#1#2#3{\Bigggl#1#3\Bigggr#2}
+% \phy@AB@gb(a|b|..): gobble (a|b|..) arguments in the middle.
+\def\phy@AB@gba#1#2#3{#1#3}
+% In next two lines, #5 or #6 may contain more than one token, so they're grouped.
+\def\phy@AB@gbc#1#2#3#4#5{#1{#5}}
+\def\phy@AB@gbd#1#2#3#4#5#6{#1{#6}}
+% \phy@d@lx (phy_del_x): the internal defination of \ab.
+% #1: `mb', according to \phy@AB@gen; #2: `ab'; #3: star or big or left delimiter.
+\def\phy@d@lx#1#2#3{\ifcsname phy@del\string#3\endcsname
+  \phy@AB@gbd{\csname phy@d@lx#1\endcsname#3}%          #3 is star or biggg, then get the next argument.
+  \else\phy@AB@gba{\csname phy@d@lx#2\endcsname#3}\fi}% #3 is delimiter, the braces are automatic.
+\def\phy@d@lxmb#1#2{\ifx#1*\let\phy@tempa=\relax\else\let\phy@tempa=#1\fi
+  \csname phy@mb@\string#2\endcsname\phy@tempa#2}
+\def\phy@d@lxab#1{\csname phy@ab@\string#1\endcsname#1}
+% \phy@d@ly (phy_del_y): the internal defination of \(p|b|..)ab.
+\def\phy@d@ly#1#2#3{\ifcsname phy@del\string#3\endcsname
+    \phy@AB@gbc{\csname phy@del\string#3\endcsname#1#2}%
+  \else{\phy@del#1#2{#3}}\fi}
+% \ab(<subformula>), after \ab can be a star or \biggg.
+\DeclareRobustCommand\ab{\phy@d@lx{mb}{ab}}
+% \(p|b|..)ab{<subformula>}, after \(p|..)ab can be a star or \biggg.
+\DeclareRobustCommand\pab{\phy@d@ly()}
+\DeclareRobustCommand\bab{\phy@d@ly[]}
+\DeclareRobustCommand\Bab{\phy@d@ly\lbrace\rbrace}
+\DeclareRobustCommand\vab{\phy@d@ly\vert\vert}
+\DeclareRobustCommand\aab{\phy@d@ly\langle\rangle}
+\DeclareRobustCommand\Vab{\phy@d@ly\Vert\Vert}
+\endinput
+%% End of file `phy-ab.sty'.

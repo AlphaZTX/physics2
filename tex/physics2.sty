@@ -30,9 +30,9 @@
 \def\phy@false{false}
 % \phy@define@key{<module>}{<key>}[<default value>]{<code>}
 \long\def\phy@define@key#1{\define@key{phy-#1}}
-% \phy@setkeys{<module>}{<key-cal list>}
+% \phy@setkeys{<module>}{<key-val list>}
 \long\def\phy@setkeys#1{\setkeys{phy-#1}}
-% \phy@processkeyopt{phy-<module>}
+% \phy@processkeyopt{<module>}
 \def\phy@processkeyopt#1{\let\reserved@a\@empty%
   \edef\reserved@a{\@ptionlist{\@currname.\@currext}}%
   \edef\reserved@a{\noexpand\phy@setkeys{#1}{\reserved@a}}%
