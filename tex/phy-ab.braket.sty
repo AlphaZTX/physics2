@@ -66,13 +66,8 @@
 \endgroup
 \gdef\phy@@ab@kb#1>#2<#3\phy@@end{\begingroup%
   \def\<{\phy@abb@l}\def\>{\phy@abb@r}%
-  \mathchoice{\everymath{\displaystyle}}{\everymath{\textstyle}}%
-             {\everymath{\scriptstyle}}{\everymath{\scriptscriptstyle}}%
-  \setbox\@tempboxa=\hbox{$#1#3$}%
-  \setbox\phy@tempboxa=\hbox{}%
-  \ht\phy@tempboxa=\ht\@tempboxa \dp\phy@tempboxa=\dp\@tempboxa%
-  \phy@abopen\vert\mathopen{\copy\phy@tempboxa}#1\phy@abclose\rangle#2%
-  \phy@abopen\langle#3\mathclose{\box\phy@tempboxa}\phy@abclose\vert%
+  \phy@abopen\vert\mathopen{\phy@mathvphantom{#3}}#1\phy@abclose\rangle#2%
+  \phy@abopen\langle#3\mathclose{\phy@mathvphantom{#1}}\phy@abclose\vert%
 \endgroup}
 \AtBeginDocument{\ifcsname symbf\endcsname%
   \def\phy@abb@l{\Umathchar 3 \symoperators "003C }%

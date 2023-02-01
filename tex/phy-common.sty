@@ -43,5 +43,25 @@
 \DeclareRobustCommand\Bigggl{\mathopen\Biggg}
 \DeclareRobustCommand\Bigggm{\mathrel\Biggg}
 \DeclareRobustCommand\Bigggr{\mathclose\Biggg}
+% \phy@mathvphantom, does the same job as \vphantom in math mode actually.
+\def\phy@mathvphantom#1{\setbox\phy@tempboxa=\hbox{}%
+  \mathchoice%
+    {\setbox\@tempboxa\hbox{$\displaystyle#1$}%
+      \ht\phy@tempboxa=\ht\@tempboxa%
+      \dp\phy@tempboxa=\dp\@tempboxa%
+      \box\phy@tempboxa}%
+    {\setbox\@tempboxa\hbox{$\textstyle#1$}%
+      \ht\phy@tempboxa=\ht\@tempboxa%
+      \dp\phy@tempboxa=\dp\@tempboxa%
+      \box\phy@tempboxa}%
+    {\setbox\@tempboxa\hbox{$\scriptstyle#1$}%
+      \ht\phy@tempboxa=\ht\@tempboxa%
+      \dp\phy@tempboxa=\dp\@tempboxa%
+      \box\phy@tempboxa}%
+    {\setbox\@tempboxa\hbox{$\scriptscriptstyle#1$}%
+      \ht\phy@tempboxa=\ht\@tempboxa%
+      \dp\phy@tempboxa=\dp\@tempboxa%
+      \box\phy@tempboxa}%
+}
 \endinput
 %% End of file `phy-common.sty'.

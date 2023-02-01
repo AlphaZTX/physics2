@@ -98,13 +98,8 @@
       {\csname#2l\endcsname\vert#3\csname#2r\endcsname\rangle#4%
         \csname#2l\endcsname\langle#5\csname#2r\endcsname\vert}%
       {\begingroup%
-        \mathchoice{\everymath{\displaystyle}}{\everymath{\textstyle}}%
-                   {\everymath{\scriptstyle}}{\everymath{\scriptscriptstyle}}%
-        \setbox\@tempboxa=\hbox{$#3#5$}%
-        \setbox\phy@tempboxa=\hbox{}%
-        \ht\phy@tempboxa=\ht\@tempboxa \dp\phy@tempboxa=\dp\@tempboxa%
-        \phy@abopen\vert\mathopen{\copy\phy@tempboxa}#3\phy@abclose\rangle#4%
-        \phy@abopen\langle#5\mathclose{\box\phy@tempboxa}\phy@abclose\vert%
+        \phy@abopen\vert\mathopen{\phy@mathvphantom{#5}}#3\phy@abclose\rangle#4%
+        \phy@abopen\langle#5\mathclose{\phy@mathvphantom{#3}}\phy@abclose\vert%
       \endgroup}%
     }%
 }
