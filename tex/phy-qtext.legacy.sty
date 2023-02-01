@@ -1,0 +1,52 @@
+%% 
+%% This is file `phy-qtext.legacy.sty',
+%% the `qtext.legacy' module of `physics2' package.
+%% 
+%% ******************************************************
+%% * This work may be distributed and/or modified under *
+%% * the conditions of the LaTeX Project Public License *
+%% *                                                    *
+%% *     http://www.latex-project.org/lppl.txt          *
+%% *                                                    *
+%% * either version 1.3c of this license or any later   *
+%% * version.                                           *
+%% ******************************************************
+%% 
+%% This work has the LPPL maintenance status `maintained'.
+%% 
+%% The Current Maintainer of this work is Zhang Tingxuan.
+%% 
+\ProvidesFile{phy-qtext.legacy.sty}
+  [2023/1/25 `qtext.legacy' module of `physics2.sty']
+\RequirePackage{amstext}
+\def\phy@qtext@#1#2{#1\text{#2}\quad}
+\DeclareRobustCommand\qqtext{\@ifstar{\phy@qtext@{}}{\phy@qtext@\quad}}
+\DeclareRobustCommand\qq{\qqtext}
+\DeclareRobustCommand\qcomma{,\quad}
+\DeclareRobustCommand\qc{\qcomma}
+\DeclareRobustCommand\qcc{\@ifstar{\phy@qtext@{}{c.c}}{\phy@qtext@\quad{c.c}}}
+\def\phy@qtext@lega@gen@#1{%
+  \expandafter\DeclareRobustCommand\csname q#1\endcsname%
+    {\@ifstar{\phy@qtext@{}{#1}}{\phy@qtext@\quad{#1}}}}
+\phy@qtext@lega@gen@{if}
+\phy@qtext@lega@gen@{then}
+\phy@qtext@lega@gen@{else}
+\phy@qtext@lega@gen@{otherwise}
+\phy@qtext@lega@gen@{unless}
+\phy@qtext@lega@gen@{give}
+\phy@qtext@lega@gen@{using}
+\phy@qtext@lega@gen@{unless}
+\phy@qtext@lega@gen@{assume}
+\phy@qtext@lega@gen@{since}
+\phy@qtext@lega@gen@{let}
+\phy@qtext@lega@gen@{for}
+\phy@qtext@lega@gen@{all}
+\phy@qtext@lega@gen@{even}
+\phy@qtext@lega@gen@{odd}
+\phy@qtext@lega@gen@{integer}
+\phy@qtext@lega@gen@{and}
+\phy@qtext@lega@gen@{or}
+\phy@qtext@lega@gen@{as}
+\phy@qtext@lega@gen@{in}
+\endinput
+%% End of file `phy-qtext.legacy.sty'.

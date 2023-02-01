@@ -24,6 +24,9 @@
 \newdimen\phy@tempdimb
 \newskip\phy@tempskipa
 \newmuskip\phy@tempmuskipa
+\newbox\phy@tempboxa
+\newif\ifphy@tempswa
+\newtoks\phy@toksa
 % The package uses `keyval' to support key-value settings.
 \RequirePackage{keyval}
 \def\phy@true{true}
@@ -38,8 +41,7 @@
   \edef\reserved@a{\noexpand\phy@setkeys{#1}{\reserved@a}}%
   \reserved@a% the next line thanks to `geometry'
   \AtEndOfPackage{\let\@unprocessedoptions\relax}}
-% Load the physics modules as 2e kernel does, the same file won't
-% load twice because we used \@onefilewithoptions.
+% Load the physics modules as 2e kernel does.
 \def\usephysicsmodule{\phy@FWoptions\@pkgextension}
 \let\phy@requiremodule\usephysicsmodule
 \@onlypreamble\usephysicsmodule
@@ -63,6 +65,6 @@
   \reserved@a}
 \@onlypreamble\phy@FW@pti@ns
 % The `common' module of physics2, every module needs this.
-\usephysicsmodule{common}
+\phy@requiremodule{common}
 \endinput
 %% End of file `physics2.sty'.
