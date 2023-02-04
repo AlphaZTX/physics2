@@ -62,12 +62,15 @@
   \csname phy@bk@in@\@phy@bk@argnum\endcsname%
 }
 % The internal version of \braket
-\def\phy@bk@in@i#1{\csname\@phy@bk@l\endcsname\langle{#1}%
+\def\phy@bk@in@i#1{%
+  \csname\@phy@bk@l\endcsname\langle{#1}%
   \csname\@phy@bk@r\endcsname\rangle}
-\def\phy@bk@in@ii#1#2{\csname\@phy@bk@l\endcsname\langle{#1}%
+\def\phy@bk@in@ii#1#2{%
+  \csname\@phy@bk@l\endcsname\langle{#1}%
   \csname\@phy@bk@m\endcsname\vert{#2}%
   \csname\@phy@bk@r\endcsname\rangle}
-\def\phy@bk@in@iii#1#2#3{\csname\@phy@bk@l\endcsname\langle{#1}%
+\def\phy@bk@in@iii#1#2#3{%
+  \csname\@phy@bk@l\endcsname\langle{#1}%
   \csname\@phy@bk@m\endcsname\vert{#2}%
   \csname\@phy@bk@m\endcsname\vert{#3}%
   \csname\@phy@bk@r\endcsname\rangle}

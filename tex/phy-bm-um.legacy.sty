@@ -1,0 +1,62 @@
+%% 
+%% This is file `phy-bm-um.legacy.sty',
+%% the `bm-um.legacy' module of `physics2' package.
+%% 
+%% ******************************************************
+%% * This work may be distributed and/or modified under *
+%% * the conditions of the LaTeX Project Public License *
+%% *                                                    *
+%% *     http://www.latex-project.org/lppl.txt          *
+%% *                                                    *
+%% * either version 1.3c of this license or any later   *
+%% * version.                                           *
+%% ******************************************************
+%% 
+%% This work has the LPPL maintenance status `maintained'.
+%% 
+%% The Current Maintainer of this work is Zhang Tingxuan.
+%% 
+\ProvidesExplFile{phy-bm-um.legacy.sty}{2023/1/25}{}
+  {`bm-um.legacy' module of `physics2.sty'}
+\AtBeginDocument
+  {
+    \cs_if_exist:cF { symbf }
+      {
+        \PackageError { physics2 }
+          {
+            The ~ `bm-um.legacy' ~ module ~ requires ~
+            `unicode-math' ~ package
+          }
+          {
+            Have ~ you ~ used ~ `unicode-math' ~
+            in ~ the ~ preamble?
+          }
+      }
+  }
+\DeclareDocumentCommand \bm { m }
+  {
+    \mode_if_math:TF
+      {
+        \tl_if_head_eq_catcode:nNTF { #1 } A
+          {
+            \symbfit { #1 }
+          }
+          {
+            \symbf { #1 }
+          }
+      }
+      {
+        \PackageError { physics2 }
+          {
+            The ~ \string\bm\space command ~ should ~ be ~
+            used ~ in ~ math ~ mode ~ only. \MessageBreak
+            This ~ is ~ an ~ error ~ from ~ `bm-um.legacy' ~ module
+          }
+          {
+            Check ~ if ~ any ~ `\string\bm' ~ is ~ out ~
+            of ~ math ~ mode.
+          }
+      }
+  }
+\endinput
+%% End of file `phy-bm-um.legacy.sty'.
