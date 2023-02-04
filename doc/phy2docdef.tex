@@ -1,0 +1,60 @@
+\makeatletter
+\usepackage[nohyperref]{doc}
+\renewcommand*\l@subsection{\@dottedtocline{2}{1.5em}{2.1em}}
+\def\contentsonly{\@starttoc{toc}}
+\usepackage{manfnt}
+\protected\def\pardanger{\ifnum\lastnodetype=1%
+  \leavevmode\hbox to \z@{\hss\dbend\hskip10pt\hskip\parindent}\else
+  \ifnum\lastnodetype=11%
+  \leavevmode\hbox to \z@{\hss\dbend\hskip10pt}%
+  \fi\fi\ignorespaces}
+\usepackage{hyperref,xcolor}
+\definecolor{pkgcolor}{RGB}{0,120,80}
+\definecolor{moducolor}{RGB}{0,0,150}
+\hypersetup{colorlinks,urlcolor=magenta,linkcolor=black,filecolor=blue,
+  pdfstartview=FitH,pdfcreator=XeTeX output}
+\def\s@pkg#1{\texorpdfstring{\textcolor{pkgcolor}{\textsf{#1}}}{“#1”}}
+\def\@pkg#1{\texorpdfstring{\hyperref{https://www.ctan.org/pkg/#1}%
+  {}{}{\textcolor{pkgcolor}{\textsf{#1}}}}{“#1”}}
+\DeclareRobustCommand\pkg{\@ifstar\@pkg\s@pkg}
+\def\modu#1{\texorpdfstring{\textcolor{moducolor}{\textsf{#1}}}{“#1”}}
+\def\opt#1{\texorpdfstring{\texttt{#1}}{“#1”}}
+\protected\def\marg#1{\texttt\{\meta{#1}\texttt\}}
+\protected\def\oarg#1{\texttt[\meta{#1}\texttt]}
+\parindent2.4em
+\linespread{1.06}
+\usepackage{multicol,fancyvrb,verbatim,array,hologo}
+\fvset{xleftmargin=\parindent}
+\newenvironment{displayed}{\trivlist\item[]\leftskip\parindent\relax}{\endtrivlist}
+\usepackage[normalem]{ulem}
+
+\newcounter{example}[subsection]
+\renewcommand\theexample{\thesubsection.\arabic{example}}
+\newwrite\example@out
+\def\example@name{\jobname.example.aux}
+\long\def\example@start{\begingroup\@bsphack
+  \immediate\openout\example@out=\example@name
+  \let\do\@makeother\dospecials\catcode`\^^M\active
+  \def\verbatim@processline{\immediate\write\example@out{\the\verbatim@line}}%
+  \verbatim@start}
+\long\def\example@end{\immediate\closeout\example@out\@esphack\endgroup%
+  \trivlist\item[]\relax
+    \leavevmode\hbox to \z@{%
+      \hbox to \z@{\hss{\footnotesize[\theexample]}\hskip10pt}%
+      \hskip\parindent
+      \begin{minipage}[c]{0.55\textwidth}%
+        \small\verbatiminput{\example@name}%
+      \end{minipage}%
+      \fbox{%
+        \begin{minipage}[c]{0.5\textwidth}%
+          \normalsize\input{\example@name}%
+        \end{minipage}%
+      }%
+    \hss}%
+  \endtrivlist}
+\newenvironment{example*}[1]%
+  {\refstepcounter{example}\label{#1}\example@start}{\example@end}
+\newenvironment{example}
+  {\stepcounter{example}\example@start}{\example@end}
+\makeatother
+\endinput
