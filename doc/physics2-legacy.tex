@@ -114,7 +114,7 @@ You can also load a module with options:
 For example, ``\verb|\usephysicsmodule[legacy]{ab}|'' loads \modu{ab} with the
 option ``\opt{legacy}''.
 
-\pardanger Attension, if you used any font package in your document, remember
+\pardanger Attention, if you used any font package in your document, remember
 that \pkg{physics2} requires to be loaded \emph{after} font packages.
 
 
@@ -150,7 +150,7 @@ For example, \verb|$\ab{foo}$| and \verb|$\ab(foo]$| are illegal, but
 \verb|$\ab\{foo\}$| and \verb|$\ab(foo)$| are okay; \verb|$\ab([)$|
 is okay but \verb|$\ab(()$| is illegal.
 
-\pardanger Attension, if you want to delimit a subformula with ``\{'' and
+\pardanger Attention, if you want to delimit a subformula with ``\{'' and
 ``\}'', you can only write \verb|\{|, \verb|\}| or \cs{lbrace}, \cs{rbrace}
 around it. \verb|{| and \verb|}| are not supported in \modu{ab} module.
 
@@ -430,7 +430,7 @@ will be redefined.
 \input phy-braket.sty\makeatother
 \hypertarget{para:braket}{This} module contains four commands --- \cs{bra},
 \cs{ket}, \cs{braket} and \cs{ketbra}. After these commands can be a star
-(\opt{*}) or a square-bracket-delimited size option, the size options can
+(\opt{*}) or a square-bracket-delimited size option, the size option can
 take the following values:
 \begin{center}
 \opt{big},\quad\opt{Big},\quad\opt{bigg},\quad\opt{Bigg},\quad
@@ -469,7 +469,7 @@ a comma:
 \end{example}
 The \cs{ketbra} command takes two mandatory arguments. It can also take an
 optional argument between the two mandatory arguments. The optional argument
-will be placed between the $\rangle$ and $\langle$:
+will be placed between $\rangle$ and $\langle$:
 \begin{example}
 \def\0{\frac\phi2}
 \[ \ketbra  {\0} {\psi}    \quad

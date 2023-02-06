@@ -50,8 +50,7 @@ is part of the \pkg*{latex-graphics} bundle. Almost every \LaTeX\ distribution
 will include this bundle.
 
 Different modules of \pkg{physics2} might require different packages. It will
-be explained in the following sections corresponding to each module that which
-module requires which package.
+be explained in the following sections that which module requires which package.
 
 The \pkg{physics2} package requires \LaTeXe\ kernel released after 2020/10.
 Please make sure that your \LaTeX\ distribution is not too old.
@@ -100,6 +99,7 @@ loaded automatically. Any other module should be loaded manually by writing
 preamble.
 
 The following sections introduce all the user-level modules of \pkg{physics2}.
+View back to the table of contents to see the names of user-level modules.
 
 \section{Modules of \pkg{physics2}}
 \subsection{The automatically loaded \modu{common} module}
@@ -107,8 +107,9 @@ The \modu{common} module provides the following commands:
 
 \cs{delopen} and \cs{delclose}, followed by a math delimiter. They can be
 regarded as abbreviations of ``open delimiter'' and ``close delimiter''. If
-you had heard of the \pkg*{mleftright} package. You can think \cs{delopen}
-and \cs{delclose} a simpler version of \cs{mleft} and \cs{mright}. For example,
+you had heard of the \pkg*{mleftright} package. You can regard \cs{delopen}
+and \cs{delclose} as a simpler version of \cs{mleft} and \cs{mright}.
+For example,
 \begin{example}
 \[    0 \left(\frac12\right) 3    \]
 \[ 0 \delopen(\frac12\delclose) 3 \]
@@ -129,7 +130,7 @@ are also supported.
 \subsection{The \modu{ab} module --- automatic braces}
 This module provides the command \cs{ab}. The \cs{ab} command, as a shorthand
 of ``automatic braces'', would specify the size of the following pair of
-delimiters' size. The delimiters after \cs{ab} should not be out of the range
+delimiters. The delimiters after \cs{ab} should not be out of the range
 described by the following chart:
 \begin{center}
 \begin{tabular}{c@{\hskip2em}l@{\hskip2em}c}
@@ -164,7 +165,7 @@ character (\verb|$|) as its argument.
 
 The \modu{ab} module also provides \texttt{\textbackslash}$X$\texttt{ab}
 commands, where $X$ can be \opt{p}, \opt{b}, \opt{B}, \opt{a}, \opt{v} and
-\opt{V}. These commands takes a normal argument but not an argument delimited
+\opt{V}. These commands take a normal argument but not an argument delimited
 with paired delimiters. For example,
 \begin{example}
 \def\0{\frac12}
@@ -179,9 +180,9 @@ star. For example,
 \end{example}
 
 \paragraph{The options of \modu{ab} module}
-\opt{tightbraces}, a bool type key, whose default is \opt{true}, influences
-whether thin skips are reserved around the paired delimiters. It only works
-with the automatically sized delimiters.
+\opt{tightbraces}, a bool type key, whose default value is \opt{true},
+influences whether thin skips are reserved around the paired delimiters.
+It only works with the automatically sized delimiters.
 
 \subsection{The \modu{ab.braket} module --- Dirac bra-ket notation}
 This module provides four commands --- \cs{bra}, \cs{ket}, \cs{braket} and
@@ -271,7 +272,7 @@ Don't use them together.
 
 This module contains four commands --- \cs{bra}, \cs{ket}, \cs{braket} and
 \cs{ketbra}. After these commands can be a star (\opt{*}) or a
-square-bracket-delimited size option, the size options can
+square-bracket-delimited size option, the size option can
 take the following values:
 \begin{center}
 \opt{big},\quad\opt{Big},\quad\opt{bigg},\quad\opt{Bigg},\quad
@@ -310,7 +311,7 @@ a comma:
 \end{example}
 The \cs{ketbra} command takes two mandatory arguments. It can also take an
 optional argument between the two mandatory arguments. The optional argument
-will be placed between the $\rangle$ and $\langle$:
+will be placed between $\rangle$ and $\langle$:
 \begin{example}
 \def\0{\frac\phi2}
 \[ \ketbra  {\0} {\psi}    \quad
@@ -361,7 +362,7 @@ $ A \doublecross B \doubledot C $
 
 \paragraph{The options of \modu{doubleprod} module}
 You can control the scale of ``$\times$'' and ``$\cdot$'' in \cs{doublecross}
-and \cs{doubledot} in module options. For example,
+and \cs{doubledot} in module option. For example,
 \begin{Verbatim}
 \usephysicsmodule[crossscale=0.75,dotscale=1.2]{doubleprod}
 \end{Verbatim}
@@ -373,9 +374,10 @@ For example,
 \usephysicsmodule[crossopenup=.05,dotopenup=.25]{doubleprod}
 \end{Verbatim}
 The default values of \opt{crossopenup} and \opt{dotopenup} are \opt{0.02}
-and \opt{0.2}. The value stand for the multiple of current font size.
-Moreover, you can change the symbols in \cs{doublecross} and \cs{doubledot}
-by setting \opt{crosssymbol} and \opt{dotsymbol} in module options.
+and \opt{0.2}. The value stands for the multiple of current font size.
+Moreover, you can change the symbols produced by \cs{doublecross} and
+\cs{doubledot} by setting \opt{crosssymbol} and \opt{dotsymbol} in module
+option.
 
 \subsection{The \modu{xmat} module --- matrices with formatted entries}
 The \modu{xmat} module provides \cs{xmat} command for matrices with formatted
@@ -415,18 +417,18 @@ also set them in the module option like this:
 \end{Verbatim}
 Then every \cs{xmat} with non-digital \meta{rows shown} and \meta{cols shown}
 will have 2 top-most rows and 3 left-most columns shown. This will also
-influence digital \meta{rows shown} and \meta{cols shown} \cs{xmat}s when
-\meta{rows shown} and \meta{cols shown} are larger than the values
+influence ``\cs{xmat}''s with digital \meta{rows shown} and \meta{cols shown}
+when \meta{rows shown} and \meta{cols shown} are larger than the values
 corresponding to \opt{showtop} and \opt{showleft}. For example,
 \begin{example}
 % \usephysicsmodule
 %   [showtop=3,showleft=3]{xmat}
 \[ \pxmat{A}{8}{8} \]
 \end{example}
-However, when \meta{rows shown} and \meta{cols shown} are not \emph{that} large
-but still larger than \meta{showtop} and \meta{showleft}, for example,
-\meta{rows shown}$\:=4$ and \meta{cols shown}$\:=4$ in last example's settings,
-\cs{xmat} will still add the extra dots:
+However, when \meta{rows shown} and \meta{cols shown} are 1 greater than
+\meta{showtop} and \meta{showleft}, for example, \meta{rows shown}$\:=4$ and
+\meta{cols shown}$\:=4$ in last example's settings, \cs{xmat} will still add
+the extra dots:
 \begin{example}
 % \usephysicsmodule
 %   [showtop=3,showleft=3]{xmat}
@@ -451,14 +453,14 @@ to use a new entry format. For example,
 \]
 \end{example}
 In the value of \opt{format} key, \verb|#1| stands for the common entry,
-or the first mandotary (\meta{entry}) argument of \cs{xmat}; \verb|#2|
+or the first mandotary \meta{entry} argument of \cs{xmat}; \verb|#2|
 stands for the row index and \verb|#3| stands for the column index.
 
 This module requires \pkg{amsmath}.
 
 \paragraph{The options of \modu{xmat} module}
 Only \opt{showtop} and \opt{showleft} can be used as module options.
-\opt{format} should only be used in the optional argument of the
+\opt{format} should be only used in the optional argument of the
 \cs{xmat} command.
 
 \section{The ``legacy'' modules}
@@ -503,9 +505,9 @@ its function, but there are few OpenType math fonts who released with a bold
 version. The \modu{bm-um.legacy} module provides a \cs{bm} command too, but
 this \cs{bm} can only take \emph{one} math character or a series of math
 characters sharing the same category code as its argument.
-If the argument was a number, \cs{bm} would switch to the bold upright glyph
-corresponding to it; else \cs{bm} would switch to the bold italic glyph
-corresponding to it if there exists one. For example,
+If the argument was Latin letters or Greek letters, \cs{bm} would switch to
+the bold italic glyphs corresponding to them (if there exists bold italic
+glyphs); else \cs{bm} would switch to the bold upright glyphs. For example,
 \begin{example}
 $\bm{0}\bm{A}\bm{z}
  \bm{\alpha}\bm{\Omega}$
@@ -550,9 +552,9 @@ and $\Imsymbol$ are redefined as \cs{Resymbol} and \cs{Imsymbol}, in default.
 This module \emph{does not} require \pkg{amsmath}.
 
 \paragraph{The options of \modu{op.legacy} module}
-\opt{ReIm}, a bool key with dafault true, determines whether to redefine
-\cs{Re} and \cs{Im}. If you want to reserved the definition of \cs{Re} and
-\cs{Im}, you can write like this:
+\opt{ReIm}, a bool key with default value \opt{true}, determines whether to
+redefine \cs{Re} and \cs{Im}. If you want to reserve the definition of
+\cs{Re} and \cs{Im}, you can write like this:
 \begin{Verbatim}
 \usephysicsmodule[ReIm=false]{op.legacy}
 \end{Verbatim}
