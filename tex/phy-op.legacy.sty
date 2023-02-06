@@ -18,7 +18,7 @@
 %% 
 \ProvidesFile{phy-op.legacy.sty}
   [2023/1/25 `op.legacy' module of `physics2.sty']
-\phy@define@key{op.lega}{ReIm}{\def\phy@reserveda{#1}}
+\phy@define@key{op.lega}{ReIm}[true]{\def\phy@reserveda{#1}}
 % The keys for \PV and \pv
 \phy@define@key{op.lega}{PV}{\def\@phy@oplega@PV{#1}}
 \phy@define@key{op.lega}{pv}{\def\@phy@oplega@pv{#1}}
@@ -36,7 +36,7 @@
 \DeclareRobustCommand\erf{\mathop{\operator@font erf}\nolimits}
 \DeclareRobustCommand\Res{\mathop{\operator@font Res}\nolimits}
 \DeclareRobustCommand\res{\mathop{\operator@font res}\nolimits}
-\DeclareRobustCommand\PV{\mathop{\operator@font\@phy@oplega@PV{}}\nolimits}
+\DeclareRobustCommand\PV{\mathord{\@phy@oplega@PV}}
 \DeclareRobustCommand\pv{\mathop{\operator@font\@phy@oplega@pv{}}\nolimits}
 % \Re and \Im, restore the former comands as \Resymbol and \Imsymbol
 \ifx\phy@reserveda\phy@true
