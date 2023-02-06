@@ -1,3 +1,10 @@
+%% ******************************************************
+%% * This work may be distributed and/or modified under *
+%% * the conditions of the LaTeX Project Public License *
+%% *     http://www.latex-project.org/lppl.txt          *
+%% * either version 1.3c of this license or any later   *
+%% * version.                                           *
+%% ******************************************************
 \documentclass[11pt,letterpaper]{article}
 \usepackage{amsmath}
 \usepackage{unicode-math}
@@ -15,9 +22,6 @@
 \usepackage{derivative}
 \input{phy2docdef.tex}
 \title{\pkg{physics2} manual for the legacy \pkg{physics} users}
-\author{Zhang Tingxuan}
-\date{2023/01/25\quad Version 0.1\thanks{%
-  \url{https://www.github.com/AlphaZTX/physics2}}}
 \begin{document}
 \maketitle
 
@@ -115,7 +119,7 @@ that \pkg{physics2} requires to be loaded \emph{after} font packages.
 
 
 \section{List of commands}
-\subsection{Automatic bracing}
+\subsection{Automatic bracing}\label{subsec:ab-and-legacy}
 As mentioned in \S\ref{subsec:physics-legacy-problems}, the \cs{qty} command
 from \pkg{physics} would cause conflicts with \pkg{siunitx}. The command for
 automatic braces in \pkg{physics2} is \cs{ab}, a shorthand for 
@@ -276,9 +280,9 @@ alternative to \pkg{bm} package. Notice that the \cs{bm} command from the
 as its argument.
 
 \subsection{Operators}
-No plan for \pkg{physics2} to support this part of \pkg{physics} completely.
-The syntax in this part of \pkg{physics} (such as \verb|\tan[2](x)|) abuses
-\pkg*{xparse}.
+There's no plan for \pkg{physics2} to support this part of \pkg{physics}
+completely. The syntax in this part of \pkg{physics} (such as \verb|\tan[2](x)|)
+abuses \pkg*{xparse}.
 
 It's suggested to write like this if you used the \modu{ab} module:
 \begin{Verbatim}[fontsize=\small]
@@ -300,7 +304,7 @@ The \cs{Re} and \cs{Im} commands are redefined as operators ``$\Re$'' and
 \cs{Imsymbol}. $\Resymbol$ and $\Imsymbol$ are ordinary symbols but $\Re$ and
 $\Im$ are opetators.
 
-\subsection{Quick quad text}
+\subsection{Quick quad text}\label{subsec:qtext}
 The \modu{qtext.legacy} module provides the \cs{q}\meta{foo} commands
 for \cs{quad}-wrapped texts. These commands have the same syntax as
 \pkg{physics}. For example,
@@ -415,8 +419,8 @@ For example,
 \pardanger
 If you want to write ``$>$'' and ``$<$'' for relations in the argument of
 \cs{braket} and \cs{ketbra}, you can write \cs{>} and \cs{<} (although there
-is almost no such need). It is quite different from \verb|mathrel{>}| or
-\verb|mathrel{<}| because in these commands' argument, \opt{>} and \opt{<}
+is almost no such need). It is quite different from \verb|\mathrel{>}| or
+\verb|\mathrel{<}| because in these commands' argument, \opt{>} and \opt{<}
 will be redefined.
 
 \paragraph{The \modu{braket} module}
@@ -426,7 +430,7 @@ will be redefined.
 \input phy-braket.sty\makeatother
 \hypertarget{para:braket}{This} module contains four commands --- \cs{bra},
 \cs{ket}, \cs{braket} and \cs{ketbra}. After these commands can be a star
-(\opt{*}) or a square bracket-delimited size option, the size options can
+(\opt{*}) or a square-bracket-delimited size option, the size options can
 take the following values:
 \begin{center}
 \opt{big},\quad\opt{Big},\quad\opt{bigg},\quad\opt{Bigg},\quad

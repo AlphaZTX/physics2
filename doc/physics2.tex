@@ -1,0 +1,565 @@
+%% ******************************************************
+%% * This work may be distributed and/or modified under *
+%% * the conditions of the LaTeX Project Public License *
+%% *     http://www.latex-project.org/lppl.txt          *
+%% * either version 1.3c of this license or any later   *
+%% * version.                                           *
+%% ******************************************************
+\documentclass[11pt,letterpaper]{article}
+\usepackage{amsmath}
+\usepackage{unicode-math}
+\setmainfont{Libertinus Serif}
+\setsansfont{Libertinus Sans}
+\setmonofont{Noto Sans Mono}[Scale=MatchLowercase]
+\setmathfont{Libertinus Math}
+\usepackage{physics2}
+\usephysicsmodule{ab,ab.braket}
+\usephysicsmodule{diagmat}
+\usephysicsmodule{doubleprod}
+\usephysicsmodule[showleft=3,showtop=3]{xmat}
+\usephysicsmodule{ab.legacy,nabla.legacy,op.legacy,qtext.legacy,bm-um.legacy}
+\input{phy2docdef.tex}
+\externaldocument[lega-]{physics2-legacy}
+\title{The \pkg{physics2} package}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This is the document for \pkg{physics2} package, which defines commands for
+typesetting math formulae faster and simpler. \pkg{physics2} is a modularized
+package, each module provides its own function. 
+
+This document describes the \pkg{physics2} package in more detail.
+But if you are a user of the legacy \pkg{physics} package, you can click
+\hyperref{./physics2-legacy.pdf}{}{}{here} to see the documention for
+\pkg{physics} users before you start. If you never used \pkg{physics} package
+before, just read \emph{this} documentation.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+\subsection{The purpose of this package}
+This package aims to provide a bundle of commands for typesetting math faster
+in different modules. The commands provided by \pkg{physics2} and its different
+modules are designed to be short and easy to memorize.
+
+\subsection{Packages required}
+The \pkg{physics2} package itself only requires the \pkg*{keyval} package, which
+is part of the \pkg*{latex-graphics} bundle. Almost every \LaTeX\ distribution
+will include this bundle.
+
+Different modules of \pkg{physics2} might require different packages. It will
+be explained in the following sections corresponding to each module that which
+module requires which package.
+
+The \pkg{physics2} package requires \LaTeXe\ kernel released after 2020/10.
+Please make sure that your \LaTeX\ distribution is not too old.
+
+\subsection{Loading the \pkg{physics2} package}
+Just like loading any package, write
+\begin{Verbatim}
+\usepackage{physics2}
+\end{Verbatim}
+in the preamble to load the \pkg{physics2} package. In this version,
+\pkg{physics2} doesn't provide a package option.
+
+However, \pkg{physics2} itself only provides very few functions. Actually, it
+just provides a method to load modules. You need to load different modules of
+\pkg{physics2} to have different kinds of functions applied to your document.
+
+\subsection{Loading a module of \pkg{physics2}}
+You can load a module of \pkg{physics2} only \emph{after} you write
+\verb|\usepackage{physics2}| in the preamble. Load a \pkg{physics2} module
+like this:
+\begin{center}
+\cs{usephysicsmodule}\marg{module}
+\end{center}
+The usage of \cs{usephysicsmodule} is similar to \cs{usepackage}, so you can
+load more than one modules in one line. For example,
+\begin{Verbatim}
+\usephysicsmodule{ab,ab.braket}
+\end{Verbatim}
+This line loads the \modu{ab} and \modu{ab.braket} modules.
+
+You can also load \emph{one} module with options. The options of a
+\pkg{physics2} module can be a comma-separated key-value list. For example,
+\begin{Verbatim}
+\usephysicsmodule[tightbraces=true]{ab}
+\usephysicsmodule{ab.braket,doubleprod}
+\end{Verbatim}
+These two lines load the \modu{ab} module with option
+\opt{tightbraces\:=\:true} and load \modu{ab.braket} and \modu{doubleprod}
+modules.
+
+\pardanger
+The \modu{common} module will be loaded automatically when you load the
+\pkg{physics2} package and \emph{only} the \modu{common} module will be
+loaded automatically. Any other module should be loaded manually by writing
+\cs{usephysicsmodule}\marg{module} after you loaded \pkg{physics2} in the
+preamble.
+
+The following sections introduce all the user-level modules of \pkg{physics2}.
+
+\section{Modules of \pkg{physics2}}
+\subsection{The automatically loaded \modu{common} module}
+The \modu{common} module provides the following commands:
+
+\cs{delopen} and \cs{delclose}, followed by a math delimiter. They can be
+regarded as abbreviations of ``open delimiter'' and ``close delimiter''. If
+you had heard of the \pkg*{mleftright} package. You can think \cs{delopen}
+and \cs{delclose} a simpler version of \cs{mleft} and \cs{mright}. For example,
+\begin{example}
+\[    0 \left(\frac12\right) 3    \]
+\[ 0 \delopen(\frac12\delclose) 3 \]
+\end{example}
+
+\cs{biggg} and \cs{Biggg}, followed by a math delimiter. They are even bigger
+than \cs{Bigg}. \cs{biggg} and \cs{Biggg} may be useful when you need to write
+something really tall in math mode, but most OpenType math font do not support
+\cs{langle} (or U+27E8) and \cs{rangle} (or U+27E9) in this large size. Take
+an example,
+\begin{example}
+\[\Biggg(\biggg(\Bigg(\bigg(\Big(\big((
+)\big)\Big)\bigg)\Bigg)\biggg)\Biggg)\]
+\end{example}
+\cs{bigggl}, \cs{bigggm}, \cs{bigggr}, \cs{Bigggl}, \cs{Bigggm} and \cs{Bigggr}
+are also supported.
+
+\subsection{The \modu{ab} module --- automatic braces}
+This module provides the command \cs{ab}. The \cs{ab} command, as a shorthand
+of ``automatic braces'', would specify the size of the following pair of
+delimiters' size. The delimiters after \cs{ab} should not be out of the range
+described by the following chart:
+\begin{center}
+\begin{tabular}{c@{\hskip2em}l@{\hskip2em}c}
+\opt{(},\quad\opt{)} && \\
+\opt{[},\quad\opt{]} && \\
+\cs{\{},\quad\cs{\}} &or& \cs{lbrace},\quad\cs{rbrace} \\
+\opt{<},\quad\opt{>} &or& \cs{langle},\quad\cs{rangle} \\
+\opt{|},\quad\opt{|} &or&   \cs{vert},\quad\cs{vert} \\
+ \cs{|},\quad\cs{|}  &or&   \cs{Vert},\quad\cs{Vert}
+\end{tabular}
+\end{center}
+For example, it's illegal to write an ``\verb|\ab(|'' without a ``\verb|)|'';
+it's also illegal to write \verb|\ab=foo=|. Take some correct examples:
+\begin{example}
+\[ \ab ( \frac12 )  \quad
+   \ab [ \frac12 ]  \quad
+   \ab\{ \frac12 \}    \]
+\end{example}
+You can also write a command from \cs{big} to \cs{Biggg} between \cs{ab}
+and the first delimiter, which means to specify the size of delimiters manually.
+Also, you can write a star (\opt{*}) between \cs{ab} and the first delimiter,
+to prevent \cs{ab} from setting the size of delimiters. For example,
+\begin{example}
+\[ \ab      <\frac12> \quad
+   \ab\biggg|\frac12| \quad
+   \ab*    \|\frac12\|   \]
+\end{example}
+\pardanger
+Always remember, do not put an \cs{ab} separately at the end of math mode like
+\verb|$\ab$|, because \cs{ab} will try to absorb the following math shift
+character (\verb|$|) as its argument.
+
+The \modu{ab} module also provides \texttt{\textbackslash}$X$\texttt{ab}
+commands, where $X$ can be \opt{p}, \opt{b}, \opt{B}, \opt{a}, \opt{v} and
+\opt{V}. These commands takes a normal argument but not an argument delimited
+with paired delimiters. For example,
+\begin{example}
+\def\0{\frac12}
+\[ \pab{\0} \bab{\0} \Bab{\0} \]
+\[ \aab{\0} \vab{\0} \Vab{\0} \]
+\end{example}
+After \texttt{\textbackslash}$X$\texttt{ab} can be a ``biggg'' command or a
+star. For example,
+\begin{example}
+\def\0{\frac12}
+\[ \pab\Big{\0} \quad \bab*{\0} \]
+\end{example}
+
+\paragraph{The options of \modu{ab} module}
+\opt{tightbraces}, a bool type key, whose default is \opt{true}, influences
+whether thin skips are reserved around the paired delimiters. It only works
+with the automatically sized delimiters.
+
+\subsection{The \modu{ab.braket} module --- Dirac bra-ket notation}
+This module provides four commands --- \cs{bra}, \cs{ket}, \cs{braket} and
+\cs{ketbra}. After these commands can be a star (\opt{*}) or a ``biggg''
+command. These commands share similar syntaxes like \cs{ab}'s syntax. But,
+\emph{the bra-ket commands from \modu{ab.braket} module are completely different
+from \cs{ab}}. Their internal structures are different.
+
+The argument of \cs{bra} should be delimited with \opt{<} and \opt{|}, that is,
+\begin{center}
+\cs{bra} \opt{<} \meta{subformula} \opt{|}
+\end{center}
+For example,
+\begin{example}
+\[ \bra < \frac \phi 2 | \]
+\[ \bra*< \frac \phi 2 | \]
+\[ \bra\Big< \phi  |     \]
+\end{example}
+The argument of \cs{ket} should be delimited with \opt{|} and \opt{>}, that is,
+\begin{center}
+\cs{ket} \opt{|} \meta{subformula} \opt{>}
+\end{center}
+For example,
+\begin{example}
+\[ \ket | \frac \psi 2 > \]
+\[ \ket*| \frac \psi 2 > \]
+\[ \ket\Big| \psi >      \]
+\end{example}
+\pardanger
+If you want to write ``$>$'' and ``$<$'' for relations in the argument of
+\cs{bra} and \cs{ket}, you can write \verb|\mathrel{>}| and \verb|\mathrel{<}|
+(although there is almost no such need).
+
+The argument of \cs{braket} should be delimited with \opt{<} and \opt{>},
+that is,
+\begin{center}
+\cs{braket} \opt{<} \meta{subformula} \opt{>}
+\end{center}
+In the \meta{subformula} argument, every ``\opt{|}'' will be regarded as an
+extensible vertical bar. For example,
+\begin{example}
+\[ \braket< \phi >            \]
+\[ \braket< \phi | \psi >     \]
+\[ \braket< \phi | A | \psi > \]
+\end{example}
+\begin{example}
+\def\0{\frac\phi2}
+\[ \braket     < \0 | \psi >  \]
+\[ \braket*    < \0 | \psi >  \]
+\[ \braket\Bigg< \0 | \psi >  \]
+\end{example}
+The argument of \cs{ketbra} should be delimited with \opt{|} and \opt{|}.
+In the argument, \opt{>} and \opt{<} will be regarded as extensible $\rangle$
+and $\langle$. that is,
+\begin{center}
+\cs{ketbra} \opt{|} \meta{subformula$_1$} \opt{>} \meta{optional}
+  \opt{<} \meta{subformula$_2$} \opt{|}
+\end{center}
+For example,
+\begin{example}
+\def\0{\frac\phi2}
+\[ \ketbra     | \0 >< \psi | \]
+\[ \ketbra*    | \0 >< \psi | \]
+\[ \ketbra\Bigg| \0 >< \psi | \]
+\end{example}
+\begin{example}
+\def\0{\frac\phi2}
+\[ \ketbra| \0 >_x^y < \psi | \]
+\end{example}
+\pardanger
+If you want to write ``$>$'' and ``$<$'' for relations in the argument of
+\cs{braket} and \cs{ketbra}, you can write \cs{>} and \cs{<} (although there
+is almost no such need). It is quite different from \verb|\mathrel{>}| or
+\verb|\mathrel{<}| because in these commands' argument, \opt{>} and \opt{<}
+will be redefined.
+
+Next, the \modu{braket} module will be introduced. Please notice that
+\modu{braket} is conflict with \modu{ab.braket}, they cannot be used together.
+
+\subsection{The \modu{braket} module --- Dirac bra-ket notation}
+\begingroup
+\makeatletter\def\phy@requiremodule#1{}%
+\def\PackageWarning#1#2{}%
+\input phy-braket.sty\makeatother
+Please notice that this module is conflict with the \modu{ab.braket} module.
+Don't use them together.
+
+This module contains four commands --- \cs{bra}, \cs{ket}, \cs{braket} and
+\cs{ketbra}. After these commands can be a star (\opt{*}) or a
+square-bracket-delimited size option, the size options can
+take the following values:
+\begin{center}
+\opt{big},\quad\opt{Big},\quad\opt{bigg},\quad\opt{Bigg},\quad
+\opt{biggg}\quad or\quad\opt{Biggg}.
+\end{center}
+Star stands for ``do not size the bra-ket automatically''.
+
+The argument(s) of these four commands are braced with \verb|{| and \verb|}|.
+\cs{bra} and \cs{ket} take one mandatory argument. For example,
+\begin{example}
+\def\0{\frac\phi2}
+\[ \bra {\0} \quad \bra* {\0}
+             \quad \bra[Big] {\0} \]
+\[ \ket {\0} \quad \ket* {\0}
+             \quad \ket[Big] {\0} \]
+\end{example}
+The \cs{braket} command, in default, can take two arguments.
+\begin{example}
+\def\0{\frac\phi2}
+\[ \braket {\0} {\psi}   \quad
+   \braket*{\0} {\psi}   \quad
+   \braket[big] {\0} {\psi} \]
+\end{example}
+If you want \cs{braket} to take one or three arguments, you can write the
+number of arguments in the sqare bracket. If you need to specify the size
+of bra-ket simultaneously, you need to separate the number and the size with
+a comma:
+\begin{example}
+\def\0{\frac\phi2}
+\[ \braket [1] {\0} \quad
+   \braket*[1] {\0} \]
+\[ \braket [3] {\0}{A}{\psi}    \]
+\[ \braket[3,big] {\0}{A}{\psi}
+     \quad
+   \braket[Big,3] {\0}{A}{\psi} \]
+\end{example}
+The \cs{ketbra} command takes two mandatory arguments. It can also take an
+optional argument between the two mandatory arguments. The optional argument
+will be placed between the $\rangle$ and $\langle$:
+\begin{example}
+\def\0{\frac\phi2}
+\[ \ketbra  {\0} {\psi}    \quad
+   \ketbra* {\0} {\psi}       \]
+\[ \ketbra [Bigg] {\0} {\psi} \]
+\[ \ketbra {\0} [_x^y] {\psi} \]
+\end{example}
+\endgroup
+
+\subsection{The \modu{diagmat} module --- simple diagonal matrices}
+This module provides \cs{diagmat} command:
+\begin{center}
+\cs{diagmat}\opt{[empty\:=\:}\meta{empty entry}\opt{]}\marg{diag}
+\end{center}
+where \meta{diag} is the diagonal of the diagonal matrix. The entries should
+be separated by commas. The \opt{empty} option is optional, with default value
+\opt{0}. For example,
+\begin{example}
+\[
+  \diagmat { 1, 2, 3 }
+\]
+\end{example}
+\cs{pdiagmat}, \cs{bdiagmat}, \cs{Bdiagmat}, \cs{vdiagmat} and \cs{Vdiagmat}
+are also available. Prefixes like \opt{p}, \opt{b}, \opt{B} have the same
+meaning as the \opt{p}, \opt{b}, \opt{B} in \pkg{amsmath}'s \opt{pmatrix},
+\opt{bmatrix} and \opt{Bmatrix}. For example,
+\begin{example}
+\[
+  \pdiagmat [ empty = {} ]
+    { a, b, c, d }
+\]
+\end{example}
+This module requires \pkg{amsmath}.
+
+\paragraph{The options of \modu{diagmat} module}
+You can set the default value of \cs{diagmat}'s empty entries in the module
+option like this:
+\begin{Verbatim}
+\usephysicsmodule[empty={\cdot}]{diagmat}
+\end{Verbatim}
+
+\subsection{The \modu{doubleprod} module --- tensors' double product operator}
+Take an example of this module:
+\begin{example}
+$ A \doublecross B \doubledot C $
+\end{example}
+\cs{doublecross} and \cs{doubledot} are regarded as binary operators by \TeX.
+
+\paragraph{The options of \modu{doubleprod} module}
+You can control the scale of ``$\times$'' and ``$\cdot$'' in \cs{doublecross}
+and \cs{doubledot} in module options. For example,
+\begin{Verbatim}
+\usephysicsmodule[crossscale=0.75,dotscale=1.2]{doubleprod}
+\end{Verbatim}
+The default values of \opt{crossscale} and \opt{dotscale} are \opt{0.8} and
+\opt{1}. You can also control the distances between the two ``$\times$''s and
+``$\cdot$''s through the \opt{crossopenup} and \opt{dotopenup} options.
+For example,
+\begin{Verbatim}
+\usephysicsmodule[crossopenup=.05,dotopenup=.25]{doubleprod}
+\end{Verbatim}
+The default values of \opt{crossopenup} and \opt{dotopenup} are \opt{0.02}
+and \opt{0.2}. The value stand for the multiple of current font size.
+Moreover, you can change the symbols in \cs{doublecross} and \cs{doubledot}
+by setting \opt{crosssymbol} and \opt{dotsymbol} in module options.
+
+\subsection{The \modu{xmat} module --- matrices with formatted entries}
+The \modu{xmat} module provides \cs{xmat} command for matrices with formatted
+entries:
+\begin{center}
+\cs{xmat}\oarg{options}\marg{entry}\marg{rows shown}\marg{cols shown}
+\end{center}
+If \meta{rows shown} and \meta{cols shown} are digits, the value of them
+must be less at least 2 than the value of \pkg{amsmath}'s \opt{MaxMatrixCols}
+counter. For example,
+\begin{example}
+\[
+  \xmat{a}{2}{3}
+\]
+\end{example}
+\cs{pxmat}, \cs{bxmat}, \cs{Bxmat}, \cs{vxmat} and \cs{Vxmat} are also
+available. The meaning of \opt{p} and so on is the same as the \opt{p}
+in \opt{pmatrix} of \pkg{amsmath}. For example,
+\begin{example}
+\[
+  \pxmat{M}{3}{3}
+\]
+\end{example}
+If \meta{rows shown} and \meta{cols shown} contain non-digit characters,
+extra dots will be added. For example,
+\begin{example}
+\[
+  \bxmat[showleft=3,showtop=2]
+    {X}{m}{n}
+\]
+\end{example}
+In this example we used the \opt{showleft} and \opt{showtop} options. The
+default value of them is the value of \opt{MaxMatrixCols} minus 2. You can
+also set them in the module option like this:
+\begin{Verbatim}
+\usephysicsmodule[showtop=3,showleft=3]{xmat}
+\end{Verbatim}
+Then every \cs{xmat} with non-digital \meta{rows shown} and \meta{cols shown}
+will have 2 top-most rows and 3 left-most columns shown. This will also
+influence digital \meta{rows shown} and \meta{cols shown} \cs{xmat}s when
+\meta{rows shown} and \meta{cols shown} are larger than the values
+corresponding to \opt{showtop} and \opt{showleft}. For example,
+\begin{example}
+% \usephysicsmodule
+%   [showtop=3,showleft=3]{xmat}
+\[ \pxmat{A}{8}{8} \]
+\end{example}
+However, when \meta{rows shown} and \meta{cols shown} are not \emph{that} large
+but still larger than \meta{showtop} and \meta{showleft}, for example,
+\meta{rows shown}$\:=4$ and \meta{cols shown}$\:=4$ in last example's settings,
+\cs{xmat} will still add the extra dots:
+\begin{example}
+% \usephysicsmodule
+%   [showtop=3,showleft=3]{xmat}
+\[ \pxmat{A}{4}{4} \]
+\end{example}
+In such situations, we need to specify \opt{showtop} and \opt{showleft}
+manually. For example,
+\begin{example}
+% \usephysicsmodule
+%   [showtop=3,showleft=3]{xmat}
+\[ \pxmat[showtop=4,showleft=4]
+     {A}{4}{4}               \]
+\end{example}
+
+The \cs{xmat} command provides the \opt{format} option, which allows users
+to use a new entry format. For example,
+\begin{example}
+\[
+  \xmat [showleft=2,showtop=2,
+    format=\texttt{#1[#2][#3]}]
+    {x}{m}{n}
+\]
+\end{example}
+In the value of \opt{format} key, \verb|#1| stands for the common entry,
+or the first mandotary (\meta{entry}) argument of \cs{xmat}; \verb|#2|
+stands for the row index and \verb|#3| stands for the column index.
+
+This module requires \pkg{amsmath}.
+
+\paragraph{The options of \modu{xmat} module}
+Only \opt{showtop} and \opt{showleft} can be used as module options.
+\opt{format} should only be used in the optional argument of the
+\cs{xmat} command.
+
+\section{The ``legacy'' modules}
+The legacy modules have similar names like \meta{module}\opt{.legacy}. Most of
+them are designed to provide solutions to maintain documents written with the
+legacy \pkg{physics} package. It's not suggest to use them in a new document.
+
+\subsection{The \modu{ab.legacy} module}
+This module provides the following commands:
+\begin{Verbatim}[fontsize=\small]
+\abs   \norm   \eval   \order
+\end{Verbatim}
+They can take a normal argument. Between these commands and their argument
+can be a ``biggg'' command or a star. For example,
+\begin{example}
+\def\0{\frac12}
+\[ \abs{\0}             \quad
+   \norm\Big{\0}        \quad
+   \order*{\0}             \]
+\end{example}
+\begin{example}
+\def\0{\frac12x}
+\[ \eval{\0}_a^b        \quad
+   \eval[(]{\0}_a^b     \quad
+   \eval[[]\big{\0}_a^b    \]
+\end{example}
+You can set the ``order'' symbol in this module through
+the \opt{order} option like this:
+\begin{Verbatim}
+\usephysicsmodule[order=O]{ab.legacy}
+\end{Verbatim}
+For further information of this module, see \S\ref*{lega-subsec:ab-and-legacy}
+of \hyperref{./physics2-legacy.pdf}{}{}{physics2-legacy}.
+
+\subsection{The \modu{bm-um.legacy} module}
+If you are maintaining a document with plenty of ``\cs{bm}''s or
+``\cs{boldsymbol}''s in it but want to use \pkg{unicode-math} package
+simultaneously, you could take a look at this module.
+
+The \cs{bm} command from \pkg{bm} package uses \cs{mathversion} to support
+its function, but there are few OpenType math fonts who released with a bold
+version. The \modu{bm-um.legacy} module provides a \cs{bm} command too, but
+this \cs{bm} can only take \emph{one} math character or a series of math
+characters sharing the same category code as its argument.
+If the argument was a number, \cs{bm} would switch to the bold upright glyph
+corresponding to it; else \cs{bm} would switch to the bold italic glyph
+corresponding to it if there exists one. For example,
+\begin{example}
+$\bm{0}\bm{A}\bm{z}
+ \bm{\alpha}\bm{\Omega}$
+\end{example}
+
+\subsection{The \modu{nabla.legacy} module}
+This module provides some commands related to nabla ($\nabla$). Notice that
+this module requires the \pkg{fixdif} package with file date 2023/01/31 at
+minimum.
+
+This module defines \cs{grad} and \cs{curl} and redefines \cs{div}. For example,
+\begin{example}
+\[ \grad V      \]
+\[ \div (x,y,z) \]
+\[ \curl(x,y,z) \]
+\end{example}
+The ``$\divsymbol$'' symbol was redefined as \cs{divsymbol}.
+
+\subsection{The \modu{op.legacy} module}
+This module provides a series of commands for log-like operators. They are
+\begin{Verbatim}
+\asin   \acos   \atan
+\acsc   \asec   \acot
+\Tr     \tr     \rank
+\erf    \Res    \res
+\PV     \pv
+\Re     \Im
+\end{Verbatim}
+where \cs{Re} and \cs{Im} are redefined. The first four lines of commands
+yield what they look like in math mode. For example,
+\begin{example}
+$\asin x$ \quad $\rank A$
+\end{example}
+\cs{PV} yields ``$\PV$'' as an ordinary symbol and \cs{pv} yields ``$\pv$''.
+For example,
+\begin{example}
+$\PV f(z)$ \quad $\pv f(z)$
+\end{example}
+\cs{Re} and \cs{Im} are redefined as ``$\Re$'' and ``$\Im$''. $\Resymbol$
+and $\Imsymbol$ are redefined as \cs{Resymbol} and \cs{Imsymbol}, in default.
+
+This module \emph{does not} require \pkg{amsmath}.
+
+\paragraph{The options of \modu{op.legacy} module}
+\opt{ReIm}, a bool key with dafault true, determines whether to redefine
+\cs{Re} and \cs{Im}. If you want to reserved the definition of \cs{Re} and
+\cs{Im}, you can write like this:
+\begin{Verbatim}
+\usephysicsmodule[ReIm=false]{op.legacy}
+\end{Verbatim}
+
+\subsection{The \modu{qtext.legacy} module}
+This module was written just to offer a method to maintain documents written
+with the legacy \pkg{physics} package. See \S\ref*{lega-subsec:qtext} of
+\hyperref{./physics2-legacy.pdf}{}{}{physics2-legacy} for more information.
+
+\end{document}
