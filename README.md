@@ -5,6 +5,13 @@ more simply. `physics2` is a modularized package, each module provides its
 own function while `physics2.sty` itself only provides very few functions.
 Therefore you can load modules separately after loading `physics2`.
 
+Modules of `physics2` provide the following supports:
+
+- Automatic braces;
+- Dirac bra-ket notation;
+- Easy way to typeset diagonal matrices and matrices with similar entries;
+- Double cross and double dot (binary) operators for tensors;
+
 **Welcome to pull requests
 [here](https://github.com/AlphaZTX/physics2/pulls).**
 
