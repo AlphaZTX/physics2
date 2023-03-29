@@ -57,7 +57,7 @@
 \phy@AB@gen{mb}\vert{mr\vert\vert}{\mathopen#1\vert#2\mathclose#1\vert}
 \phy@AB@gen{mb}\Vert{mr\Vert\Vert}{\mathopen#1\Vert#2\mathclose#1\Vert}
 \phy@AB@gen{mb}\langle{mr\langle\rangle}{\mathopen#1\langle#2\mathclose#1\rangle}
-% \phy@del, the automatic
+% \phy@del, the automatic braces. #1: opensymbol; #2: close symbol; #3
 \def\phy@del#1#2#3{\phy@abopen#1#3\phy@abclose#2}
 \expandafter\def\csname phy@del\string*\endcsname#1#2#3{\mathopen#1#3\mathclose#2}
 \expandafter\def\csname phy@del\string\big\endcsname#1#2#3{\bigl#1#3\bigr#2}
@@ -66,8 +66,6 @@
 \expandafter\def\csname phy@del\string\Bigg\endcsname#1#2#3{\Biggl#1#3\Biggr#2}
 \expandafter\def\csname phy@del\string\biggg\endcsname#1#2#3{\bigggl#1#3\bigggr#2}
 \expandafter\def\csname phy@del\string\Biggg\endcsname#1#2#3{\Bigggl#1#3\Bigggr#2}
-% \phy@AB@gb(a|b|..): gobble (a|b|..) arguments in the middle.
-\def\phy@AB@gbc#1#2#3#4#5{#1{#5}}
 % \phy@d@lx (phy_del_x): the internal defination of \ab.
 % #1: `mb', according to \phy@AB@gen; #2: `ab'; #3: star or big or left delimiter.
 \def\phy@d@lx#1#2#3{%
@@ -88,18 +86,24 @@
 % Generate the `mb' and `ab' arguments.
 \phy@d@l@genxm{mb}
 \phy@d@l@genxa{ab}
-% \phy@d@ly (phy_del_y): the internal defination of \(p|b|..)ab.
-\def\phy@d@ly#1#2#3{\ifcsname phy@del\string#3\endcsname
-    \phy@AB@gbc{\csname phy@del\string#3\endcsname#1#2}%
-  \else{\phy@del#1#2{#3}}\fi}
 % \ab(<subformula>), after \ab can be a star or \biggg.
 \DeclareRobustCommand\ab{\phy@d@lx{mb}{ab}}
-% \(p|b|..)ab{<subformula>}, after \(p|..)ab can be a star or \biggg.
-\DeclareRobustCommand\pab{\phy@d@ly()}
-\DeclareRobustCommand\bab{\phy@d@ly[]}
-\DeclareRobustCommand\Bab{\phy@d@ly\lbrace\rbrace}
-\DeclareRobustCommand\vab{\phy@d@ly\vert\vert}
-\DeclareRobustCommand\aab{\phy@d@ly\langle\rangle}
-\DeclareRobustCommand\Vab{\phy@d@ly\Vert\Vert}
+% \phy@d@l@geny: define commands like \pab. #1: cs; #2: open symbol; #3: close symbol.
+\def\phy@d@l@geny#1#2#3{%
+  \DeclareDocumentCommand#1{som}{% ##1: star; ##2: bigg (csname); ##3: subformula.
+    \IfBooleanTF{##1}%
+      {#2##3#3}%
+      {\IfValueTF{##2}%
+        {\csname##2l\endcsname#2##3\csname##2r\endcsname#3}%
+        {\phy@abopen#2##3\phy@abclose#3}%
+      }%
+  }%
+}
+\phy@d@l@geny\pab()
+\phy@d@l@geny\bab[]
+\phy@d@l@geny\Bab\lbrace\rbrace
+\phy@d@l@geny\vab\vert\vert
+\phy@d@l@geny\aab\langle\rangle
+\phy@d@l@geny\Vab\Vert\Vert
 \endinput
 %% End of file `phy-ab.sty'.

@@ -39,11 +39,11 @@
 % \braket<foo|bar>
 \begingroup
 \catcode`\|=\active
-\gdef\phy@@mb@bk#1#2{\begingroup%
+\gdef\phy@@mb@bk#1#2{\begingroup
   \mathcode`\|="8000\def|{\egroup#1\vert\bgroup}%
   \def\<{\mathrel{<}}\def\>{\mathrel{>}}%
   \mathopen#1\langle\bgroup#2\egroup\mathclose#1\rangle\endgroup}
-\gdef\phy@@ab@bk#1{\begingroup%
+\gdef\phy@@ab@bk#1{\begingroup
   \mathcode`\|="8000\def|{\egroup\phy@abb@bkv\bgroup}%
   \def\<{\mathrel{<}}\def\>{\mathrel{>}}%
   \phy@abopen\langle\bgroup#1\egroup\phy@abclose\rangle\endgroup}
@@ -58,18 +58,18 @@
 \begingroup
 \catcode`\<=\active
 \catcode`\>=\active
-\gdef\phy@@mb@kb#1#2{\begingroup%
+\gdef\phy@@mb@kb#1#2{\begingroup
   \mathcode`\<="8000 \mathcode`\>="8000%
   \def<{#1\langle}\def>{#1\rangle}%
   \def\<{\phy@abb@l}\def\>{\phy@abb@r}%
   \mathopen#1\vert#2\mathclose#1\vert\endgroup}
 \endgroup
-\gdef\phy@@ab@kb#1>#2<#3\phy@@end{\begingroup%
+\gdef\phy@@ab@kb#1>#2<#3\phy@@end{\begingroup
   \def\<{\phy@abb@l}\def\>{\phy@abb@r}%
   \phy@abopen\vert\mathopen{\phy@mathvphantom{#3}}#1\phy@abclose\rangle#2%
-  \phy@abopen\langle#3\mathclose{\phy@mathvphantom{#1}}\phy@abclose\vert%
+  \phy@abopen\langle#3\mathclose{\phy@mathvphantom{#1}}\phy@abclose\vert
 \endgroup}
-\AtBeginDocument{\ifcsname symbf\endcsname%
+\AtBeginDocument{\ifcsname symbf\endcsname
   \def\phy@abb@l{\Umathchar 3 \symoperators "003C }%
   \def\phy@abb@r{\Umathchar 3 \symoperators "003E }%
 \fi}

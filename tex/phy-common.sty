@@ -17,9 +17,9 @@
 %% The Current Maintainer of this work is Zhang Tingxuan.
 %% 
 \ProvidesFile{phy-common.sty}
-  [2023/01/25 `common' module of `physics2.sty']
-% Check if `unicode-math' loaded and (re)define the vert symbols.
-% The `\relax'es here are for \ifx to compare.
+  [2023/03/29 `common' module of `physics2.sty']
+% Check if unicode-math loaded and (re)define the vert symbols.
+% The \relax's here are for \ifx to compare.
 \AtBeginDocument{\ifcsname symrm\endcsname
   \protected\def\|{\Udelimiter 0 \symoperators "2016 }%
   \protected\def\vert{\Udelimiter 0 \symoperators "007C\relax}%
