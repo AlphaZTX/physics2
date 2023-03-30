@@ -172,11 +172,12 @@ with paired delimiters. For example,
 \[ \pab{\0} \bab{\0} \Bab{\0} \]
 \[ \aab{\0} \vab{\0} \Vab{\0} \]
 \end{example}
-After \texttt{\textbackslash}$X$\texttt{ab} can be a ``biggg'' command or a
-star. For example,
+These \texttt{\textbackslash$X$ab} commands can take an optional star and
+an optional \oarg{biggg} argument. Star stands for using the default sizes.
+For example,
 \begin{example}
-\def\0{\frac12}
-\[ \pab\Big{\0} \quad \bab*{\0} \]
+\def\0{n+\frac12}
+\[ \pab[Big]{\0} \quad \bab*{\0} \]
 \end{example}
 
 \paragraph{The options of \modu{ab} module}
@@ -471,21 +472,22 @@ legacy \pkg{physics} package. It's not suggest to use them in a new document.
 \subsection{The \modu{ab.legacy} module}
 This module provides the following commands:
 \begin{Verbatim}[fontsize=\small]
-\abs   \norm   \eval   \order
+\abs   \norm   \eval   (\peval   \beval)   \order
 \end{Verbatim}
-They can take a normal argument. Between these commands and their argument
-can be a ``biggg'' command or a star. For example,
+They shares the same syntax as \meta{cmd}\opt{*}\oarg{biggg}\marg{subformula}.
+Star and \meta{biggg} are optional. Star stands for ``use the default size''.
+For example,
 \begin{example}
-\def\0{\frac12}
+\def\0{1+\frac12}
 \[ \abs{\0}             \quad
-   \norm\Big{\0}        \quad
+   \norm[Big]{\0}       \quad
    \order*{\0}             \]
 \end{example}
 \begin{example}
-\def\0{\frac12x}
-\[ \eval{\0}_a^b        \quad
-   \eval[(]{\0}_a^b     \quad
-   \eval[[]\big{\0}_a^b    \]
+\def\0{1+\frac12x}
+\[ \eval{\0}_a^b       \quad
+   \peval*{\0}_a^b     \quad
+   \beval[big]{\0}_a^b    \]
 \end{example}
 You can set the ``order'' symbol in this module through
 the \opt{order} option like this:
