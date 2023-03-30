@@ -17,7 +17,7 @@
 %% The Current Maintainer of this work is Zhang Tingxuan.
 %% 
 \ProvidesFile{phy-braket.sty}
-  [2023/01/25 `braket' module of `physics2.sty']
+  [2023/03/29 `braket' module of `physics2.sty']
 % Here we need to get the definition of \phy@abopen and \phy@abclose.
 \phy@requiremodule{ab}
 \ifdefined\phy@abb@bkv
@@ -74,23 +74,23 @@
   \csname\@phy@bk@m\endcsname\vert{#2}%
   \csname\@phy@bk@m\endcsname\vert{#3}%
   \csname\@phy@bk@r\endcsname\rangle}
-% Parse the optional argument of \braket.
-\def\@phy@bk@do@pt#1,{\ifx#1\relax\@empty\else%
+% Parse the optional argument of \braket. This will add 3 entries to hash table.
+\def\@phy@bk@do@pt#1,{\ifx#1\relax\@empty\else
   \edef\reserved@a{\zap@space#1 \@empty}%
-  \ifx\reserved@a\@empty\else%
-    \ifcsname phy@del\expandafter\string\csname\reserved@a\endcsname\endcsname%
+  \ifx\reserved@a\@empty\else
+    \ifcsname phy@del\expandafter\string\csname\reserved@a\endcsname\endcsname
       \xdef\@phy@bk@l{\reserved@a l}%
       \xdef\@phy@bk@m{\reserved@a}% but not m (m stands for \mathrel)
       \xdef\@phy@bk@r{\reserved@a r}%
-    \else%
+    \else
       \ifnum\reserved@a>3%
         \PackageError{physics2}{\string\braket\space can only take 3
           mandatory arguments at most}{Check if you had written a number
           more than 3 in the [optional] argument.}%
-      \fi%
+      \fi
       \xdef\@phy@bk@argnum{\romannumeral\reserved@a}%
-    \fi%
-  \fi%
+    \fi
+  \fi
 \expandafter\@phy@bk@do@pt\fi}
 \def\phy@bk@doopt#1{\@phy@bk@do@pt#1,\relax,}
 % \ketbra
@@ -100,9 +100,9 @@
     {\IfValueTF{#2}%
       {\csname#2l\endcsname\vert#3\csname#2r\endcsname\rangle#4%
         \csname#2l\endcsname\langle#5\csname#2r\endcsname\vert}%
-      {\begingroup%
+      {\begingroup
         \phy@abopen\vert\mathopen{\phy@mathvphantom{#5}}#3\phy@abclose\rangle#4%
-        \phy@abopen\langle#5\mathclose{\phy@mathvphantom{#3}}\phy@abclose\vert%
+        \phy@abopen\langle#5\mathclose{\phy@mathvphantom{#3}}\phy@abclose\vert
       \endgroup}%
     }%
 }

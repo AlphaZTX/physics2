@@ -17,7 +17,7 @@
 %% The Current Maintainer of this work is Zhang Tingxuan.
 %% 
 \ProvidesFile{phy-ab.legacy.sty}
-  [2023/01/25 `ab.legacy' module of `physics2.sty']
+  [2023/03/29 `ab.legacy' module of `physics2.sty']
 \phy@requiremodule{ab}
 % The `tight' bool option, true or false.
 \phy@define@key{ab.legacy}{order}[\mathcal{O}]{\def\phy@ab@ordersym{#1}}
@@ -25,9 +25,19 @@
 \phy@setkeys{ab.legacy}{order}
 \phy@processkeyopt{ab.legacy}
 % The braced operators.
-\DeclareRobustCommand\abs{\phy@d@ly\vert\vert}
-\DeclareRobustCommand\norm{\phy@d@ly\Vert\Vert}
-\DeclareRobustCommand\order{\phy@ab@ordersym\phy@d@ly()}
-\DeclareRobustCommand\eval[1][.]{\phy@d@ly#1|}
+\phy@d@l@geny\abs\vert\vert
+\phy@d@l@geny\norm\Vert\Vert
+\DeclareDocumentCommand\order{som}{%
+  \phy@ab@ordersym
+  \IfBooleanTF{#1}%
+    {(#3)}%
+    {\IfValueTF{#2}%
+      {\csname#2l\endcsname(#3\csname#2r\endcsname)}%
+      {\phy@abopen(#3\phy@abclose)}%
+    }%
+}
+\phy@d@l@geny\eval.\vert
+\phy@d@l@geny\peval(\vert
+\phy@d@l@geny\beval[\vert
 \endinput
 %% End of file `phy-ab.legacy.sty'.

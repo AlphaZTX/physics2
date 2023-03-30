@@ -8,10 +8,10 @@
 \documentclass[11pt,letterpaper]{article}
 \usepackage{amsmath}
 \usepackage{unicode-math}
-\setmainfont{Latin Modern Roman}
-\setsansfont{Latin Modern Sans}
-\setmonofont{Latin Modern Mono}
-\setmathfont{Latin Modern Math}
+\setmainfont{Libertinus Serif}
+\setsansfont{Libertinus Sans}
+\setmonofont{Noto Sans Mono}[Scale=MatchLowercase]
+\setmathfont{Libertinus Math}
 \usepackage{physics2}
 \usephysicsmodule{ab}
 \usephysicsmodule{ab.legacy,nabla.legacy}
@@ -177,11 +177,11 @@ the \modu{ab} module of \pkg{physics2}, these commands have changed to
 \[ \aab{\0} \quad \vab{\0}
             \quad \Vab{\0} \]
 \end{example}
-Also, after \texttt{\textbackslash}$X$\texttt{ab} can be a ``biggg'' command
-or a star. For example,
+\texttt{\textbackslash$X$ab} can take an optional star and an optional \oarg{biggg}
+argument. For example,
 \begin{example}
 \def\0{\frac12}
-\[ \pab\Big{\0} \quad \bab*{\0} \]
+\[ \pab[Big]{\0} \quad \bab*{\0} \]
 \end{example}
 
 \pkg{physics} also provides the following commands:
@@ -197,18 +197,19 @@ the first four commands can be used through the \modu{ab.legacy} module of
 For example,
 \begin{example}
 \def\0{\frac12}
-\[ \abs{\0} \quad \abs\Big{\0}
+\[ \abs{\0} \quad \abs[big]{\0}
             \quad \abs*{\0}    \]
 \end{example}
 Users of the legacy \pkg{physics} package should notice that the syntax of
-\cs{eval} has been changed to \cs{eval}\oarg{left delimiter}\marg{subformula}.
-The \modu{ab.legacy} module abandoned the \verb"\eval(foo|"-like syntax. The
-\meta{left delimiter} argument is optional. For example,
+\cs{eval} has been changed. The \modu{ab.legacy} module abandoned the 
+\verb"\eval(foo|"-like syntax. The new \cs{eval}'s syntax is just like other
+commands in this module. There are also two variants of \cs{eval} --- \cs{peval}
+and \cs{beval}. For example,
 \begin{example}
-\def\0{\frac12x}
-\[ \eval{\0}_a^b       \quad
-   \eval[(]{\0}_a^b    \quad
-   \eval[[]\big{\0}_a^b   \]
+\def\0{1+\frac12x}
+\[ \eval{\0}_a^b      \quad
+   \peval*{\0}_a^b    \quad
+   \beval[big]{\0}_a^b   \]
 \end{example}
 The \cs{comm}, \cs{acomm} and \cs{pb} (Poisson bracket) are not supported.
 But you can write like \verb|\ab[foo,baz]| or \verb|\bab{foo,baz}| instead.
