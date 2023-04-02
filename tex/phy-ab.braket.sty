@@ -17,7 +17,7 @@
 %% The Current Maintainer of this work is Zhang Tingxuan.
 %% 
 \ProvidesFile{phy-ab.braket.sty}
-  [2023/01/25 `ab.braket' module of `physics2.sty']
+  [2023/04/02 `ab.braket' module of `physics2.sty']
 % This module requires \phy@abopen and \phy@abclose from `ab'.
 \phy@requiremodule{ab}
 \ifdefined\phy@bra@@
@@ -25,13 +25,13 @@
     modules together.\MessageBreak Only `ab.braket' module works now.}
 \fi
 % \bra<foo|
-\phy@AB@gen{br.m}<{mr<|}{\mathopen#1\langle#2\mathclose#1\vert}
+\phy@AB@gen{br.m}<{mr<|}{\mathopen#1\langle#2\mathclose#1\vert\endgroup}
 \phy@AB@gen{br.a}<{r<|}{\phy@abopen\langle#1\phy@abclose\vert}
 \phy@d@l@genxm{br.m}
 \phy@d@l@genxa{br.a}
 \DeclareRobustCommand\bra{\phy@d@lx{br.m}{br.a}}
 % \ket|foo>
-\phy@AB@gen{kt.m}|{mr|>}{\mathopen#1\vert#2\mathclose#1\rangle}
+\phy@AB@gen{kt.m}|{mr|>}{\mathopen#1\vert#2\mathclose#1\rangle\endgroup}
 \phy@AB@gen{kt.a}|{r|>}{\phy@abopen\vert#1\phy@abclose\rangle}
 \phy@d@l@genxm{kt.m}
 \phy@d@l@genxa{kt.a}
@@ -49,7 +49,7 @@
   \phy@abopen\langle\bgroup#1\egroup\phy@abclose\rangle\endgroup}
 \endgroup
 \def\phy@abb@bkv{\middle\vert}
-\phy@AB@gen{bk.m}<{mr<>}{\phy@@mb@bk#1{#2}}
+\phy@AB@gen{bk.m}<{mr<>}{\phy@@mb@bk#1{#2}\endgroup}
 \phy@AB@gen{bk.a}<{r<>}{\phy@@ab@bk{#1}}
 \phy@d@l@genxm{bk.m}
 \phy@d@l@genxa{bk.a}
@@ -75,7 +75,7 @@
 \fi}
 \def\phy@abb@l{\mathchar"313C }
 \def\phy@abb@r{\mathchar"313E }
-\phy@AB@gen{kb.m}|{mr||}{\phy@@mb@kb#1{#2}}
+\phy@AB@gen{kb.m}|{mr||}{\phy@@mb@kb#1{#2}\endgroup}
 \phy@AB@gen{kb.a}|{r||}{\phy@@ab@kb#1\phy@@end}
 \phy@d@l@genxm{kb.m}
 \phy@d@l@genxa{kb.a}
