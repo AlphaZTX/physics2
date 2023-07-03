@@ -35,7 +35,7 @@ manual for:
 \item Users who failed to use \pkg*{unicode-math} with \pkg{physics}.
 \end{itemize}
 It seems no reason for any other user to read \emph{this} document instead of
-the \hyperref{./physics2.pdf}{}{}{package documentation} of \pkg{physics2},
+the \href{./physics2.pdf}{package documentation} of \pkg{physics2},
 because this document cannot describe the package in detail.
 
 In this document, the modules of \pkg{physics2} will be introduced in
@@ -85,9 +85,9 @@ command we mentioned in the first paragraph.
 
 Moreover, the code of \texttt{physics.sty} ``abuses'' the \texttt{g}-type
 arguments of \pkg*{xparse} package. Therefore the syntax of \pkg{physics} package
-looks kind of weird. See \hyperref{https://tex.stackexchange.com/questions/%
+looks kind of weird. See \href{https://tex.stackexchange.com/questions/%
 470819/macros-dv-and-pdv-eat-the-subsequent-parenthesis-argument/470842#470842}%
-{}{}{here} for more.
+{here} for more.
 
 \subsection{Loading \pkg{physics2}}
 The \pkg{physics2} package includes different modules, among which every module
@@ -241,7 +241,7 @@ The \cs{boldsymbol} command requires the \pkg*{amsmath} or \pkg*{bm} package.
 If you prefer to use \pkg{bm}, you can also use the \cs{bm} command.
 What's more, if you tried the commands above, you might find that,
 the result of \cs{va} above is different from that of \pkg{physics}.
-This is beacuse, if you choose to present a vector in bold, it's alomost
+This is because, if you choose to present a vector in bold, there's almost
 no need to put a \cs{vec} ($\vec{\mskip9mu}$) sign above it.
 
 However, the method above may not work well with \pkg*{unicode-math}
@@ -274,7 +274,7 @@ after these commands can be delimited with \verb|()|, \verb|[]| and \verb|\{\}|.
 The \modu{nabla.legacy} requires the \pkg*{fixdif} package at least
 version 2.0 (file date: 2023/01/31 or after 2023/01/31).
 
-By the way, if you are used to write \cs{bm} for a vector but interested in
+By the way, if you are used to writing \cs{bm} for a vector but interested in
 \pkg{unicode-math}, the \modu{bm-um.legacy} module would be a passable
 alternative to \pkg{bm} package. Notice that the \cs{bm} command from the
 \modu{bm-um.legacy} module can only take \emph{one} letter (or \emph{one} digit)
@@ -294,7 +294,7 @@ log-like functions.
 
 The \pkg{physics} package provides a bundle of commands for log-like functions
 that have not been defined in the \LaTeXe\ kernel. Those log-like functions
-can be used with the \modu{op.legacy} module; this module do not support
+can be used with the \modu{op.legacy} module; this module does not support
 the syntax of \pkg{physics} either. For example:
 \begin{example}
 % \usephysicsmodule{op.legacy}
@@ -303,7 +303,7 @@ the syntax of \pkg{physics} either. For example:
 The \cs{Re} and \cs{Im} commands are redefined as operators ``$\Re$'' and
 ``$\Im$'', while $\Resymbol$ and $\Imsymbol$ are reserved as \cs{Resymbol} and
 \cs{Imsymbol}. $\Resymbol$ and $\Imsymbol$ are ordinary symbols but $\Re$ and
-$\Im$ are opetators.
+$\Im$ are operators.
 
 \subsection{Quick quad text}\label{subsec:qtext}
 The \modu{qtext.legacy} module provides the \cs{q}\meta{foo} commands
@@ -317,9 +317,9 @@ for \cs{quad}-wrapped texts. These commands have the same syntax as
 \[ F \qif G \qthen H \]
 \end{example}
 All the commands described in \S2.4 of
-\hyperref{http://mirrors.ctan.org/macros/latex/contrib/physics/physics.pdf}{}{}%
+\href{http://mirrors.ctan.org/macros/latex/contrib/physics/physics.pdf}%
 {\textsf{physics} documentation} are supported when using \modu{qtext.legacy}
-module, but I don't recommend to use this module unless you are maintaining a
+module, but I don't recommend using this module unless you are maintaining a
 document written with \pkg{physics}'s \cs{q}\meta{foo} commands.
 
 \subsection{Derivatives}
@@ -334,10 +334,10 @@ together. For example,
 Math ($\d x$) v.s.\ Text (\d x)
 \end{example}
 Here are the documentations of
-\hyperref{http://mirrors.ctan.org/macros/latex/contrib/fixdif/fixdif.pdf}%
-{}{}{\textsf{fixdif}} and
-\hyperref{http://mirrors.ctan.org/macros/latex/contrib/derivative/derivative%
-.pdf}{}{}{\textsf{derivative}}.
+\href{http://mirrors.ctan.org/macros/latex/contrib/fixdif/fixdif.pdf}%
+{\textsf{fixdif}} and
+\href{http://mirrors.ctan.org/macros/latex/contrib/derivative/derivative%
+.pdf}{\textsf{derivative}}.
 
 \pkg{fixdif}'s commands behave better in superscripts and subscripts.
 
@@ -401,7 +401,7 @@ extensible vertical bar. For example,
 \end{example}
 The argument of \cs{ketbra} should be delimited with \opt{|} and \opt{|}.
 In the argument, \opt{>} and \opt{<} will be regarded as extensible $\rangle$
-and $\langle$. that is,
+and $\langle$. That is,
 \begin{center}
 \cs{ketbra} \opt{|} \meta{subformula$_1$} \opt{>} \meta{optional}
   \opt{<} \meta{subformula$_2$} \opt{|}
@@ -456,7 +456,7 @@ The \cs{braket} command, in default, can take two arguments.
    \braket[big] {\0} {\psi} \]
 \end{example}
 If you want \cs{braket} to take one or three arguments, you can write the
-number of arguments in the sqare bracket. If you need to specify the size
+number of arguments in the square bracket. If you need to specify the size
 of bra-ket simultaneously, you need to separate the number and the size with
 a comma:
 \begin{example}

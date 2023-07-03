@@ -31,7 +31,7 @@ modularized package, each module provides its own function.
 
 This document describes the \pkg{physics2} package in more detail.
 But if you are a user of the legacy \pkg{physics} package, you can click
-\hyperref{./physics2-legacy.pdf}{}{}{here} to see the documention for
+\href{./physics2-legacy.pdf}{here} to see the documentation for
 \pkg{physics} users before you start. If you never used \pkg{physics} package
 before, just read \emph{this} documentation.
 \end{abstract}
@@ -75,7 +75,7 @@ like this:
 \cs{usephysicsmodule}\marg{module}
 \end{center}
 The usage of \cs{usephysicsmodule} is similar to \cs{usepackage}, so you can
-load more than one modules in one line. For example,
+load several modules in one line. For example,
 \begin{Verbatim}
 \usephysicsmodule{ab,ab.braket}
 \end{Verbatim}
@@ -237,7 +237,7 @@ extensible vertical bar. For example,
 \end{example}
 The argument of \cs{ketbra} should be delimited with \opt{|} and \opt{|}.
 In the argument, \opt{>} and \opt{<} will be regarded as extensible $\rangle$
-and $\langle$. that is,
+and $\langle$. That is,
 \begin{center}
 \cs{ketbra} \opt{|} \meta{subformula$_1$} \opt{>} \meta{optional}
   \opt{<} \meta{subformula$_2$} \opt{|}
@@ -298,7 +298,7 @@ The \cs{braket} command, in default, can take two arguments.
    \braket[big] {\0} {\psi} \]
 \end{example}
 If you want \cs{braket} to take one or three arguments, you can write the
-number of arguments in the sqare bracket. If you need to specify the size
+number of arguments in the square bracket. If you need to specify the size
 of bra-ket simultaneously, you need to separate the number and the size with
 a comma:
 \begin{example}
@@ -454,7 +454,7 @@ to use a new entry format. For example,
 \]
 \end{example}
 In the value of \opt{format} key, \verb|#1| stands for the common entry,
-or the first mandotary \meta{entry} argument of \cs{xmat}; \verb|#2|
+or the first mandatory \meta{entry} argument of \cs{xmat}; \verb|#2|
 stands for the row index and \verb|#3| stands for the column index.
 
 This module requires \pkg{amsmath}.
@@ -467,14 +467,14 @@ Only \opt{showtop} and \opt{showleft} can be used as module options.
 \section{The ``legacy'' modules}
 The legacy modules have similar names like \meta{module}\opt{.legacy}. Most of
 them are designed to provide solutions to maintain documents written with the
-legacy \pkg{physics} package. It's not suggest to use them in a new document.
+legacy \pkg{physics} package. It's not suggested to use them in a new document.
 
 \subsection{The \modu{ab.legacy} module}
 This module provides the following commands:
 \begin{Verbatim}[fontsize=\small]
 \abs   \norm   \eval   (\peval   \beval)   \order
 \end{Verbatim}
-They shares the same syntax as \meta{cmd}\opt{*}\oarg{biggg}\marg{subformula}.
+They share the same syntax as \meta{cmd}\opt{*}\oarg{biggg}\marg{subformula}.
 Star and \meta{biggg} are optional. Star stands for ``use the default size''.
 For example,
 \begin{example}
@@ -564,6 +564,6 @@ redefine \cs{Re} and \cs{Im}. If you want to reserve the definition of
 \subsection{The \modu{qtext.legacy} module}
 This module was written just to offer a method to maintain documents written
 with the legacy \pkg{physics} package. See \S\ref*{lega-subsec:qtext} of
-\hyperref{./physics2-legacy.pdf}{}{}{physics2-legacy} for more information.
+\href{./physics2-legacy.pdf}{physics2-legacy} for more information.
 
 \end{document}
