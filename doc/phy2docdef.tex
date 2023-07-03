@@ -22,8 +22,8 @@
 \hypersetup{colorlinks,urlcolor=magenta,linkcolor=black,filecolor=blue,
   pdfstartview=FitH,pdfview=FitH,pdfcreator=XeTeX output}
 \def\s@pkg#1{\texorpdfstring{\textcolor{pkgcolor}{\textsf{#1}}}{“#1”}}
-\def\@pkg#1{\texorpdfstring{\hyperref{https://www.ctan.org/pkg/#1}%
-  {}{}{\textcolor{pkgcolor}{\textsf{#1}}}}{“#1”}}
+\def\@pkg#1{\texorpdfstring{\href{https://www.ctan.org/pkg/#1}%
+  {\textcolor{pkgcolor}{\textsf{#1}}}}{“#1”}}
 \DeclareRobustCommand\pkg{\@ifstar\@pkg\s@pkg}
 \def\modu#1{\texorpdfstring{\textcolor{moducolor}{\textsf{#1}}}{“#1”}}
 \def\opt#1{\texorpdfstring{\texttt{#1}}{“#1”}}
