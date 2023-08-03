@@ -17,7 +17,7 @@
 %% The Current Maintainer of this work is Zhang Tingxuan.
 %% 
 \ProvidesFile{phy-common.sty}
-  [2023/03/29 `common' module of `physics2.sty']
+  [2023/08/03 `common' module of `physics2.sty']
 % Check if unicode-math loaded and (re)define the vert symbols.
 % The \relax's here are for \ifx to compare.
 % unicode-math sets these symbols in \fam1, \symoperators is set 1 in 2e kernel.
@@ -33,11 +33,20 @@
 % \left and \right behave as an open plus a close atom.
 \DeclareRobustCommand\delopen{\mathopen{}\mathclose\bgroup\left}
 \DeclareRobustCommand\delclose{\aftergroup\egroup\right}
-% Extension to the 2e kernel biggggg commands.
-\DeclareRobustCommand\biggg[1]{\leavevmode@ifvmode
-  {\hbox{$\left#1\vbox to20.5\p@{}\right.\n@space$}}}
-\DeclareRobustCommand\Biggg[1]{\leavevmode@ifvmode
-  {\hbox{$\left#1\vbox to23.5\p@{}\right.\n@space$}}}
+% Extension to 2e kernel's or amsmath's biggggg commands.
+\ifdefined\bBigg@
+  \DeclareRobustCommand\biggg{\bBigg@{3}}
+  \DeclareRobustCommand\Biggg{\bBigg@{3.5}}
+\else
+  \DeclareRobustCommand\biggg[1]{\leavevmode@ifvmode
+    {\hbox{$\left#1\vbox to20.5\p@{}\right.\n@space$}}}
+  \DeclareRobustCommand\Biggg[1]{\leavevmode@ifvmode
+    {\hbox{$\left#1\vbox to23.5\p@{}\right.\n@space$}}}
+  \AtBeginDocument{\ifdefined\bBigg@
+    \DeclareRobustCommand\biggg{\bBigg@{3}}%
+    \DeclareRobustCommand\Biggg{\bBigg@{3.5}}%
+  \fi}
+\fi
 \DeclareRobustCommand\bigggl{\mathopen\biggg}
 \DeclareRobustCommand\bigggm{\mathrel\biggg}
 \DeclareRobustCommand\bigggr{\mathclose\biggg}
