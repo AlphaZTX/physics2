@@ -17,7 +17,7 @@
 %% The Current Maintainer of this work is Zhang Tingxuan.
 %% 
 \ProvidesFile{phy-braket.sty}
-  [2023/03/29 `braket' module of `physics2.sty']
+  [2023/08/04 `braket' module of `physics2.sty']
 % Here we need to get the definition of \phy@abopen and \phy@abclose.
 \phy@requiremodule{ab}
 \ifdefined\phy@abb@bkv
@@ -91,7 +91,7 @@
       \xdef\@phy@bk@argnum{\romannumeral\reserved@a}%
     \fi
   \fi
-\expandafter\@phy@bk@do@pt\fi}
+  \expandafter\@phy@bk@do@pt\fi}
 \def\phy@bk@doopt#1{\@phy@bk@do@pt#1,\relax,}
 % \ketbra
 \DeclareDocumentCommand\ketbra{ s o m O{} m }{%

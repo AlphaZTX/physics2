@@ -1,0 +1,8 @@
+.md text eol=lf
+.tex text eol=lf
+.sty text eol=lf
+.cls text eol=lf
+.ltx text eol=lf
+.dtx text eol=lf
+.ini text eol=lf
+.pdf binary
