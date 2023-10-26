@@ -9,6 +9,7 @@
 
 .DS_Store
 *.sty
+*.tar.gz
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
