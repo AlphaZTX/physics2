@@ -7,6 +7,7 @@
 .testpkg.synctex.gz
 .testpkg.synctex.gz(busy)
 
+.DS_Store
 *.sty
 
 ## Core latex/pdflatex auxiliary files:
