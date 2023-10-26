@@ -60,17 +60,17 @@ be explained in the following sections that which module requires which package.
 The \pkg{physics2} package requires \LaTeXe\ kernel released after 2020/10.
 Please make sure that your \LaTeX\ distribution is not too old.
 
-\subsection{Loading the \pkg{physics2} package}
+\subsection{Loading \pkg{physics2} and its modules}
 Just like loading any package, write
 \begin{Verbatim}
 \usepackage{physics2}
 \end{Verbatim}
-in the preamble to load the \pkg{physics2} package. In this version,
+in the preamble to load the \pkg{physics2} package. In the current version,
 \pkg{physics2} doesn't provide a package option.
 
-However, \pkg{physics2} itself only provides very few functions. Actually, it
-just provides a method to load modules. You need to load different modules of
-\pkg{physics2} to have different kinds of functions applied to your document.
+\pkg{physics2} itself doesn't provide many features. 
+You need to load different modules of \pkg{physics2} to have different
+features applied to your document.
 
 \subsection{Loading a module of \pkg{physics2}}
 You can load a module of \pkg{physics2} only \emph{after} you write
@@ -96,19 +96,12 @@ These two lines load the \modu{ab} module with option
 \opt{tightbraces\:=\:true} and load \modu{ab.braket} and \modu{doubleprod}
 modules.
 
-\pardanger
-The \modu{common} module will be loaded automatically when you load the
-\pkg{physics2} package and \emph{only} the \modu{common} module will be
-loaded automatically. Any other module should be loaded manually by writing
-\cs{usephysicsmodule}\marg{module} after you loaded \pkg{physics2} in the
-preamble.
-
 The following sections introduce all the user-level modules of \pkg{physics2}.
 View back to the table of contents to see the names of user-level modules.
 
 \section{Modules of \pkg{physics2}}
-\subsection{The automatically loaded \modu{common} module}
-The \modu{common} module provides the following commands:
+\subsection{Features of the bare \pkg{physics2} package}
+The following commands are available once you load \pkg{physics2} in preamble.
 
 \cs{delopen} and \cs{delclose}, followed by a math delimiter. They can be
 regarded as abbreviations of ``open delimiter'' and ``close delimiter''. If
@@ -131,6 +124,14 @@ an example,
 \end{example}
 \cs{bigggl}, \cs{bigggm}, \cs{bigggr}, \cs{Bigggl}, \cs{Bigggm} and \cs{Bigggr}
 are also supported.
+
+\textbf{Note:}
+If you had heard version $0.x.y$ of \pkg{physics2}, you might know the
+\modu{common} module. Now the \modu{common} module is included in
+\pkg{physics2}.sty --- the source file of \modu{common} module is deleted
+but all the features of \modu{common} are reserved. Those commands above
+used to be provided by \modu{common} module, but now they are provided by
+\pkg{physics2}.
 
 \subsection{The \modu{ab} module --- automatic braces}
 This module provides the command \cs{ab}. The \cs{ab} command, as a shorthand

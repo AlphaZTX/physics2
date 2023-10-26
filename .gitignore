@@ -1,3 +1,14 @@
+.testpkg.tex
+.testpkg.aux
+.testpkg.log
+.testpkg.toc
+.testpkg.out
+.testpkg.pdf
+.testpkg.synctex.gz
+.testpkg.synctex.gz(busy)
+
+*.sty
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
@@ -11,6 +22,7 @@
 *.cb
 *.cb2
 .*.lb
+*.hd
 
 ## Intermediate documents:
 *.dvi
@@ -274,3 +286,5 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+*.pdf
+*.pdf
