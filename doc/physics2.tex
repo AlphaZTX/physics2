@@ -169,6 +169,19 @@ Always remember, do not put an \cs{ab} separately at the end of math mode like
 \verb|$\ab$|, because \cs{ab} will try to absorb the following math shift
 character (\verb|$|) as its argument.
 
+\pardanger
+\textbf{Important Note:} The \modu{ab} module uses ``document commands''
+module of \LaTeXe{} kernel (source file: ltcmd.dtx). This \LaTeXe{} kernel
+module provides a document-level command parser. \cs{ab} is a complex
+encapsulation of some internal document-level commands. Take an example,
+if you define a document-level command like this:
+\begin{Verbatim}
+\NewDocumentCommand \foo { r() } {::#1::}
+\end{Verbatim}
+You can write \verb|\foo(bar)| legally, but \verb|\foo(()| will be regarded
+illegal when you write another document-level command or end the paragraph.
+Similarly, things like \verb|\ab(()| will also cause errors.
+
 The \modu{ab} module also provides \texttt{\textbackslash}$X$\texttt{ab}
 commands, where $X$ can be \opt{p}, \opt{b}, \opt{B}, \opt{a}, \opt{v} and
 \opt{V}. These commands take a normal argument but not an argument delimited
@@ -265,6 +278,18 @@ If you want to write ``$>$'' and ``$<$'' for relations in the argument of
 is almost no such need). It is quite different from \verb|\mathrel{>}| or
 \verb|\mathrel{<}| because in these commands' argument, \opt{>} and \opt{<}
 will be redefined.
+
+\pardanger
+\textbf{Important Notes:} Commands provided by \modu{ab.braket} should NOT
+be placed barely in \meta{subformula} of \cs{ab}\texttt|\meta{subformula}\texttt|.
+Errors will arise if you write such code. To avoid the errors, you can write
+like this:
+\begin{example}
+\[
+  \ab| { \braket<\psi|\hat H|\psi> } |
+\]
+\end{example}
+Just add the braces.
 
 Next, the \modu{braket} module will be introduced. Please notice that
 \modu{braket} is conflict with \modu{ab.braket}, they cannot be used together.
