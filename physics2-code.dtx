@@ -150,7 +150,7 @@ The Current Maintainer of this work is
 %</internal>
 %
 %<*driver>
-\ProvidesFile{fixdif.dtx}[2023/03/20 (c) Copyright 2022-2023 by Zhang Tingxuan]
+\ProvidesFile{fixdif.dtx}[2024/01/10 (c) Copyright 2022-2024 by Zhang Tingxuan]
 \documentclass{l3doc}
 \usepackage{doc}
 \hypersetup{hidelinks}
@@ -226,7 +226,7 @@ The Current Maintainer of this work is
 %<*package>
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesPackage{physics2}
-  [2023/10/24 v1.0.0 Tools for typesetting math for physics.]
+  [2024/01/10 v1.0.1 Tools for typesetting math for physics.]
 %    \end{macrocode}
 % \subsection{Common variables}
 % \begin{variable}{\phy@temp..}
@@ -920,7 +920,7 @@ The Current Maintainer of this work is
 % \section{The \modu{diagmat} module}
 %    \begin{macrocode}
 %<*diagmat>
-\ProvidesExplFile{phy-diagmat.sty}{2023/10/24}{}
+\ProvidesExplFile{phy-diagmat.sty}{2024/01/10}{}
   {`diagmat' module of physics2}
 \RequirePackage { amsmath }
 \phy@define@key { diagmat } { empty } [ 0 ] { \tl_gset:Nn \l_@@_mat_empty_tl { #1 } }
@@ -928,9 +928,6 @@ The Current Maintainer of this work is
 % This module requires some new variables.
 %    \begin{macrocode}
 \clist_new:N \l_@@_mat_diag_clist
-\clist_new:N \l_@@_mat_tmpa_clist
-\clist_new:N \l_@@_mat_tmpb_clist
-\clist_new:N \l_@@_mat_diagpos_clist
 \int_new:N \l_@@_mat_dim_int
 \tl_new:N \l_@@_mat_line_tl
 \tl_new:N \l_@@_diagmat_tl
@@ -976,22 +973,22 @@ The Current Maintainer of this work is
       { \setcounter { MaxMatrixCols } { \l_@@_mat_dim_int } }
     \keys_set:nn { phy/diagmat } { #2 }
     \tl_gclear:N \l_@@_diagmat_tl
-    \int_step_inline:nnn { 0 } { \l_@@_mat_dim_int - 1 }
+    \int_step_inline:nnn { 1 } { \l_@@_mat_dim_int }
       {
-        \int_step_inline:nnn { 0 } { \l_@@_mat_dim_int - 1 }
+        \int_step_inline:nnn { 1 } { \l_@@_mat_dim_int }
           {
             \int_compare:nNnTF { ##1 } = { ####1 }
               {
                 \clist_gpop:NN \l_@@_mat_diag_clist \l_@@_tmpa_tl
                 \tl_if_empty:NTF \l_@@_tmpa_tl
                   { \tl_gput_right:Nn \l_@@_mat_line_tl { \l_@@_mat_empty_tl } }
-                  { \tl_gput_right:Nx \l_@@_mat_line_tl { \l_@@_tmpa_tl } }
+%    \end{macrocode}
+% Maybe it's better to use \verb|\expandafter\scantokens\expandafter{\l_@@_tmpa_tl}| in the next line.
+%    \begin{macrocode}
+                  { \tl_gput_right:No \l_@@_mat_line_tl { \l_@@_tmpa_tl } }
               }
               { \tl_gput_right:Nn \l_@@_mat_line_tl { \l_@@_mat_empty_tl } }
-%    \end{macrocode}
-% Add |&| (or |\\|) between matrix entries.
-%    \begin{macrocode}
-            \int_compare:nNnTF { ####1 } = { \l_@@_mat_dim_int - 1 }
+            \int_compare:nNnTF { ####1 } = { \l_@@_mat_dim_int }
               {
                 \tl_gput_right:Nn \l_@@_mat_line_tl { \\ }
               }
@@ -999,7 +996,7 @@ The Current Maintainer of this work is
                 \tl_gput_right:Nn \l_@@_mat_line_tl { & }
               }
           }
-        \tl_gput_right:Nx \l_@@_diagmat_tl { \l_@@_mat_line_tl }
+        \tl_gput_right:No \l_@@_diagmat_tl { \l_@@_mat_line_tl }
         \tl_gclear:N \l_@@_mat_line_tl
       }
     \begin { #1 matrix }
