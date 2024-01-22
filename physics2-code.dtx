@@ -150,7 +150,7 @@ The Current Maintainer of this work is
 %</internal>
 %
 %<*driver>
-\ProvidesFile{fixdif.dtx}[2024/01/10 (c) Copyright 2022-2024 by Zhang Tingxuan]
+\ProvidesFile{physics2-code.dtx}[2024/01/22 (c) Copyright 2022-2024 by Zhang Tingxuan]
 \documentclass{l3doc}
 \usepackage{doc}
 \hypersetup{hidelinks}
@@ -208,7 +208,7 @@ The Current Maintainer of this work is
 \makeatother
 \title{Code documentation to the \pkg{physics2} package}
 \author{Zhang Tingxuan}
-\date{2024/01/10 v1.0.1}
+\date{2024/01/22 v1.0.2}
 \begin{document}
   \DocInput{physics2-code.dtx}
 \end{document}
@@ -425,7 +425,7 @@ The Current Maintainer of this work is
 %    \begin{macrocode}
 %<*ab>
 \ProvidesFile{phy-ab.sty}
-  [2023/10/24 `ab' (autobraces) module of physics2]
+  [2024/01/22 `ab' (autobraces) module of physics2]
 %    \end{macrocode}
 % If you don't know when to use \cs{phy@define@key}, \cs{phy@setkeys} and
 % \cs{phy@processkeyopt} in a module, see ahead. In \modu{ab}, the |tightbraces|
@@ -466,7 +466,7 @@ The Current Maintainer of this work is
 % \[ \hbox{\ttfamily\cs{phy@d@lx} \marg{biggg or star branch name} \marg{automatic branch name} \{\#3\}} \]
 % Here exists an \texttt{\#3}. \texttt{\#3} is one token immediately following \cs{ab},
 % which can be \{\,a biggg command or a star\,\} or a ``\texttt{(}'', under our assumption.
-
+% 
 % \cs{phy@d@lx} is defined as follows:
 % \[
 %   \macrodef {phy@d@lx} [\#1: biggg or star branch name, \meta{mb}; \#2: automatic branch name, \meta{ab}; \#3, the token after \cs{ab}]
@@ -539,30 +539,30 @@ The Current Maintainer of this work is
 % \end{function}
 %    \begin{macrocode}
 \def\phy@AB@gen#1#2{\expandafter\DeclareDocumentCommand\csname phy@#1@\string#2\endcsname}
-\phy@AB@gen{ab}({r()}{\phy@abopen(#1\phy@abclose)}
-\phy@AB@gen{ab}[{r[]}{\phy@abopen[#1\phy@abclose]}
-\phy@AB@gen{ab}\{{r\{\}}{\phy@abopen\{#1\phy@abclose\}}
-\phy@AB@gen{ab}|{r||}{\phy@abopen|#1\phy@abclose|}
-\phy@AB@gen{ab}\|{r\|\|}{\phy@abopen\|#1\phy@abclose\|}
-\phy@AB@gen{ab}<{r<>}{\phy@abopen<#1\phy@abclose>}
-\phy@AB@gen{ab}\lbrace{r\lbrace\rbrace}{\phy@abopen\lbrace#1\phy@abclose\rbrace}
-\phy@AB@gen{ab}\vert{r\vert\vert}{\phy@abopen\vert#1\phy@abclose\vert}
-\phy@AB@gen{ab}\Vert{r\Vert\Vert}{\phy@abopen\Vert#1\phy@abclose\Vert}
-\phy@AB@gen{ab}\langle{r\langle\rangle}{\phy@abopen\langle#1\phy@abclose\rangle}
+\phy@AB@gen{ab}({+r()}{\phy@abopen(#1\phy@abclose)}
+\phy@AB@gen{ab}[{+r[]}{\phy@abopen[#1\phy@abclose]}
+\phy@AB@gen{ab}\{{+r\{\}}{\phy@abopen\{#1\phy@abclose\}}
+\phy@AB@gen{ab}|{+r||}{\phy@abopen|#1\phy@abclose|}
+\phy@AB@gen{ab}\|{+r\|\|}{\phy@abopen\|#1\phy@abclose\|}
+\phy@AB@gen{ab}<{+r<>}{\phy@abopen<#1\phy@abclose>}
+\phy@AB@gen{ab}\lbrace{+r\lbrace\rbrace}{\phy@abopen\lbrace#1\phy@abclose\rbrace}
+\phy@AB@gen{ab}\vert{+r\vert\vert}{\phy@abopen\vert#1\phy@abclose\vert}
+\phy@AB@gen{ab}\Vert{+r\Vert\Vert}{\phy@abopen\Vert#1\phy@abclose\Vert}
+\phy@AB@gen{ab}\langle{+r\langle\rangle}{\phy@abopen\langle#1\phy@abclose\rangle}
 %    \end{macrocode}
 % \cs{endgroup}'s in the end of the following definitions are corresponding to
 % \cs{begingroup}'s in the definition of \cs{phy@d@l@genxm}.
 %    \begin{macrocode}
-\phy@AB@gen{mb}({mr()}{\mathopen#1(#2\mathclose#1)\endgroup}
-\phy@AB@gen{mb}[{mr[]}{\mathopen#1[#2\mathclose#1]\endgroup}
-\phy@AB@gen{mb}\{{mr\{\}}{\mathopen#1\lbrace#2\mathclose#1\rbrace\endgroup}
-\phy@AB@gen{mb}|{mr||}{\mathopen#1\vert#2\mathclose#1\vert\endgroup}
-\phy@AB@gen{mb}\|{mr\|\|}{\mathopen#1\Vert#2\mathclose#1\Vert\endgroup}
-\phy@AB@gen{mb}<{mr<>}{\mathopen#1\langle#2\mathclose#1\rangle\endgroup}
-\phy@AB@gen{mb}\lbrace{mr\lbrace\rbrace}{\mathopen#1\lbrace#2\mathclose#1\rbrace\endgroup}
-\phy@AB@gen{mb}\vert{mr\vert\vert}{\mathopen#1\vert#2\mathclose#1\vert\endgroup}
-\phy@AB@gen{mb}\Vert{mr\Vert\Vert}{\mathopen#1\Vert#2\mathclose#1\Vert\endgroup}
-\phy@AB@gen{mb}\langle{mr\langle\rangle}{\mathopen#1\langle#2\mathclose#1\rangle\endgroup}
+\phy@AB@gen{mb}({m+r()}{\mathopen#1(#2\mathclose#1)\endgroup}
+\phy@AB@gen{mb}[{m+r[]}{\mathopen#1[#2\mathclose#1]\endgroup}
+\phy@AB@gen{mb}\{{m+r\{\}}{\mathopen#1\lbrace#2\mathclose#1\rbrace\endgroup}
+\phy@AB@gen{mb}|{m+r||}{\mathopen#1\vert#2\mathclose#1\vert\endgroup}
+\phy@AB@gen{mb}\|{m+r\|\|}{\mathopen#1\Vert#2\mathclose#1\Vert\endgroup}
+\phy@AB@gen{mb}<{m+r<>}{\mathopen#1\langle#2\mathclose#1\rangle\endgroup}
+\phy@AB@gen{mb}\lbrace{m+r\lbrace\rbrace}{\mathopen#1\lbrace#2\mathclose#1\rbrace\endgroup}
+\phy@AB@gen{mb}\vert{m+r\vert\vert}{\mathopen#1\vert#2\mathclose#1\vert\endgroup}
+\phy@AB@gen{mb}\Vert{m+r\Vert\Vert}{\mathopen#1\Vert#2\mathclose#1\Vert\endgroup}
+\phy@AB@gen{mb}\langle{m+r\langle\rangle}{\mathopen#1\langle#2\mathclose#1\rangle\endgroup}
 %    \end{macrocode}
 % \begin{function}{\phy@del\string.}
 %   The syntax seems not important. These following lines seems only for \cs{ifcsname}
@@ -584,7 +584,7 @@ The Current Maintainer of this work is
 %   \end{syntax}
 % \end{function}
 %    \begin{macrocode}
-\def\phy@d@lx#1#2#3{%
+\long\def\phy@d@lx#1#2#3{%
   \ifcsname phy@del\string#3\endcsname
     \def\reserved@a{#1}% #3 is star or \biggg
   \else
@@ -600,12 +600,12 @@ The Current Maintainer of this work is
 % \end{function}
 %    \begin{macrocode}
 \def\phy@d@l@genxm#1{%
-  \expandafter\def\csname phy@d@lx#1\endcsname##1##2{%
+  \long\expandafter\def\csname phy@d@lx#1\endcsname##1##2{%
     \begingroup % \endgroup is at the end of #4 of \phy@AB@gen
     \ifx##1*\let\phy@tempa=\relax\else\let\phy@tempa=##1\fi
     \csname phy@#1@\string##2\endcsname\phy@tempa##2}}
 \def\phy@d@l@genxa#1{%
-  \expandafter\def\csname phy@d@lx#1\endcsname##1{%
+  \long\expandafter\def\csname phy@d@lx#1\endcsname##1{%
     \csname phy@#1@\string##1\endcsname##1}}
 %    \end{macrocode}
 % \begin{function}{\phy@d@lxmb, \phy@d@lxab}
@@ -635,7 +635,7 @@ The Current Maintainer of this work is
 % \end{function}
 %    \begin{macrocode}
 \def\phy@d@l@geny#1#2#3{%
-  \DeclareDocumentCommand#1{som}{% ##1: star; ##2: bigg (csname); ##3: subformula.
+  \DeclareDocumentCommand#1{so+m}{% ##1: star; ##2: bigg (csname); ##3: subformula.
     \IfBooleanTF{##1}%
       {#2##3#3}%
       {\IfValueTF{##2}%
