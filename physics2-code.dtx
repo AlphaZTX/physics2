@@ -226,7 +226,7 @@ The Current Maintainer of this work is
 %<*package>
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesPackage{physics2}
-  [2024/01/10 v1.0.1 Tools for typesetting math for physics.]
+  [2024/05/16 v1.0.2 Tools for typesetting math for physics.]
 %    \end{macrocode}
 % \subsection{Common variables}
 % \begin{variable}{\phy@temp..}
@@ -344,25 +344,41 @@ The Current Maintainer of this work is
 % \cs{bBigg@} is a command from \pkg{amsmath}. The code below should
 % update with \pkg{amsmath} together.
 %    \begin{macrocode}
+\expandafter\def\csname phy@ab@chk\string*\endcsname{}
+\expandafter\def\csname phy@ab@chk\string\big\endcsname{}
+\expandafter\def\csname phy@ab@chk\string\Big\endcsname{}
+\expandafter\def\csname phy@ab@chk\string\bigg\endcsname{}
+\expandafter\def\csname phy@ab@chk\string\Bigg\endcsname{}
 \ifdefined\bBigg@
-  \DeclareRobustCommand\biggg{\bBigg@{3}}
-  \DeclareRobustCommand\Biggg{\bBigg@{3.5}}
+  \def\DeclareBiggg#1#2{%
+    \DeclareRobustCommand#1{\bBigg@{#2}}%
+    \edef\phy@tempa{\expandafter\@gobble\string#1}%
+    \ifcsname\phy@tempa m\endcsname\else
+      \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}%
+      \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}%
+      \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}%
+    \fi
+    \expandafter\def\csname phy@ab@chk\string#1\endcsname{}%
+  }
 \else
-  \DeclareRobustCommand\biggg[1]{\leavevmode@ifvmode
-    {\hbox{$\left#1\vbox to20.5\p@{}\right.\n@space$}}}
-  \DeclareRobustCommand\Biggg[1]{\leavevmode@ifvmode
-    {\hbox{$\left#1\vbox to23.5\p@{}\right.\n@space$}}}
-  \AtBeginDocument{\ifdefined\bBigg@
-    \DeclareRobustCommand\biggg{\bBigg@{3}}%
-    \DeclareRobustCommand\Biggg{\bBigg@{3.5}}%
-  \fi}
+  \def\DeclareBiggg#1#2{%
+    \phy@tempdima=6pt
+    \phy@tempdima=#2\phy@tempdima
+    \advance\phy@tempdima 3.5pt\relax
+    \DeclareRobustCommand#1[1]{\leavevmode@ifvmode
+      {\hbox{$\left#1\vbox to \phy@tempdima{}\right.\n@space$}}}
+    \AtBeginDocument{\ifdefined\bBigg@\DeclareRobustCommand#1{\bBigg@{#2}}\fi}%
+    \edef\phy@tempa{\expandafter\@gobble\string#1}%
+    \ifcsname\phy@tempa m\endcsname\else
+      \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}%
+      \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}%
+      \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}%
+    \fi
+    \expandafter\def\csname phy@ab@chk\string#1\endcsname{}%
+  }
 \fi
-\DeclareRobustCommand\bigggl{\mathopen\biggg}
-\DeclareRobustCommand\bigggm{\mathrel\biggg}
-\DeclareRobustCommand\bigggr{\mathclose\biggg}
-\DeclareRobustCommand\Bigggl{\mathopen\Biggg}
-\DeclareRobustCommand\Bigggm{\mathrel\Biggg}
-\DeclareRobustCommand\Bigggr{\mathclose\Biggg}
+\DeclareBiggg\biggg{3}
+\DeclareBiggg\Biggg{3.5}
 %    \end{macrocode}
 % \begin{function}{\phy@mathvphantom}
 %   \begin{syntax}
@@ -425,7 +441,7 @@ The Current Maintainer of this work is
 %    \begin{macrocode}
 %<*ab>
 \ProvidesFile{phy-ab.sty}
-  [2024/01/22 `ab' (autobraces) module of physics2]
+  [2024/05/16 `ab' (autobraces) module of physics2]
 %    \end{macrocode}
 % If you don't know when to use \cs{phy@define@key}, \cs{phy@setkeys} and
 % \cs{phy@processkeyopt} in a module, see ahead. In \modu{ab}, the |tightbraces|
@@ -471,7 +487,7 @@ The Current Maintainer of this work is
 % \[
 %   \macrodef {phy@d@lx} [\#1: biggg or star branch name, \meta{mb}; \#2: automatic branch name, \meta{ab}; \#3, the token after \cs{ab}]
 %     {%
-%       \macroifelse {\#3 == biggg or \#3 == star ($\Leftrightarrow$ csname \{phy@del\cs{string}\#3\} is defined)}
+%       \macroifelse {\#3 == biggg or \#3 == star ($\Leftrightarrow$ csname \{phy@ab@chk\cs{string}\#3\} is defined)}
 %         {let \meta{next cs} = csname \{phy@d@lx\meta{mb}\}}
 %         {let \meta{next cs} = csname \{phy@d@lx\meta{ab}\}}
 %       \meta{next cs} \#3
@@ -564,20 +580,10 @@ The Current Maintainer of this work is
 \phy@AB@gen{mb}\Vert{m+r\Vert\Vert}{\mathopen#1\Vert#2\mathclose#1\Vert\endgroup}
 \phy@AB@gen{mb}\langle{m+r\langle\rangle}{\mathopen#1\langle#2\mathclose#1\rangle\endgroup}
 %    \end{macrocode}
-% \begin{function}{\phy@del\string.}
+% \begin{function}{\phy@ab@chk\string..}
 %   The syntax seems not important. These following lines seems only for \cs{ifcsname}
-%   to judge if the commands are defined.
+%   to judge if the commands are defined. See \texttt{physics2.sty}.
 % \end{function}
-%    \begin{macrocode}
-\def\phy@del#1#2#3{\phy@abopen#1#3\phy@abclose#2}
-\expandafter\def\csname phy@del\string*\endcsname#1#2#3{\mathopen#1#3\mathclose#2}
-\expandafter\def\csname phy@del\string\big\endcsname#1#2#3{\bigl#1#3\bigr#2}
-\expandafter\def\csname phy@del\string\Big\endcsname#1#2#3{\Bigl#1#3\Bigr#2}
-\expandafter\def\csname phy@del\string\bigg\endcsname#1#2#3{\biggl#1#3\biggr#2}
-\expandafter\def\csname phy@del\string\Bigg\endcsname#1#2#3{\Biggl#1#3\Biggr#2}
-\expandafter\def\csname phy@del\string\biggg\endcsname#1#2#3{\bigggl#1#3\bigggr#2}
-\expandafter\def\csname phy@del\string\Biggg\endcsname#1#2#3{\Bigggl#1#3\Bigggr#2}
-%    \end{macrocode}
 % \begin{function}{\phy@d@lx}
 %   \begin{syntax}
 %     \cs{phy@d@lx} \marg{biggg or star branch name} \marg{automatic branch name} \{\#3\}
@@ -585,7 +591,7 @@ The Current Maintainer of this work is
 % \end{function}
 %    \begin{macrocode}
 \long\def\phy@d@lx#1#2#3{%
-  \ifcsname phy@del\string#3\endcsname
+  \ifcsname phy@ab@chk\string#3\endcsname
     \def\reserved@a{#1}% #3 is star or \biggg
   \else
     \def\reserved@a{#2}% #3 is delimiter
@@ -656,7 +662,7 @@ The Current Maintainer of this work is
 %    \begin{macrocode}
 %<*ab.braket>
 \ProvidesFile{phy-ab.braket.sty}
-  [2023/10/24 `ab.braket' module of physics2]
+  [2023/05/16 `ab.braket' module of physics2]
 %    \end{macrocode}
 % This module requires \cs{phy@abopen} and \cs{phy@abclose} from \modu{ab}.
 % This module may have conflict with \modu{braket}.
@@ -848,7 +854,7 @@ The Current Maintainer of this work is
 \def\@phy@bk@do@pt#1,{\ifx#1\relax\@empty\else
   \edef\reserved@a{\zap@space#1 \@empty}%
   \ifx\reserved@a\@empty\else
-    \ifcsname phy@del\expandafter\string\csname\reserved@a\endcsname\endcsname
+    \ifcsname phy@ab@chk\expandafter\string\csname\reserved@a\endcsname\endcsname
       \xdef\@phy@bk@l{\reserved@a l}%
       \xdef\@phy@bk@m{\reserved@a}% but not m (m stands for \mathrel)
       \xdef\@phy@bk@r{\reserved@a r}%
