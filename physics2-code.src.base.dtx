@@ -1,0 +1,206 @@
+% \DeclareSourceFile{base}
+%
+%
+%
+% This file describes \texttt{physics2.sty}.
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}[2020/10/01]
+\ProvidesPackage{physics2}
+  [2024/06/01 v1.1.0 Tools for typesetting math for physics.]
+%    \end{macrocode}
+% \section{Common variables}
+% \begin{variable}{\phy@temp..}
+%   \begin{syntax}
+%     \cs{phy@temp}\meta{register type}\meta{a or b}
+%   \end{syntax}
+%   Some \LaTeXe\ variables starting with ``|\phy@temp|''. 
+%   These variables can be shared by any module of \pkg{physics2}.
+% \end{variable}
+%    \begin{macrocode}
+\newcount  \phy@tempcnta
+\newdimen  \phy@tempdima
+\newdimen  \phy@tempdimb
+\newskip   \phy@tempskipa
+\newmuskip \phy@tempmuskipa
+\newbox    \phy@tempboxa
+\newif     \ifphy@tempswa
+\newtoks   \phy@toksa
+%    \end{macrocode}
+% \section{Package requirements and module-loading methods}
+% \pkg{physics2} requires \pkg{keyval} (part of the graphics bundle) to 
+% process options of modules.
+%    \begin{macrocode}
+\RequirePackage{keyval}
+\def\phy@true{true}
+\def\phy@false{false}
+%    \end{macrocode}
+% \begin{function}{\phy@define@key, \phy@setkeys, \phy@processkeyopt}
+%   \begin{syntax}
+%     \cs{phy@define@key} \marg{module} \marg{key} \oarg{default value} \marg{code}
+%     \cs{phy@setkeys} \marg{module} \marg{key-val list}
+%     \cs{phy@processkeyopt} \marg{module}
+%   \end{syntax}
+%   The position of \cs{phy@processkeyopt} in a \pkg{physics2} module is just the same
+%   as the position of \cs{ProcessOptions} in a regular \LaTeX\ package.
+% \end{function}
+%    \begin{macrocode}
+\long\def\phy@define@key#1{\define@key{phy-#1}}
+\long\def\phy@setkeys#1{\setkeys{phy-#1}}
+\def\phy@processkeyopt#1{\let\reserved@a\@empty%
+  \edef\reserved@a{\@ptionlist{\@currname.\@currext}}%
+  \edef\reserved@a{\noexpand\phy@setkeys{#1}{\reserved@a}}%
+  \reserved@a
+  \AtEndOfPackage{\let\@unprocessedoptions\relax}}
+%    \end{macrocode}
+% We use almost the same way to load \pkg{physics2} modules as \LaTeXe\ kernel
+% does. We use a lot of kernel commands in \LaTeXe.
+% 
+% \begin{function}{\usephysicsmodule, \phy@requiremodule}
+%   \begin{syntax}
+%     \cs{usephysicsmodule} \oarg{key-val options} \marg{module} \oarg{key-val options}
+%     \cs{phy@requiremodule} \oarg{key-val options} \marg{module} \oarg{key-val options}
+%   \end{syntax}
+%   \cs{usephysicsmodule} is a user command, and \cs{phy@requiremodule} is a developer
+%   command.
+% \end{function}
+%    \begin{macrocode}
+\def\usephysicsmodule{\phy@FWoptions\@pkgextension}
+\let\phy@requiremodule\usephysicsmodule
+\@onlypreamble\usephysicsmodule
+\def\phy@FWoptions#1{\@ifnextchar[%]
+  {\phy@FW@ptions#1}{\phy@FW@ptions#1[]}}
+\@onlypreamble\phy@FWoptions
+\def\phy@FW@ptions#1[#2]#3{\@ifnextchar[%]
+  {\phy@FW@pti@ns#1[{#2}]#3}{\phy@FW@pti@ns#1[{#2}]#3[]}}
+\@onlypreamble\phy@FW@ptions
+\def\phy@FW@pti@ns#1[#2]#3[#4]{%
+  \def\reserved@b##1,{%
+    \ifx\@nnil##1\relax\else
+      \ifx\@nnil##1\@nnil\else
+       \noexpand\@onefilewithoptions{phy-##1}[{\unexpanded{#2}}][{#4}]%
+       \noexpand\@pkgextension
+      \fi
+      \expandafter\reserved@b
+    \fi}%
+    \edef\reserved@a{\zap@space#3 \@empty}%
+    \edef\reserved@a{\expandafter\reserved@b\reserved@a,\@nnil,}%
+  \reserved@a}
+\@onlypreamble\phy@FW@pti@ns
+%    \end{macrocode}
+% \section{Common package-defined commands}
+% The code below used to be the automatically-loaded \modu{common} module,
+% but now we load it together with \pkg{physics2}'s code. This change may
+% bring better performance in Windows system.
+% 
+% Check if \pkg{unicode-math} loaded and (re)define the vert symbols.
+% The \cs{relax}'s at the ends of \cs{vert} and \cs{Vert}'s definitions must not be
+% removed. They are for \cs{ifx} to compare. \pkg{unicode-math} sets these symbols
+% \cs{fam}1, \cs{symoperators} is equal to 1 in \LaTeXe\ kernel. Moreover, we make
+% \cs{mid} as a delimiter but it may not work.
+%    \begin{macrocode}
+\AtBeginDocument{\ifcsname symrm\endcsname
+  \protected\def\|{\Udelimiter 0 \symoperators "2016 }%
+  \protected\def\vert{\Udelimiter 0 \symoperators "007C\relax}%
+  \protected\def\Vert{\Udelimiter 0 \symoperators "2016\relax}%
+  \protected\def\mid{\Udelimiter 3 \symoperators "007C }%
+\fi}
+\protected\def\Vert{\delimiter"026B30D\relax}
+\protected\def\mid{\delimiter"326A30C }
+%    \end{macrocode}
+% \begin{function}{\delopen, \delclose}
+%   \begin{syntax}
+%     \cs{delopen} \meta{left delimiter}
+%     \cs{delclose} \meta{right delimiter}
+%   \end{syntax}
+%   Actually in \TeX, \cs{left} and \cs{right} will enclose the subformula as ``inner'',
+%   but \cs{delopen} and \cs{delclose} will make the subformula an empty open node and
+%   a non-empty close node.
+% \end{function}
+%    \begin{macrocode}
+\DeclareRobustCommand\delopen{\mathopen{}\mathclose\bgroup\left}
+\DeclareRobustCommand\delclose{\aftergroup\egroup\right}
+% Extension to 2e kernel's or amsmath's biggggg commands.
+%    \end{macrocode}
+% \cs{bBigg@} is a command from \pkg{amsmath}. The code below should
+% update with \pkg{amsmath} together.
+%    \begin{macrocode}
+\expandafter\def\csname phy@ab@chk\string*\endcsname{}
+\expandafter\def\csname phy@ab@chk\string\big\endcsname{}
+\expandafter\def\csname phy@ab@chk\string\Big\endcsname{}
+\expandafter\def\csname phy@ab@chk\string\bigg\endcsname{}
+\expandafter\def\csname phy@ab@chk\string\Bigg\endcsname{}
+\ifdefined\bBigg@
+  \def\DeclareBiggg#1#2{%
+    \DeclareRobustCommand#1{\bBigg@{#2}}%
+    \edef\phy@tempa{\expandafter\@gobble\string#1}%
+    \ifcsname\phy@tempa m\endcsname\else
+      \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}%
+      \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}%
+      \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}%
+    \fi
+    \expandafter\def\csname phy@ab@chk\string#1\endcsname{}%
+  }
+\else
+  \def\DeclareBiggg#1#2{%
+    \phy@tempdima=6pt
+    \phy@tempdima=#2\phy@tempdima
+    \advance\phy@tempdima 3.5pt\relax
+    \DeclareRobustCommand#1[1]{\leavevmode@ifvmode
+      {\hbox{$\left#1\vbox to \phy@tempdima{}\right.\n@space$}}}
+    \AtBeginDocument{\ifdefined\bBigg@\DeclareRobustCommand#1{\bBigg@{#2}}\fi}%
+    \edef\phy@tempa{\expandafter\@gobble\string#1}%
+    \ifcsname\phy@tempa m\endcsname\else
+      \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}%
+      \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}%
+      \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}%
+    \fi
+    \expandafter\def\csname phy@ab@chk\string#1\endcsname{}%
+  }
+\fi
+\DeclareBiggg\biggg{3}
+\DeclareBiggg\Biggg{3.5}
+%    \end{macrocode}
+% \begin{function}{\phy@mathvphantom}
+%   \begin{syntax}
+%     \cs{phy@mathvphantom} \marg{math mode material}
+%   \end{syntax}
+%   This command is just like \cs{vphantom} in \LaTeXe\ kernel but only works
+%   in math mode.
+% \end{function}
+%    \begin{macrocode}
+\def\phy@mathvphantom#1{\setbox\phy@tempboxa=\hbox{}%
+  \mathchoice
+    {\setbox\@tempboxa\hbox{$\displaystyle#1$}%
+      \ht\phy@tempboxa=\ht\@tempboxa
+      \dp\phy@tempboxa=\dp\@tempboxa
+      \box\phy@tempboxa}
+    {\setbox\@tempboxa\hbox{$\textstyle#1$}%
+      \ht\phy@tempboxa=\ht\@tempboxa
+      \dp\phy@tempboxa=\dp\@tempboxa
+      \box\phy@tempboxa}
+    {\setbox\@tempboxa\hbox{$\scriptstyle#1$}%
+      \ht\phy@tempboxa=\ht\@tempboxa
+      \dp\phy@tempboxa=\dp\@tempboxa
+      \box\phy@tempboxa}
+    {\setbox\@tempboxa\hbox{$\scriptscriptstyle#1$}%
+      \ht\phy@tempboxa=\ht\@tempboxa
+      \dp\phy@tempboxa=\dp\@tempboxa
+      \box\phy@tempboxa}%
+}
+%    \end{macrocode}
+% \section{\LaTeX3 variables}
+% Some common variables and functions for experimental \LaTeX3 syntax.
+%    \begin{macrocode}
+%<@@=phy>
+\ExplSyntaxOn
+\int_new:N \l_@@_tmpa_int
+\int_new:N \l_@@_tmpb_int
+\tl_new:N \l_@@_tmpa_tl
+\tl_new:N \l_@@_tmpb_tl
+\cs_new:Npn \_@@_gobble_i:n #1 { }
+\ExplSyntaxOff
+%<@@=>
+%</package>
+%    \end{macrocode}
+\endinput

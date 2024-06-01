@@ -1,0 +1,250 @@
+% \DeclareSourceFile{matrix}
+%
+%
+%
+% \section{The \modu{diagmat} module}
+% This module is written with \LaTeX3 syntax.
+%    \begin{macrocode}
+%<@@=phy>
+%<*diagmat>
+\ProvidesExplFile{phy-diagmat.sty}{2024/01/10}{}
+  {`diagmat' module of physics2}
+\RequirePackage { amsmath }
+\phy@define@key { diagmat } { empty } [ 0 ] { \tl_gset:Nn \l_@@_mat_empty_tl { #1 } }
+%    \end{macrocode}
+% This module requires some new variables.
+%    \begin{macrocode}
+\clist_new:N \l_@@_mat_diag_clist
+\int_new:N \l_@@_mat_dim_int
+\tl_new:N \l_@@_mat_line_tl
+\tl_new:N \l_@@_diagmat_tl
+\tl_new:N \l_@@_mat_empty_tl
+\tl_gset:Nn \l_@@_mat_empty_tl { 0 }
+\phy@processkeyopt { diagmat }
+\keys_define:nn { phy/diagmat }
+  {
+    empty .tl_set:N = \l_@@_mat_empty_tl ,
+  }
+%    \end{macrocode}
+% \begin{function}{\diagmat}
+%   \begin{syntax}
+%     \cs{\meta{delimiter type}diagmat} \oarg{key-val list} \marg{diagonal}
+%   \end{syntax}
+% \end{function}
+%    \begin{macrocode}
+\DeclareDocumentCommand \diagmat { O{} m }
+  { \_@@_diagmat_type:nnn { } { #1 } { #2 } }
+\DeclareDocumentCommand \pdiagmat { O{} m }
+  { \_@@_diagmat_type:nnn { p } { #1 } { #2 } }
+\DeclareDocumentCommand \bdiagmat { O{} m }
+  { \_@@_diagmat_type:nnn { b } { #1 } { #2 } }
+\DeclareDocumentCommand \Bdiagmat { O{} m }
+  { \_@@_diagmat_type:nnn { B } { #1 } { #2 } }
+\DeclareDocumentCommand \vdiagmat { O{} m }
+  { \_@@_diagmat_type:nnn { v } { #1 } { #2 } }
+\DeclareDocumentCommand \Vdiagmat { O{} m }
+  { \_@@_diagmat_type:nnn { V } { #1 } { #2 } }
+%    \end{macrocode}
+% \begin{function}{\_@@_diagmat_type:nnn}
+%   \begin{syntax}
+%     \cs{_@@_diagmat_type:nnn} \marg{delimiter type} \marg{key-val list} \marg{diagonal}
+%   \end{syntax}
+% \end{function}
+%    \begin{macrocode}
+\cs_new:Npn \_@@_diagmat_type:nnn #1#2#3
+  {
+    \group_begin:
+    \clist_set:Nn \l_@@_mat_diag_clist { #3 }
+    \int_set:Nn \l_@@_mat_dim_int { \clist_count:N \l_@@_mat_diag_clist }
+    \int_compare:nNnT { \l_@@_mat_dim_int } > { \value { MaxMatrixCols } }
+      { \setcounter { MaxMatrixCols } { \l_@@_mat_dim_int } }
+    \keys_set:nn { phy/diagmat } { #2 }
+    \tl_gclear:N \l_@@_diagmat_tl
+    \int_step_inline:nnn { 1 } { \l_@@_mat_dim_int }
+      {
+        \int_step_inline:nnn { 1 } { \l_@@_mat_dim_int }
+          {
+            \int_compare:nNnTF { ##1 } = { ####1 }
+              {
+                \clist_gpop:NN \l_@@_mat_diag_clist \l_@@_tmpa_tl
+                \tl_if_empty:NTF \l_@@_tmpa_tl
+                  { \tl_gput_right:Nn \l_@@_mat_line_tl { \l_@@_mat_empty_tl } }
+%    \end{macrocode}
+% Maybe it's better to use \verb|\expandafter\scantokens\expandafter{\l_@@_tmpa_tl}| in the next line.
+%    \begin{macrocode}
+                  { \tl_gput_right:No \l_@@_mat_line_tl { \l_@@_tmpa_tl } }
+              }
+              { \tl_gput_right:Nn \l_@@_mat_line_tl { \l_@@_mat_empty_tl } }
+            \int_compare:nNnTF { ####1 } = { \l_@@_mat_dim_int }
+              {
+                \tl_gput_right:Nn \l_@@_mat_line_tl { \\ }
+              }
+              {
+                \tl_gput_right:Nn \l_@@_mat_line_tl { & }
+              }
+          }
+        \tl_gput_right:No \l_@@_diagmat_tl { \l_@@_mat_line_tl }
+        \tl_gclear:N \l_@@_mat_line_tl
+      }
+    \begin { #1 matrix }
+      \tl_use:N \l_@@_diagmat_tl
+    \end { #1 matrix }
+    \group_end:
+  }
+%</diagmat>
+%<@@=>
+%    \end{macrocode}
+%
+%
+%
+% \section{The \modu{xmat} module}
+% This module is written with \LaTeX3 syntax.
+%    \begin{macrocode}
+%<@@=phy>
+%<*xmat>
+\ProvidesExplFile{phy-xmat.sty}{2023/10/24}{}
+  {`xmat' module of physics2}
+\RequirePackage { amsmath }
+\phy@define@key { xmat } { showtop }
+  { \int_gset:Nn \l_@@_xmat_showtop_int { #1 } }
+\phy@define@key { xmat } { showleft }
+  { \int_gset:Nn \l_@@_xmat_showleft_int { #1 } }
+%    \end{macrocode}
+% This module requires some new variables.
+%    \begin{macrocode}
+\bool_new:N \l_@@_xmat_extra_vdots_bool
+\bool_new:N \l_@@_xmat_extra_cdots_bool
+\int_new:N \l_@@_xmat_showtop_int
+\int_new:N \l_@@_xmat_showleft_int
+\tl_new:N \l_@@_xmat_tl
+\int_gset:Nn \l_@@_xmat_showtop_int { \value { MaxMatrixCols } - 2 }
+\int_gset:Nn \l_@@_xmat_showleft_int { \value { MaxMatrixCols } - 2 }
+\cs_new:Npn \_@@_xmat_entry_format:nnn #1#2#3
+  {
+    #1 \c_math_subscript_token { #2 #3 }
+  }
+\phy@processkeyopt { xmat }
+\DeclareDocumentCommand \xmat { O{} m m m }
+ { \_@@_xmat_type:nnnnn { } { #1 } { #2 } { #3 } { #4 } }
+\DeclareDocumentCommand \pxmat { O{} m m m }
+ { \_@@_xmat_type:nnnnn { p } { #1 } { #2 } { #3 } { #4 } }
+\DeclareDocumentCommand \bxmat { O{} m m m }
+ { \_@@_xmat_type:nnnnn { b } { #1 } { #2 } { #3 } { #4 } }
+\DeclareDocumentCommand \Bxmat { O{} m m m }
+ { \_@@_xmat_type:nnnnn { B } { #1 } { #2 } { #3 } { #4 } }
+\DeclareDocumentCommand \vxmat { O{} m m m }
+ { \_@@_xmat_type:nnnnn { v } { #1 } { #2 } { #3 } { #4 } }
+\DeclareDocumentCommand \Vxmat { O{} m m m }
+ { \_@@_xmat_type:nnnnn { V } { #1 } { #2 } { #3 } { #4 } }
+\keys_define:nn { phy/xmat }
+  {
+    format  .cs_set:Np = \_@@_xmat_entry_format:nnn #1#2#3 ,
+    showtop .int_set:N = \l_@@_xmat_showtop_int ,
+    showleft.int_set:N = \l_@@_xmat_showleft_int ,
+  }
+%    \end{macrocode}
+% \begin{function}[pTF]{\_@@_if_digits_only:n}
+%   \begin{syntax}
+%     \cs{_@@_if_digits_only:nTF} \marg{token list} \marg{true code} \marg{flase code}
+%   \end{syntax}
+%   Use \LaTeX3 regular expression to tell if \meta{token list}
+%   (the numbers of rows or columns) contain digits only. 
+% \end{function}
+%    \begin{macrocode}
+\prg_new_conditional:Npnn \_@@_if_digits_only:n #1 { TF }
+  {
+    \regex_match:nnTF { \A [[:digit:]]* \Z } { #1 }
+      { \prg_return_true: } { \prg_return_false: }
+  }
+%    \end{macrocode}
+% \begin{function}{\_@@_xmat_type:nnnnn}
+%   \begin{syntax}
+%     \cs{_@@_xmat_type:nnnnn} \marg{delimiter type} \marg{key-val list} \marg{common entry} \marg{row number} \marg{column number}
+%   \end{syntax}
+% \end{function}
+%    \begin{macrocode}
+\cs_new:Npn \_@@_xmat_type:nnnnn #1#2#3#4#5
+  {
+    \group_begin:
+    \tl_gclear:N \l_@@_xmat_tl
+    \keys_set:nn { phy/xmat } { #2 } % 
+    \_@@_if_digits_only:nTF { #4 }
+      {
+        \int_compare:nNnTF { #4 } < { \l_@@_xmat_showtop_int + 1 }
+          {
+            \int_set:Nn \l_@@_xmat_showtop_int { #4 }
+            \bool_set_false:N \l_@@_xmat_extra_vdots_bool
+          }
+          {
+            \bool_set_true:N \l_@@_xmat_extra_vdots_bool
+          }
+      }
+      {
+        \bool_set_true:N \l_@@_xmat_extra_vdots_bool
+      }
+    \_@@_if_digits_only:nTF { #5 }
+      {
+        \int_compare:nNnTF { #5 } < { \l_@@_xmat_showleft_int + 1 }
+          {
+            \int_set:Nn \l_@@_xmat_showleft_int { #5 }
+            \bool_set_false:N \l_@@_xmat_extra_cdots_bool
+          }
+          {
+            \bool_set_true:N \l_@@_xmat_extra_cdots_bool
+          }
+      }
+      {
+        \bool_set_true:N \l_@@_xmat_extra_cdots_bool
+      }
+    \int_step_inline:nn { \l_@@_xmat_showtop_int }
+      {
+        \tl_put_right:Nn \l_@@_xmat_tl
+          { \_@@_xmat_entry_format:nnn { #3 } { ##1 } { 1 } }
+        \int_step_inline:nnn { 2 } { \l_@@_xmat_showleft_int }
+          {
+            \tl_put_right:Nn \l_@@_xmat_tl
+              { & \_@@_xmat_entry_format:nnn { #3 } { ##1 } { ####1 } }
+          }
+        \bool_if:NT \l_@@_xmat_extra_cdots_bool
+          {
+            \tl_put_right:Nn \l_@@_xmat_tl
+              { & \cdots & \_@@_xmat_entry_format:nnn { #3 } { ##1 } { #5 } }
+          }
+        \tl_put_right:Nn \l_@@_xmat_tl { \\ }
+      }
+    \bool_if:NT \l_@@_xmat_extra_vdots_bool
+      {
+        \tl_put_right:Nn \l_@@_xmat_tl { \vdots }
+        \prg_replicate:nn { \l_@@_xmat_showleft_int - 1 }
+          {
+            \tl_put_right:Nn \l_@@_xmat_tl { & \vdots }
+          }
+        % Add \ddots if vdots_bool and cdots_bool be true simultaneously.
+        \bool_if:NT \l_@@_xmat_extra_cdots_bool
+          {
+            \tl_put_right:Nn \l_@@_xmat_tl { & \ddots & \vdots }
+          } % else relax
+        \tl_put_right:Nn \l_@@_xmat_tl { \\ }
+        % The last row.
+        \tl_put_right:Nn \l_@@_xmat_tl
+          { \_@@_xmat_entry_format:nnn { #3 } { #4 } { 1 } }
+        \int_step_inline:nnn { 2 } { \l_@@_xmat_showleft_int }
+          {
+            \tl_put_right:Nn \l_@@_xmat_tl
+              { & \_@@_xmat_entry_format:nnn { #3 } { #4 } { ##1 } }
+          }
+        \bool_if:NT \l_@@_xmat_extra_cdots_bool
+          {
+            \tl_put_right:Nn \l_@@_xmat_tl
+              { & \cdots & \_@@_xmat_entry_format:nnn { #3 } { #4 } { #5 } }
+          }
+      } % else relax
+    \begin { #1 matrix }
+      \tl_use:N \l_@@_xmat_tl
+    \end { #1 matrix }
+    \group_end:
+  }
+%</xmat>
+%<@@=>
+%    \end{macrocode}
+\endinput

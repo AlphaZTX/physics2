@@ -6,73 +6,75 @@
 %%
 %% physics2-code.dtx  (with options: `install')
 %% 
-%%   Copyright (C) 2022-2024 by Zhang Tingxuan <alphaztx@163.com>
+%%  Copyright (C) 2022-2024 by Zhang Tingxuan <alphaztx@163.com>
 %% 
-%%   This work may be distributed and/or modified under the
-%%   conditions of the LaTeX Project Public License, either
-%%   version 1.3c of this license or (at your option) any later
-%%   version. The latest version of this license is in:
+%%  This work may be distributed and/or modified under the
+%%  conditions of the LaTeX Project Public License, either
+%%  version 1.3c of this license or (at your option) any later
+%%  version. The latest version of this license is in:
 %% 
-%%     http://www.latex-project.org/lppl.txt
+%%    http://www.latex-project.org/lppl.txt
 %% 
-%%   and version 1.3 or later is part of all distributions of
-%%   LaTeX version 2005/12/01 or later.
+%%  and version 1.3 or later is part of all distributions of
+%%  LaTeX version 2005/12/01 or later.
 %% 
-%%   This work has the LPPL maintenance status `maintained'.
+%%  This work has the LPPL maintenance status `maintained'.
 %% 
-%%   The Current Maintainer of this work is Zhang Tingxuan.
+%%  The Current Maintainer of this work is Zhang Tingxuan.
 %% 
-%%   This work consists of the files physics2-code.dtx,
-%%             and the derived files physics2.ins,
-%%                                   physics2.sty,
-%%                                   phy-<module>.sty,
-%%                                   physics2-code.pdf,
-%%                               and README.md.
+%%  This work consists of the files physics2-code.dtx,
+%%                                  physics2-code.src.<bundle>.dtx,
+%%            and the derived files physics2.ins,
+%%                                  physics2.sty,
+%%                                  phy-<module>.sty,
+%%                                  physics2-code.pdf,
+%%                              and README.md.
 %% 
 \input docstrip.tex
 \keepsilent
 
 \preamble
 
-  Copyright (C) 2022-2024 by Zhang Tingxuan <alphaztx@163.com>
+ Copyright (C) 2022-2024 by Zhang Tingxuan <alphaztx@163.com>
 
-  This work may be distributed and/or modified under the
-  conditions of the LaTeX Project Public License, either
-  version 1.3c of this license or (at your option) any later
-  version. The latest version of this license is in:
+ This work may be distributed and/or modified under the
+ conditions of the LaTeX Project Public License, either
+ version 1.3c of this license or (at your option) any later
+ version. The latest version of this license is in:
 
-    http://www.latex-project.org/lppl.txt
+   http://www.latex-project.org/lppl.txt
 
-  and version 1.3 or later is part of all distributions of
-  LaTeX version 2005/12/01 or later.
+ and version 1.3 or later is part of all distributions of
+ LaTeX version 2005/12/01 or later.
 
-  This work has the LPPL maintenance status `maintained'.
+ This work has the LPPL maintenance status `maintained'.
 
-  The Current Maintainer of this work is Zhang Tingxuan.
+ The Current Maintainer of this work is Zhang Tingxuan.
 
-  This work consists of the files physics2-code.dtx,
-            and the derived files physics2.ins,
-                                  physics2.sty,
-                                  phy-<module>.sty,
-                                  physics2-code.pdf,
-                              and README.md.
+ This work consists of the files physics2-code.dtx,
+                                 physics2-code.src.<bundle>.dtx,
+           and the derived files physics2.ins,
+                                 physics2.sty,
+                                 phy-<module>.sty,
+                                 physics2-code.pdf,
+                             and README.md.
 
 \endpreamble
 
 \generate{
   \usedir{tex/latex/physics2}
-    \file{physics2.sty}          {\from{physics2-code.dtx}{package}}
-    \file{phy-ab.sty}            {\from{physics2-code.dtx}{ab}}
-    \file{phy-ab.braket.sty}     {\from{physics2-code.dtx}{ab.braket}}
-    \file{phy-braket.sty}        {\from{physics2-code.dtx}{braket}}
-    \file{phy-diagmat.sty}       {\from{physics2-code.dtx}{diagmat}}
-    \file{phy-doubleprod.sty}    {\from{physics2-code.dtx}{doubleprod}}
-    \file{phy-xmat.sty}          {\from{physics2-code.dtx}{xmat}}
-    \file{phy-ab.legacy.sty}     {\from{physics2-code.dtx}{ab.legacy}}
-    \file{phy-bm-um.legacy.sty}  {\from{physics2-code.dtx}{bm-um.legacy}}
-    \file{phy-nabla.legacy.sty}  {\from{physics2-code.dtx}{nabla.legacy}}
-    \file{phy-op.legacy.sty}     {\from{physics2-code.dtx}{op.legacy}}
-    \file{phy-qtext.legacy.sty}  {\from{physics2-code.dtx}{qtext.legacy}}
+    \file{physics2.sty}          {\from{physics2-code.src.base.dtx}{package}}
+    \file{phy-ab.sty}            {\from{physics2-code.src.ab.dtx}{ab}}
+    \file{phy-ab.legacy.sty}     {\from{physics2-code.src.ab.dtx}{ab.legacy}}
+    \file{phy-ab.braket.sty}     {\from{physics2-code.src.braket.dtx}{ab.braket}}
+    \file{phy-braket.sty}        {\from{physics2-code.src.braket.dtx}{braket}}
+    \file{phy-xmat.sty}          {\from{physics2-code.src.matrix.dtx}{xmat}}
+    \file{phy-diagmat.sty}       {\from{physics2-code.src.matrix.dtx}{diagmat}}
+    \file{phy-doubleprod.sty}    {\from{physics2-code.src.operator.dtx}{doubleprod}}
+    \file{phy-op.legacy.sty}     {\from{physics2-code.src.operator.dtx}{op.legacy}}
+    \file{phy-bm-um.legacy.sty}  {\from{physics2-code.src.misc.dtx}{bm-um.legacy}}
+    \file{phy-nabla.legacy.sty}  {\from{physics2-code.src.misc.dtx}{nabla.legacy}}
+    \file{phy-qtext.legacy.sty}  {\from{physics2-code.src.misc.dtx}{qtext.legacy}}
   \usedir{doc/latex/physics2}
   \nopreamble\nopostamble
     \file{README.md}             {\from{physics2-code.dtx}{readme}}

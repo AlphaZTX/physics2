@@ -1,0 +1,73 @@
+% \DeclareSourceFile{operator}
+%
+%
+%
+% \section{The \modu{doubleprod} module}
+%    \begin{macrocode}
+%<*doubleprod>
+\ProvidesFile{phy-doubleprod.sty}
+  [2023/10/24 `doubleprod' (vertically stacked binary operators) module of physics2]
+%    \end{macrocode}
+% Boolean options.
+%    \begin{macrocode}
+\phy@define@key{doubleprod}{crosssymbol}{\def\@phy@dbl@c{#1}}
+\phy@define@key{doubleprod}{dotsymbol}{\def\@phy@dbl@d{#1}}
+\phy@define@key{doubleprod}{crossscale}{\def\@phy@dbl@sc{#1}}
+\phy@define@key{doubleprod}{dotscale}{\def\@phy@dbl@sd{#1}}
+\phy@define@key{doubleprod}{crossopenup}{\def\@phy@dbl@oc{#1}}
+\phy@define@key{doubleprod}{dotopenup}{\def\@phy@dbl@od{#1}}
+\phy@setkeys{doubleprod}{crosssymbol=\times,dotsymbol=\ldotp,
+  crossscale=0.8,dotscale=1,crossopenup=.02,dotopenup=.2}
+\phy@processkeyopt{doubleprod}
+\def\phy@dbl@gen#1#2#3#4{%
+  \DeclareRobustCommand#1{\mathbin{\vcenter{\baselineskip\z@skip%
+    \lineskip#4\phy@dblcurrf@size%
+    \setbox\@tempboxa=\hbox{\fontsize{#2\phy@dblcurrf@size}\z@$#3$}%
+    \copy\@tempboxa\box\@tempboxa}}}}
+\def\phy@dblcurrf@size{\dimexpr\f@size pt\relax}
+\phy@dbl@gen\doublecross\@phy@dbl@sc\@phy@dbl@c\@phy@dbl@oc
+\phy@dbl@gen\doubledot\@phy@dbl@sd\@phy@dbl@d\@phy@dbl@od
+%</doubleprod>
+%    \end{macrocode}
+%
+%
+%
+% \section{The \modu{op.legacy} module}
+%    \begin{macrocode}
+%<*op.legacy>
+\ProvidesFile{phy-op.legacy.sty}
+  [2023/10/24 `op.legacy' module of physics2]
+\phy@define@key{op.lega}{ReIm}[true]{\def\phy@reserveda{#1}}
+\phy@define@key{op.lega}{PV}{\def\@phy@oplega@PV{#1}}
+\phy@define@key{op.lega}{pv}{\def\@phy@oplega@pv{#1}}
+\phy@setkeys{op.lega}{PV=\mathcal{P},pv={p.v.},ReIm=true}
+\phy@processkeyopt{ab}
+\DeclareRobustCommand\asin{\mathop{\operator@font asin}\nolimits}
+\DeclareRobustCommand\acos{\mathop{\operator@font acos}\nolimits}
+\DeclareRobustCommand\atan{\mathop{\operator@font atan}\nolimits}
+\DeclareRobustCommand\acsc{\mathop{\operator@font acsc}\nolimits}
+\DeclareRobustCommand\asec{\mathop{\operator@font asec}\nolimits}
+\DeclareRobustCommand\acot{\mathop{\operator@font acot}\nolimits}
+\DeclareRobustCommand\Tr{\mathop{\operator@font Tr}\nolimits}
+\DeclareRobustCommand\tr{\mathop{\operator@font tr}\nolimits}
+\DeclareRobustCommand\rank{\mathop{\operator@font rank}\nolimits}
+\DeclareRobustCommand\erf{\mathop{\operator@font erf}\nolimits}
+\DeclareRobustCommand\Res{\mathop{\operator@font Res}\nolimits}
+\DeclareRobustCommand\res{\mathop{\operator@font res}\nolimits}
+\DeclareRobustCommand\PV{\mathord{\@phy@oplega@PV}}
+\DeclareRobustCommand\pv{\mathop{\operator@font\@phy@oplega@pv{}}\nolimits}
+%    \end{macrocode}
+% Restore \cs{Re} and \cs{Im} in \cs{Resymbol} and \cs{Imsymbol}. The \cs{AtBeginDocument}
+% hook is used for the compatibility of \pkg{unicode-math}.
+%    \begin{macrocode}
+\ifx\phy@reserveda\phy@true
+\AtBeginDocument{%
+  \let\Resymbol\Re%
+  \let\Imsymbol\Im%
+  \DeclareRobustCommand\Re{\mathop{\operator@font Re}\nolimits}%
+  \DeclareRobustCommand\Im{\mathop{\operator@font Im}\nolimits}%
+}
+\fi
+%</op.legacy>
+%    \end{macrocode}
+\endinput
