@@ -120,8 +120,12 @@
 %    \begin{macrocode}
 \DeclareRobustCommand\delopen{\mathopen{}\mathclose\bgroup\left}
 \DeclareRobustCommand\delclose{\aftergroup\egroup\right}
-% Extension to 2e kernel's or amsmath's biggggg commands.
 %    \end{macrocode}
+% \begin{function}{\DeclareBiggg}
+%   \begin{syntax}
+%     \cs{DeclareBiggg} \meta{biggg command} \meta{ratio}
+%   \end{syntax}
+% \end{function}
 % \cs{bBigg@} is a command from \pkg{amsmath}. The code below should
 % update with \pkg{amsmath} together.
 %    \begin{macrocode}
@@ -142,6 +146,7 @@
     \expandafter\def\csname phy@ab@chk\string#1\endcsname{}%
   }
 \else
+  \PackageInfo{physics2}{It is recommended to load `amsmath' before `physics2'}%
   \def\DeclareBiggg#1#2{%
     \phy@tempdima=6pt
     \phy@tempdima=#2\phy@tempdima
