@@ -3,6 +3,7 @@
 mkdir physics2
 cp -r README.md physics2
 cp -r physics2-code.dtx physics2
+cp -r physics2-code.src.*.dtx physics2
 cp -r physics2.ins physics2
 cp -r physics2-code.pdf physics2
 cp -r doc/physics2.tex physics2

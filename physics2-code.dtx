@@ -17,7 +17,7 @@
 % The Current Maintainer of this work is Zhang Tingxuan.
 %
 % This work consists of the files physics2-code.dtx,
-%                                 physics2-code.src.<bundle>.dtx,
+%                                 physics2-code.src.<collection>.dtx,
 %           and the derived files physics2.ins,
 %                                 physics2.sty,
 %                                 phy-<module>.sty,
@@ -40,7 +40,7 @@ Therefore you can load modules separately after loading `physics2`.
 
 Modules of `physics2` provide the following supports:
 
-- Automatic-sized braces;
+- Automatic-sized brackets;
 - Dirac bra-ket notation;
 - Easy way to typeset diagonal matrices and matrices with similar entries;
 - Double cross and double dot (binary) operators for tensors;
@@ -115,7 +115,7 @@ The Current Maintainer of this work is
  The Current Maintainer of this work is Zhang Tingxuan.
 
  This work consists of the files physics2-code.dtx,
-                                 physics2-code.src.<bundle>.dtx,
+                                 physics2-code.src.<collection>.dtx,
            and the derived files physics2.ins,
                                  physics2.sty,
                                  phy-<module>.sty,
@@ -134,9 +134,9 @@ The Current Maintainer of this work is
     \file{phy-xmat.sty}          {\from{physics2-code.src.matrix.dtx}{xmat}}
     \file{phy-diagmat.sty}       {\from{physics2-code.src.matrix.dtx}{diagmat}}
     \file{phy-doubleprod.sty}    {\from{physics2-code.src.operator.dtx}{doubleprod}}
+    \file{phy-nabla.legacy.sty}  {\from{physics2-code.src.operator.dtx}{nabla.legacy}}
     \file{phy-op.legacy.sty}     {\from{physics2-code.src.operator.dtx}{op.legacy}}
     \file{phy-bm-um.legacy.sty}  {\from{physics2-code.src.misc.dtx}{bm-um.legacy}}
-    \file{phy-nabla.legacy.sty}  {\from{physics2-code.src.misc.dtx}{nabla.legacy}}
     \file{phy-qtext.legacy.sty}  {\from{physics2-code.src.misc.dtx}{qtext.legacy}}
 %</install>
 %<*internal>
@@ -246,6 +246,13 @@ The Current Maintainer of this work is
 \date{2024/06/01 v1.1.0}
 \begin{document}
   \maketitle
+  \begin{abstract}
+  This document gives notes to the source code of the \pkg{physics2} package
+  and all modules released together with \pkg{physics2}. The rule for naming
+  source files is \texttt{physics2-code.src.\meta{collection}.dtx}, where one
+  collection can contain more than one modules that share similar topics. The
+  collection name of the \pkg{physics2} package itself is ``base''.
+  \end{abstract}
   \tableofcontents\newpage
   \pagestyle{phy}
   \DocInput{physics2-code.src.base.dtx}

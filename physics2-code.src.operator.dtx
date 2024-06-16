@@ -32,6 +32,28 @@
 %
 %
 %
+% \section{The \modu{nabla.legacy} module}
+%    \begin{macrocode}
+%<*nabla.legacy>
+\ProvidesFile{phy-nabla.legacy.sty}
+  [2023/10/24 `nabla.legacy' module of physics2]
+\phy@requiremodule{ab}
+%    \end{macrocode}
+% Requires \pkg{fixdif} version 2.$x$.
+%    \begin{macrocode}
+\RequirePackage{fixdif}[2023/01/31]
+\letdif\phy@nl@nabla{nabla}
+\AtBeginDocument{\ifcsname div\endcsname\let\divsymbol\div\fi
+  \DeclareRobustCommand\grad{\phy@nl@nabla\ab}%
+  \DeclareRobustCommand\div{\phy@nl@nabla\cdot\ab}%
+  \DeclareRobustCommand\curl{\phy@nl@nabla\times\ab}%
+  \DeclareRobustCommand\laplacian{\phy@nl@nabla^2\ab}%
+}
+%</nabla.legacy>
+%    \end{macrocode}
+%
+%
+%
 % \section{The \modu{op.legacy} module}
 %    \begin{macrocode}
 %<*op.legacy>

@@ -11,7 +11,7 @@
 %    \begin{macrocode}
 %<*ab>
 \ProvidesFile{phy-ab.sty}
-  [2024/05/16 `ab' (autobraces) module of physics2]
+  [2024/06/06 `ab' (autobraces) module of physics2]
 %    \end{macrocode}
 % If you don't know when to use \cs{phy@define@key}, \cs{phy@setkeys} and
 % \cs{phy@processkeyopt} in a module, see ahead. In \modu{ab}, the |tightbraces|
@@ -42,29 +42,29 @@
 %    \end{macrocode}
 % \subsection{The implementation of \cs{ab}}
 % This is the alienest part of \modu{ab}. It's better to draw something rather
-% than write boring comments. First let's take a look at \cs{ab}'s syntax.
+% than write boring comments. Let's take a look at \cs{ab}'s syntax.
 % After \cs{ab} should be a pair of delimiters; take \texttt{()} as an example.
 % Between \cs{ab} and ``\texttt{(}'' can be a biggg command or star, or even nothing.
 % \cs{ab} is defined as follows:
 % \[ \macrodef{ab}{\cs{phy@d@lx} \texttt{\{mb\}} \texttt{\{ab\}}} \]
 % where \texttt{ab} is the branch name of |\ab()|, and \texttt{mb} is the branch
 % name of |\ab\big()| and |\ab*()|. Then let's see the syntax of \cs{phy@d@lx}.
-% \[ \hbox{\ttfamily\cs{phy@d@lx} \marg{biggg or star branch name} \marg{automatic branch name} \{\#3\}} \]
-% Here exists an \texttt{\#3}. \texttt{\#3} is one token immediately following \cs{ab},
+% \[ \hbox{\ttfamily\cs{phy@d@lx} \marg{star or biggg branch name} \marg{automatic branch name} \meta{tok}} \]
+% Here exists \meta{tok} as \texttt{\#3}. It is one token immediately following \cs{ab},
 % which can be \{\,a biggg command or a star\,\} or a ``\texttt{(}'', under our assumption.
 % 
 % \cs{phy@d@lx} is defined as follows:
 % \[
-%   \macrodef {phy@d@lx} [\#1: biggg or star branch name, \meta{mb}; \#2: automatic branch name, \meta{ab}; \#3, the token after \cs{ab}]
+%   \macrodef {phy@d@lx} [\#1: star or biggg branch name, \meta{mb}; \#2: automatic branch name, \meta{ab}; \#3: the token after \cs{ab}, \meta{tok}]
 %     {%
-%       \macroifelse {\#3 == biggg or \#3 == star ($\Leftrightarrow$ csname \{phy@ab@chk\cs{string}\#3\} is defined)}
+%       \macroifelse {\meta{tok} == biggg or \meta{tok} == star}
 %         {let \meta{next cs} = csname \{phy@d@lx\meta{mb}\}}
 %         {let \meta{next cs} = csname \{phy@d@lx\meta{ab}\}}
-%       \meta{next cs} \#3
+%       \meta{next cs} \meta{tok}
 %     }
 % \]
-% The condition should be true when \#3 is |\big| or |*|, and it should be false when
-% \#3 is ``|(|''. Accordingly, in math mode,
+% The condition should be true when \meta{tok} is |\big| or |*|, and be false when
+% \meta{tok} is ``|(|''. Accordingly,
 % \begin{align*}
 %   \hbox{\ttfamily\cs{ab} \cs{big} (}&\quad\to\quad\hbox{\ttfamily\cs{phy@d@lxmb} \cs{big} (}\\
 %   \hbox{\ttfamily\cs{ab} \phantom{\cs{big}} (}&\quad\to\quad\hbox{\ttfamily\cs{phy@d@lxab} \phantom{\cs{big}} (}
@@ -150,23 +150,27 @@
 \phy@AB@gen{mb}\Vert{m+r\Vert\Vert}{\mathopen#1\Vert#2\mathclose#1\Vert\endgroup}
 \phy@AB@gen{mb}\langle{m+r\langle\rangle}{\mathopen#1\langle#2\mathclose#1\rangle\endgroup}
 %    \end{macrocode}
-% \begin{function}{\phy@ab@chk\string..}
-%   The syntax seems not important. These following lines seems only for \cs{ifcsname}
-%   to judge if the commands are defined. See \texttt{physics2.sty}.
+% \begin{function}{\phy@ab@chk\biggg,\phy@ab@chk*}
+%   \begin{syntax}
+%     \cs{ifcsname} phy@ab@chk\cs{string}\meta{token to be tested}\cs{endcsname}
+%   \end{syntax}
+%   This is expanded to true only if \meta{token to be tested} is \texttt{*} or a command
+%   like \cs{biggg}. This is related to \cs{DeclareBiggg} command in \texttt{physics2.sty}.
 % \end{function}
 % \begin{function}{\phy@d@lx}
 %   \begin{syntax}
-%     \cs{phy@d@lx} \marg{biggg or star branch name} \marg{automatic branch name} \{\#3\}
+%     \cs{phy@d@lx} \marg{biggg or star branch name} \marg{automatic branch name} \meta{next token}
 %   \end{syntax}
+%   When \meta{next token} is a \texttt{*} or command like \cs{biggg}, let \cs{reserved@a} be 
+%   \meta{biggg or star branch name}, that is, \texttt{mb}; when \meta{next token} is a left delimiter,
+%   let \cs{reserved@a} be \meta{automatic branch name}, that is, \texttt{ab}. Finally this command is
+%   expanded to \texttt{\cs{csname} phy@d@lx\meta{branch name}\cs{endcsname} \meta{next token}}.
 % \end{function}
 %    \begin{macrocode}
 \long\def\phy@d@lx#1#2#3{%
-  \ifcsname phy@ab@chk\string#3\endcsname
-    \def\reserved@a{#1}% #3 is star or \biggg
-  \else
-    \def\reserved@a{#2}% #3 is delimiter
-  \fi
-  \csname phy@d@lx\reserved@a\endcsname#3}
+  \ifcsname phy@ab@chk\string#3\endcsname\def\reserved@a{#1}%
+  \else\def\reserved@a{#2}%
+  \fi\csname phy@d@lx\reserved@a\endcsname#3}
 %    \end{macrocode}
 % \begin{function}{\phy@d@l@genxm, \phy@d@l@genxa}
 %   \begin{syntax}

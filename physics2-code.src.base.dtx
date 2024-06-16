@@ -3,13 +3,17 @@
 %
 %
 % This file describes \texttt{physics2.sty}.
+%
+%
+%
+% \section{The \pkg{physics2} package}
 %    \begin{macrocode}
 %<*package>
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
 \ProvidesPackage{physics2}
-  [2024/06/01 v1.1.0 Tools for typesetting math for physics.]
+  [2024/06/06 v1.1.1 Tools for typesetting math for physics.]
 %    \end{macrocode}
-% \section{Common variables}
+% \subsection{Common variables}
 % \begin{variable}{\phy@temp..}
 %   \begin{syntax}
 %     \cs{phy@temp}\meta{register type}\meta{a or b}
@@ -27,7 +31,7 @@
 \newif     \ifphy@tempswa
 \newtoks   \phy@toksa
 %    \end{macrocode}
-% \section{Package requirements and module-loading methods}
+% \subsection{Package requirements and module-loading methods}
 % \pkg{physics2} requires \pkg{keyval} (part of the graphics bundle) to 
 % process options of modules.
 %    \begin{macrocode}
@@ -88,7 +92,7 @@
   \reserved@a}
 \@onlypreamble\phy@FW@pti@ns
 %    \end{macrocode}
-% \section{Common package-defined commands}
+% \subsection{Common package-defined commands}
 % The code below used to be the automatically-loaded \modu{common} module,
 % but now we load it together with \pkg{physics2}'s code. This change may
 % bring better performance in Windows system.
@@ -123,7 +127,7 @@
 %    \end{macrocode}
 % \begin{function}{\DeclareBiggg}
 %   \begin{syntax}
-%     \cs{DeclareBiggg} \meta{biggg command} \meta{ratio}
+%     \cs{DeclareBiggg} \meta{biggg command} \marg{ratio}
 %   \end{syntax}
 % \end{function}
 % \cs{bBigg@} is a command from \pkg{amsmath}. The code below should
@@ -194,7 +198,7 @@
       \box\phy@tempboxa}%
 }
 %    \end{macrocode}
-% \section{\LaTeX3 variables}
+% \subsection{\LaTeX3 variables}
 % Some common variables and functions for experimental \LaTeX3 syntax.
 %    \begin{macrocode}
 %<@@=phy>
