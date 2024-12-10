@@ -51,10 +51,11 @@
 %    \begin{macrocode}
 \long\def\phy@define@key#1{\define@key{phy-#1}}
 \long\def\phy@setkeys#1{\setkeys{phy-#1}}
-\def\phy@processkeyopt#1{\let\reserved@a\@empty%
-  \edef\reserved@a{\@ptionlist{\@currname.\@currext}}%
-  \edef\reserved@a{\noexpand\phy@setkeys{#1}{\reserved@a}}%
-  \reserved@a
+\def\phy@processkeyopt#1{%
+  \let\reserved@a\@empty%
+  \edef\reserved@b{#1}%
+  \protected@edef\reserved@a{\@ptionlist{\@currname.\@currext}}%
+  \expandafter\phy@setkeys\expandafter\reserved@b\expandafter{\reserved@a}%
   \AtEndOfPackage{\let\@unprocessedoptions\relax}}
 %    \end{macrocode}
 % We use almost the same way to load \pkg{physics2} modules as \LaTeXe\ kernel
