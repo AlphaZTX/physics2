@@ -1,16 +1,17 @@
-.testpkg.tex
-.testpkg.aux
-.testpkg.log
-.testpkg.toc
-.testpkg.out
-.testpkg.pdf
-.testpkg.synctex.gz
-.testpkg.synctex.gz(busy)
+testpkg.tex
+testpkg.aux
+testpkg.log
+testpkg.toc
+testpkg.out
+testpkg.pdf
+testpkg.synctex.gz
+testpkg.synctex.gz(busy)
 
 .DS_Store
 *.sty
 *.tar.gz
 physics2/
+*.ins
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
