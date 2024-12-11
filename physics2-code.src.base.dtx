@@ -13,6 +13,16 @@
 \ProvidesPackage{physics2}
   [2024/06/06 v1.1.1 Tools for typesetting math for physics.]
 %    \end{macrocode}
+% Module warning setup.
+%    \begin{macrocode}
+\def\phy@warning#1#2{%
+  \GenericWarning{%
+    (phy-#1)\@spaces\@spaces\@spaces\@spaces
+  }{%
+    Module #1 (of physics2) Warning: #2%
+  }%
+}
+%    \end{macrocode}
 % \subsection{Common variables}
 % \begin{variable}{\phy@temp..}
 %   \begin{syntax}
@@ -30,6 +40,15 @@
 \newbox    \phy@tempboxa
 \newif     \ifphy@tempswa
 \newtoks   \phy@toksa
+%<@@=phy>
+\ExplSyntaxOn
+\int_new:N \l_@@_tmpa_int
+\int_new:N \l_@@_tmpb_int
+\tl_new:N \l_@@_tmpa_tl
+\tl_new:N \l_@@_tmpb_tl
+\cs_new:Npn \_@@_gobble_i:n #1 { }
+\ExplSyntaxOff
+%<@@=>
 %    \end{macrocode}
 % \subsection{Package requirements and module-loading methods}
 % \pkg{physics2} requires \pkg{keyval} (part of the graphics bundle) to 
@@ -104,7 +123,7 @@
 % \cs{fam}1, \cs{symoperators} is equal to 1 in \LaTeXe\ kernel. Moreover, we make
 % \cs{mid} as a delimiter but it may not work.
 %    \begin{macrocode}
-\AtBeginDocument{\ifcsname symrm\endcsname
+\AtBeginDocument{\ifdefined\symrm
   \protected\def\|{\Udelimiter 0 \symoperators "2016 }%
   \protected\def\vert{\Udelimiter 0 \symoperators "007C\relax}%
   \protected\def\Vert{\Udelimiter 0 \symoperators "2016\relax}%
@@ -198,19 +217,6 @@
       \dp\phy@tempboxa=\dp\@tempboxa
       \box\phy@tempboxa}%
 }
-%    \end{macrocode}
-% \subsection{\LaTeX3 variables}
-% Some common variables and functions for experimental \LaTeX3 syntax.
-%    \begin{macrocode}
-%<@@=phy>
-\ExplSyntaxOn
-\int_new:N \l_@@_tmpa_int
-\int_new:N \l_@@_tmpb_int
-\tl_new:N \l_@@_tmpa_tl
-\tl_new:N \l_@@_tmpb_tl
-\cs_new:Npn \_@@_gobble_i:n #1 { }
-\ExplSyntaxOff
-%<@@=>
 %</package>
 %    \end{macrocode}
 \endinput
