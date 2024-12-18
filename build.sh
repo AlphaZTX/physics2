@@ -37,7 +37,6 @@ if [ $# -ne 0 ]; then
   fi
 fi
 
-
 # Main:
 # Build package:
 build_pkg
