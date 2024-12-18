@@ -40,7 +40,7 @@ Therefore you can load modules separately after loading `physics2`.
 
 Modules of `physics2` provide the following supports:
 
-- Automatic-sized brackets;
+- Automatic-sized braces;
 - Dirac bra-ket notation;
 - Easy way to typeset diagonal matrices and matrices with similar entries;
 - Double cross and double dot (binary) operators for tensors;
@@ -48,19 +48,11 @@ Modules of `physics2` provide the following supports:
 
 ## Build
 
-This package uses DocStrip to generate package files. To get package files, run
+Run
 
 ```
-xetex physics-code.dtx
+./build.sh
 ```
-
-To get code documentation, run
-
-```
-xelatex physics-code.dtx
-```
-
-at least twice.
 
 ## For developers and deep users
 
@@ -128,16 +120,19 @@ The Current Maintainer of this work is
   \usedir{tex/latex/physics2}
     \file{physics2.sty}          {\from{physics2-code.src.base.dtx}{package}}
     \file{phy-ab.sty}            {\from{physics2-code.src.ab.dtx}{ab}}
+    \file{phy-xab.sty}           {\from{physics2-code.src.ab.dtx}{xab}}
     \file{phy-ab.legacy.sty}     {\from{physics2-code.src.ab.dtx}{ab.legacy}}
     \file{phy-ab.braket.sty}     {\from{physics2-code.src.braket.dtx}{ab.braket}}
     \file{phy-braket.sty}        {\from{physics2-code.src.braket.dtx}{braket}}
     \file{phy-xmat.sty}          {\from{physics2-code.src.matrix.dtx}{xmat}}
     \file{phy-diagmat.sty}       {\from{physics2-code.src.matrix.dtx}{diagmat}}
     \file{phy-doubleprod.sty}    {\from{physics2-code.src.operator.dtx}{doubleprod}}
+    \file{phy-difop.sty}         {\from{physics2-code.src.operator.dtx}{difop}}
     \file{phy-nabla.legacy.sty}  {\from{physics2-code.src.operator.dtx}{nabla.legacy}}
     \file{phy-op.legacy.sty}     {\from{physics2-code.src.operator.dtx}{op.legacy}}
     \file{phy-bm-um.legacy.sty}  {\from{physics2-code.src.misc.dtx}{bm-um.legacy}}
     \file{phy-qtext.legacy.sty}  {\from{physics2-code.src.misc.dtx}{qtext.legacy}}
+    \file{phy-helper.sty}        {\from{physics2-code.src.helper.dtx}{helper}}
 %</install>
 %<*internal>
   \usedir{source/latex/physics2}
@@ -243,7 +238,7 @@ The Current Maintainer of this work is
 \makeatother
 \title{Code documentation to the \pkg{physics2} package}
 \author{Zhang Tingxuan}
-\date{2024/06/01 v1.1.0}
+\date{2024/12/10 v2.0.0}
 \begin{document}
   \maketitle
   \begin{abstract}
@@ -261,6 +256,7 @@ The Current Maintainer of this work is
   \DocInput{physics2-code.src.matrix.dtx}
   \DocInput{physics2-code.src.operator.dtx}
   \DocInput{physics2-code.src.misc.dtx}
+  \DocInput{physics2-code.src.helper.dtx}
 \end{document}
 %</driver>
 % \fi

@@ -17,19 +17,11 @@ Modules of `physics2` provide the following supports:
 
 ## Build
 
-This package uses DocStrip to generate package files. To get package files, run
+Run
 
 ```
-xetex physics-code.dtx
+./build.sh
 ```
-
-To get code documentation, run
-
-```
-xelatex physics-code.dtx
-```
-
-at least twice.
 
 ## For developers and deep users
 
