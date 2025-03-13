@@ -1,21 +1,194 @@
 % \DeclareSourceFile{base}
 %
-%
-%
-% This file describes \texttt{physics2.sty}.
-%
-%
+% This file describes the \pkg{physics2} package and its required patch file
+% (module \modu{patch.amsmath}).
 %
 % \section{The \pkg{physics2} package}
+%
+%    \begin{macrocode}
+%<@@=phy>
+%    \end{macrocode}
+%
+% \subsection{How to write a module}
+%
+% The \pkg{physics2} package itself provides a standard interface for loading
+% modules. A module is a pure text file that contains \TeX\ code. One module
+% provides one bundle of functions. The file name of a module is like
+% \texttt{phy-\meta{module}.sty}. It's recommended that functions in a module
+% are aimed at a specific topic and share similar usage. Modules can handle
+% key-value options.
+%
+% The beginning of a module's content should be like
+% \begin{verbatim}
+% \ProvidesFile{phy-MODULE_NAME.sty}[YYYY/MM/DD DESCRIPTION]
+% \end{verbatim}
+% where \texttt{phy-MODULE_NAME.sty} is the same as the file name of the module.
+% After this line, other packages or \pkg{physics2} modules can be required,
+% and options of this module can be processed.
+%
+% For example, the beginning of a module might look like
+% \begin{verbatim}
+% \ProvidesFile{phy-something.sty}
+%   [2025/01/01 This module does something]
+% \RequirePackage{...}
+% \phy@requiremodule{...}
+% \DeclareKeys{bool-option.if=phy@ModBoolA}
+% \SetKeys{bool-option=true}
+% \ProcessKeyOptions
+% \ifphy@ModBoolA
+%   ...
+% \end{verbatim}
+% It should be explained that a module's options can be declared with
+% \cs{DeclareKeys}, which is added to \LaTeX\ kernel since release 2022-06-01.
+% The default values of keys can be set with \cs{SetKeys}, and users' settings
+% can be processed with \cs{ProcessKeyOptions}. If you are not familiar with
+% such procedures, you can run \texttt{texdoc clsguide} to get more information.
+%
+% If you are writing a module in \LaTeXe\ ``traditional'' syntax, avoid using
+% two consecutive ``\texttt{@}'' symbols in your internal commands. Two
+% consecutive ``\texttt{@}'' symbols may cause confusion to module authors
+% using \LaTeX3 syntax and DocStrip utility.
+%
+% \subsection{API}\label{subsec:api.physics2}
+%
+% \begin{variable}{\phy@tempcnta,\phy@tempdima,\phy@tempdimb,\phy@tempskipa,
+%   \phy@tempmuskipa,\phy@tempboxa,\ifphy@tempswa,\phy@temptoksa}
+% Common temporary variables that can be shared by any module.
+% \end{variable}
+%
+% \begin{variable}{\l_@@_tmpa_int,\l_@@_tmpb_int,\l_@@_tmpa_tl,\l_@@_tmpb_tl}
+% Common temporary variables (L3 style) that can be shared by any module.
+% \end{variable}
+%
+% \begin{function}{\usephysicsmodule,\phy@requiremodule}
+% \begin{syntax}
+% \cs{usephysicsmodule} \oarg{key-val options} \marg{module} \oarg{date}
+% \cs{phy@requiremodule} \oarg{key-val options} \marg{module} \oarg{date}
+% \end{syntax}
+% Loads modules. The usage is the same as \cs{RequirePackage}.
+% \cs{usephysicsmodule} is a user command, and \cs{phy@requiremodule} is a
+% developer command.
+% \relatedint{phy@modulewithdate}
+% \end{function}
+%
+% \begin{variable}{\phy@ModBoolA,\phy@ModBoolB}
+% Booleans used when handling key-value options of a module. They are set false
+% when a module is loaded.
+% \end{variable}
+%
+% \begin{function}{\phy@ModuleError,\phy@ModuleWarning,
+%   \@@_module_error:nnn,\@@_module_warning:nn}
+% \begin{syntax}
+% \cs{phy@ModuleError} \marg{module} \marg{error message} \marg{help message}
+% \cs{phy@ModuleWarning} \marg{module} \marg{warning message}
+% \cs{@@_module_error:nnn} \marg{module} \marg{error message} \marg{help message}
+% \cs{@@_module_warning:nn} \marg{module} \marg{warning message}
+% \end{syntax}
+% Error and warning handlers for modules of this package.
+% \end{function}
+%
+% \begin{function}{\delopen,\delclose}
+% \begin{syntax}
+% \cs{delopen} \meta{left delimiter} \meta{math mode material} \cs{delclose} \meta{right delimiter}
+% \end{syntax}
+% Re-packaged \cs{left} and \cs{right}. A \cs{left} and \cs{right} pair will
+% be treated as an inner formula, around which 3\,mu skips are inserted. If
+% you don't want the skips, use \cs{delopen} and \cs{delclose} instead.
+% \end{function}
+%
+% \begin{function}{\phy@mathvphantom,\@@_math_vphantom:n}
+% \begin{syntax}
+% \cs{phy@mathvphantom} \marg{math mode material}
+% \cs{@@_math_vphantom:n} \marg{math mode material}
+% \end{syntax}
+% A math mode version of \cs{vphantom}.
+% \relatedint{phy@mathvph@ntom}
+% \end{function}
+%
+% \subsection{Internal commands}
+%
+% \begin{function}{\phy@modulewithdate}
+% \begin{syntax}
+% \cs{phy@modulewithdate} \oarg{keyval options} \marg{module} \oarg{date}
+% \end{syntax}
+% Loads a module with keyval options and a specific date.
+% \relatedint{phy@ResetModBools}
+% \begin{NOTE}
+% Hint:
+% \cs{@onefilewithoptions}\marg{filename}\oarg{options}\oarg{date}\marg{extension}
+% \end{NOTE}
+% \end{function}
+%
+% \begin{function}{\phy@ResetModBools}
+% \begin{syntax}
+% \cs{phy@ResetModBools}
+% \end{syntax}
+% Sets all booleans for handling modules' key-value options (like \cs{phy@ModBoolA})
+% false. It's called every time a separate module is loaded.
+% \end{function}
+%
+% \begin{function}{\phy@m@thvphantom}
+% \begin{syntax}
+% \cs{phy@m@thvphantom} \meta{math style command} \marg{math mode material}
+% \end{syntax}
+% Generate a zero-width box with the height and depth of the math material in a
+% specific math style. \meta{math style command} is \cs[no-index]{displaystyle}, etc.
+% \end{function}
+%
+% \begin{function}{\@@_reset_math_class:nnn}
+% \begin{syntax}
+% \cs{@@_reset_math_class:nn} \marg{charcode} \marg{previous math class} \marg{new math class}
+% \end{syntax}
+% Incomplete.
+% \end{function}
+%
+% \begin{function}{\@@_patch_unimath:}
+% \begin{syntax}
+% \cs{@@_patch_unimath:}
+% \end{syntax}
+% Patch for \pkg{unicode-math}. The current functions are
+% \begin{itemize}
+% \item Making \cs{vert} different from ``\texttt{\char`\|}'' in math mode.
+% \end{itemize}
+% See \S\ref{subsec:code.base} for details.
+% \end{function}
+%
+% \begin{function}{\@@_patch_no_unimath_common:,\@@_patch_mathtools:}
+% \begin{syntax}
+% \cs{@@_patch_no_unimath_common:}
+% \end{syntax}
+% See \S\ref{subsec:code.base} for details.
+% \end{function}
+%
+% \begin{function}{\@@_patch_amsmath:}
+% \end{function}
+%
+% \subsection{Code implementation}\label{subsec:code.base}
+%
 %    \begin{macrocode}
 %<*package>
-\NeedsTeXFormat{LaTeX2e}[2020/10/01]
+\NeedsTeXFormat{LaTeX2e}[2024/11/01]
 \ProvidesPackage{physics2}
-  [2024/06/06 v1.1.1 Tools for typesetting math for physics.]
+  [2025/03/01 v2.0.0 Tools for typesetting math formulae.]
 %    \end{macrocode}
-% Module warning setup.
+%
+% \begin{macro}{\phy@ModuleError}
 %    \begin{macrocode}
-\def\phy@warning#1#2{%
+\gdef\phy@ModuleError#1#2#3{%
+  \GenericError{%
+    (phy-#1)\@spaces\@spaces\@spaces\@spaces
+  }{%
+    Module #1 (of physics2) Error: #2%
+  }{%
+     See the physics2 package documentation (texdoc physics2) for explanation.%
+  }{#3}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\phy@ModuleWarning}
+%    \begin{macrocode}
+\def\phy@ModuleWarning#1#2{%
   \GenericWarning{%
     (phy-#1)\@spaces\@spaces\@spaces\@spaces
   }{%
@@ -23,14 +196,11 @@
   }%
 }
 %    \end{macrocode}
-% \subsection{Common variables}
-% \begin{variable}{\phy@temp..}
-%   \begin{syntax}
-%     \cs{phy@temp}\meta{register type}\meta{a or b}
-%   \end{syntax}
-%   Some \LaTeXe\ variables starting with ``|\phy@temp|''. 
-%   These variables can be shared by any module of \pkg{physics2}.
-% \end{variable}
+% \end{macro}
+%
+% \begin{macro}[int]{\phy@tempcnta,\phy@tempdima,\phy@tempdimb,
+%                    \phy@tempskipa,\phy@tempmuskipa,\phy@tempboxa,
+%                    \ifphy@tempswa,\phy@temptoksa}
 %    \begin{macrocode}
 \newcount  \phy@tempcnta
 \newdimen  \phy@tempdima
@@ -39,184 +209,386 @@
 \newmuskip \phy@tempmuskipa
 \newbox    \phy@tempboxa
 \newif     \ifphy@tempswa
-\newtoks   \phy@toksa
-%<@@=phy>
-\ExplSyntaxOn
-\int_new:N \l_@@_tmpa_int
-\int_new:N \l_@@_tmpb_int
-\tl_new:N \l_@@_tmpa_tl
-\tl_new:N \l_@@_tmpb_tl
-\cs_new:Npn \_@@_gobble_i:n #1 { }
-\ExplSyntaxOff
-%<@@=>
+\newtoks   \phy@temptoksa
 %    \end{macrocode}
-% \subsection{Package requirements and module-loading methods}
-% \pkg{physics2} requires \pkg{keyval} (part of the graphics bundle) to 
-% process options of modules.
+% \end{macro}
+%
+% \begin{macro}[int]{\phy@ModBoolA,\phy@ModBoolB}
 %    \begin{macrocode}
-\RequirePackage{keyval}
-\def\phy@true{true}
-\def\phy@false{false}
+\newif     \ifphy@ModBoolA
+\newif     \ifphy@ModBoolB
 %    \end{macrocode}
-% \begin{function}{\phy@define@key, \phy@setkeys, \phy@processkeyopt}
-%   \begin{syntax}
-%     \cs{phy@define@key} \marg{module} \marg{key} \oarg{default value} \marg{code}
-%     \cs{phy@setkeys} \marg{module} \marg{key-val list}
-%     \cs{phy@processkeyopt} \marg{module}
-%   \end{syntax}
-%   The position of \cs{phy@processkeyopt} in a \pkg{physics2} module is just the same
-%   as the position of \cs{ProcessOptions} in a regular \LaTeX\ package.
-% \end{function}
+% \end{macro}
+%
+% \begin{macro}{\phy@ResetModBools}
+% See \cs{phy@modulewithdate}.
 %    \begin{macrocode}
-\long\def\phy@define@key#1{\define@key{phy-#1}}
-\long\def\phy@setkeys#1{\setkeys{phy-#1}}
-\def\phy@processkeyopt#1{%
-  \let\reserved@a\@empty%
-  \edef\reserved@b{#1}%
-  \protected@edef\reserved@a{\@ptionlist{\@currname.\@currext}}%
-  \expandafter\phy@setkeys\expandafter\reserved@b\expandafter{\reserved@a}%
-  \AtEndOfPackage{\let\@unprocessedoptions\relax}}
+\protected\def\phy@ResetModBools{%
+  \global\phy@ModBoolAfalse
+  \global\phy@ModBoolBfalse
+}
 %    \end{macrocode}
-% We use almost the same way to load \pkg{physics2} modules as \LaTeXe\ kernel
-% does. We use a lot of kernel commands in \LaTeXe.
-% 
-% \begin{function}{\usephysicsmodule, \phy@requiremodule}
-%   \begin{syntax}
-%     \cs{usephysicsmodule} \oarg{key-val options} \marg{module} \oarg{key-val options}
-%     \cs{phy@requiremodule} \oarg{key-val options} \marg{module} \oarg{key-val options}
-%   \end{syntax}
-%   \cs{usephysicsmodule} is a user command, and \cs{phy@requiremodule} is a developer
-%   command.
-% \end{function}
+% \end{macro}
+%
+% \begin{macro}{\usephysicsmodule, \phy@requiremodule}
 %    \begin{macrocode}
-\def\usephysicsmodule{\phy@FWoptions\@pkgextension}
+\def\usephysicsmodule{\@ifnextchar[%]
+  {\phy@modulewithopt}{\phy@modulewithopt[]}}
 \let\phy@requiremodule\usephysicsmodule
 \@onlypreamble\usephysicsmodule
-\def\phy@FWoptions#1{\@ifnextchar[%]
-  {\phy@FW@ptions#1}{\phy@FW@ptions#1[]}}
-\@onlypreamble\phy@FWoptions
-\def\phy@FW@ptions#1[#2]#3{\@ifnextchar[%]
-  {\phy@FW@pti@ns#1[{#2}]#3}{\phy@FW@pti@ns#1[{#2}]#3[]}}
-\@onlypreamble\phy@FW@ptions
-\def\phy@FW@pti@ns#1[#2]#3[#4]{%
+\def\phy@modulewithopt[#1]#2{\@ifnextchar[%]
+  {\phy@modulewithdate[{#1}]#2}{\phy@modulewithdate[{#1}]#2[]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\phy@modulewithdate}
+%    \begin{macrocode}
+\def\phy@modulewithdate[#1]#2[#3]{%
   \def\reserved@b##1,{%
     \ifx\@nnil##1\relax\else
       \ifx\@nnil##1\@nnil\else
-       \noexpand\@onefilewithoptions{phy-##1}[{\unexpanded{#2}}][{#4}]%
-       \noexpand\@pkgextension
+        \phy@ResetModBools
+        \noexpand\@onefilewithoptions{phy-##1}[{\unexpanded{#1}}][{#3}]%
+        \noexpand\@pkgextension
       \fi
       \expandafter\reserved@b
     \fi}%
-    \edef\reserved@a{\zap@space#3 \@empty}%
+    \edef\reserved@a{\zap@space#2 \@empty}%
     \edef\reserved@a{\expandafter\reserved@b\reserved@a,\@nnil,}%
   \reserved@a}
-\@onlypreamble\phy@FW@pti@ns
 %    \end{macrocode}
-% \subsection{Common package-defined commands}
-% The code below used to be the automatically-loaded \modu{common} module,
-% but now we load it together with \pkg{physics2}'s code. This change may
-% bring better performance in Windows system.
-% 
-% Check if \pkg{unicode-math} loaded and (re)define the vert symbols.
-% The \cs{relax}'s at the ends of \cs{vert} and \cs{Vert}'s definitions must not be
-% removed. They are for \cs{ifx} to compare. \pkg{unicode-math} sets these symbols
-% \cs{fam}1, \cs{symoperators} is equal to 1 in \LaTeXe\ kernel. Moreover, we make
-% \cs{mid} as a delimiter but it may not work.
+% \end{macro}
+%
+% \begin{macro}{\phy@mathvphantom,\phy@mathvph@ntom}
 %    \begin{macrocode}
-\AtBeginDocument{\ifdefined\symrm
-  \protected\def\|{\Udelimiter 0 \symoperators "2016 }%
-  \protected\def\vert{\Udelimiter 0 \symoperators "007C\relax}%
-  \protected\def\Vert{\Udelimiter 0 \symoperators "2016\relax}%
-  \protected\def\mid{\Udelimiter 3 \symoperators "007C }%
-\fi}
-\protected\def\Vert{\delimiter"026B30D\relax}
-\protected\def\mid{\delimiter"326A30C }
+\def\phy@mathvphantom#1{%
+  \setbox\phy@tempboxa=\hbox{}%
+  \mathpalette\phy@mathvph@ntom{#1}%
+}
+\def\phy@mathvph@ntom#1#2{%
+  \setbox\@tempboxa\hbox{$#1#2$}%
+  \ht\phy@tempboxa=\ht\@tempboxa
+  \dp\phy@tempboxa=\dp\@tempboxa
+  \box\phy@tempboxa
+}
 %    \end{macrocode}
-% \begin{function}{\delopen, \delclose}
-%   \begin{syntax}
-%     \cs{delopen} \meta{left delimiter}
-%     \cs{delclose} \meta{right delimiter}
-%   \end{syntax}
-%   Actually in \TeX, \cs{left} and \cs{right} will enclose the subformula as ``inner'',
-%   but \cs{delopen} and \cs{delclose} will make the subformula an empty open node and
-%   a non-empty close node.
-% \end{function}
+% \end{macro}
+%
+% \begin{macro}{\delopen,\delclose}
 %    \begin{macrocode}
 \DeclareRobustCommand\delopen{\mathopen{}\mathclose\bgroup\left}
 \DeclareRobustCommand\delclose{\aftergroup\egroup\right}
 %    \end{macrocode}
-% \begin{function}{\DeclareBiggg}
-%   \begin{syntax}
-%     \cs{DeclareBiggg} \meta{biggg command} \marg{ratio}
-%   \end{syntax}
-% \end{function}
-% \cs{bBigg@} is a command from \pkg{amsmath}. The code below should
-% update with \pkg{amsmath} together.
+% \end{macro}
+%
 %    \begin{macrocode}
-\expandafter\def\csname phy@ab@chk\string*\endcsname{}
-\expandafter\def\csname phy@ab@chk\string\big\endcsname{}
-\expandafter\def\csname phy@ab@chk\string\Big\endcsname{}
-\expandafter\def\csname phy@ab@chk\string\bigg\endcsname{}
-\expandafter\def\csname phy@ab@chk\string\Bigg\endcsname{}
-\ifdefined\bBigg@
-  \def\DeclareBiggg#1#2{%
+\ExplSyntaxOn
+%    \end{macrocode}
+%
+% \begin{macro}[int]{\l_@@_tmpa_int,\l_@@_tmpb_int,\l_@@_tmpa_tl,\l_@@_tmpb_tl}
+%    \begin{macrocode}
+\int_new:N \l_@@_tmpa_int
+\int_new:N \l_@@_tmpb_int
+\tl_new:N  \l_@@_tmpa_tl
+\tl_new:N  \l_@@_tmpb_tl
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\@@_module_error:nnn,\@@_module_warning:nn}
+%    \begin{macrocode}
+\cs_set_eq:NN \@@_module_error:nnn  \phy@ModuleError
+\cs_set_eq:NN \@@_module_warning:nn \phy@ModuleWarning
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_math_vphantom:n}
+%    \begin{macrocode}
+\cs_set_eq:NN \@@_math_vphantom:n   \phy@mathvphantom
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareBiggg,\@@_declare_biggg:nn}
+%    \begin{macrocode}
+\cs_new_nopar:Npn \DeclareBiggg #1#2
+  {
+    \AddToHook { begindocument/before }
+      { \@@_declare_biggg:nn {#1} {#2} }
+  }
+\cs_new_nopar:Npn \@@_declare_biggg:nn #1#2
+  {
     \DeclareRobustCommand#1{\bBigg@{#2}}%
     \edef\phy@tempa{\expandafter\@gobble\string#1}%
-    \ifcsname\phy@tempa m\endcsname\else
-      \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}%
-      \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}%
-      \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}%
-    \fi
+    \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}%
+    \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}%
+    \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}%
     \expandafter\def\csname phy@ab@chk\string#1\endcsname{}%
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_declare_biggg:}
+%    \begin{macrocode}
+\cs_new_nopar:Npn \@@_declare_biggg:
+  {
+    \expandafter\def\csname phy@ab@chk\string*\endcsname{}
+    \expandafter\def\csname phy@ab@chk\string\big\endcsname{}
+    \expandafter\def\csname phy@ab@chk\string\Big\endcsname{}
+    \expandafter\def\csname phy@ab@chk\string\bigg\endcsname{}
+    \expandafter\def\csname phy@ab@chk\string\Bigg\endcsname{}
+    \@@_declare_biggg:nn \biggg { 3 }
+    \@@_declare_biggg:nn \Biggg { 3.5 }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_reset_math_class:nnn}
+%    \begin{macrocode}
+\cs_new_nopar:Npn \@@_reset_math_class:nnn #1 #2 #3
+  { }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_patch_unimath:}
+% \pkg{unicode-math} makes control sequences for math symbols the same as the
+% symbols themselves. For example, \cs{vert} and ``\texttt{\char`\|}'' are
+% \cs{cs_gset_eq:NN}'ed (or \cs{global}\cs{let}) to be same.
+% See \cs{__um_define_math_chars:} in \texttt{um-code-setchar.dtx}.
+%
+% In \modu{ab.braket} module of this package, we need \cs{vert} and
+% ``\texttt{\char`\|}'' to be different. So here we make \cs{vert} defined to
+% be a ``\texttt{\char`\|}'' with catcode 12 with \cs{xdef}. Then the meaning
+% of ``\texttt{\char`\|}'' is character ``\texttt{\char`\|}'' itself, and the
+% meaning of \cs{vert} is a \cs{protected}\cs{long} macro whose expansion is
+% ``\texttt{\char`\|}''.
+%    \begin{macrocode}
+\cs_new_nopar:Npn \@@_patch_unimath:
+  {
+    \cs_gset_protected_nopar:Npe \vert { \char_generate:nn {"007C} {12} }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_patch_no_unimath_common:}
+% In \LaTeXe\ kernel, \cs{vert} and \cs{|} are defined to be same, with
+% \cs{DeclareMathDelimiter}. In \modu{ab.braket} module of this package, we
+% also need \cs{vert} and \cs{|} to be different. So we use the same method
+% as \cs{@@_patch_unimath:}.
+%    \begin{macrocode}
+\cs_new_nopar:Npn \@@_patch_no_unimath_common:
+  {
+    \cs_gset_protected_nopar:Npn \| { \Vert }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_patch_amsmath:}
+%    \begin{macrocode}
+\cs_new_nopar:Npn \@@_patch_amsmath:
+  {
+    \phy@requiremodule { patch.amsmath }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_patch_mathtools:}
+% \cs{lparen} and \cs{rparen} are defined in \pkg{mathtools} or
+% \pkg{unicode-math}. If users didn't load any of them, we define them here.
+% The reason why we need to define them is that modules like \modu{ab} need
+% them.
+%    \begin{macrocode}
+\cs_new_nopar:Npn \@@_patch_mathtools:
+  {
+    \protected\def\lparen{(}
+    \protected\def\rparen{)}
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% Modules of \pkg{physics2} would use the following math symbol commands:
+% \begin{center}
+% \begin{minipage}{.6\textwidth}
+% \def\from#1{\textsuperscript{\textit{\textsf{#1}}}}%
+% \hfil
+% \begin{tabular}{lll}
+% \hline
+% & \cs{lparen}\from{m} & \cs{rparen}\from{m} \\
+% & \cs{lbrack}         & \cs{rbrack}         \\
+% & \cs{lbrace}         & \cs{rbrace}         \\
+% & \cs{langle}         & \cs{rangle}         \\
+% \cs{vert} & \cs{lvert}\from{a} & \cs{rvert}\from{a} \\
+% \cs{Vert} & \cs{lVert}\from{a} & \cs{rVert}\from{a} \\
+% \hline
+% \end{tabular}%
+% \hfil\par
+% \from{a}Defined in \pkg{amsmath}   \par
+% \from{m}Defined in \pkg{mathtools} \par
+% \end{minipage}
+% \end{center}
+% If users load \pkg{unicode-math}, \pkg{unicode-math} would define these
+% commands. If not, note that we cannot use them directly because some of
+% them are not defined in \LaTeXe\ kernel. Some of them are defined in
+% \pkg{amsmath} and some are defined in \pkg{mathtools}. We need to define
+% those undefined in \pkg{physics2}. \pkg{mathtools} loads \pkg{amsmath}
+% automatically, so those defined in \pkg{amsmath} needn't be defined again
+% if \pkg{mathtools} is loaded. But if \pkg{amsmath} is loaded but \pkg{mathtools}
+% is not, we need to define those defined in \pkg{mathtools} but not in
+% \pkg{amsmath}. We need to make a patch for this, whose code is to define
+% these commands if one or some of them are not defined, that is, if at least
+% one of \pkg{unicode-math}, \pkg{mathtools} and \pkg{amsmath}, is not loaded.
+% First we need to check if \pkg{unicode-math} is loaded, then \pkg{mathtools},
+% and finally \pkg{amsmath}. So we get
+% \begin{verbatim}
+% \IfPackageLoadedF { unicode-math }
+%   {
+%     \IfPackageLoadedF { mathtools }
+%       {
+%         \@@_patch_mathtools:   % -> to define \lparen, \rparen
+%         \IfPackageLoadedF { amsmath }
+%           {
+%             \@@_patch_amsmath: % -> to define \lvert, \rvert, \lVert, \rVert
+%           }
+%       }
+%   }
+% \end{verbatim}
+% Those packages could be loaded after \pkg{physics2}, so it's better to delay
+% the code to the end of preamble.
+%
+% \pkg{unicode-math} can be loaded before or after \pkg{physics2}, so if we
+% want to check if \pkg{unicode-math} is loaded, it's better to delay the code
+% to the end of preamble.
+%
+% What's more, \pkg{unicode-math} delays the definition
+% of math symbols (\cs{__um_define_math_chars:}) after the \env{document}
+% environment begins. In order to make the patch work, we need to delay the
+% patch after \cs{__um_define_math_chars:}. That's why we use \cs{AtBeginDocument}
+% in the true branch of \cs{IfPackageLoadedTF} in the following code.
+% 
+% If \pkg{unicode-math} is loaded, execute \cs{@@_patch_unimath:}.
+% \cs{@@_patch_unimath:} contains code to redefine math symbol commands, 
+% and \pkg{unicode-math} defines math symbols with \cs{__um_define_math_chars:}
+% after \env{document} begins. So we need to execute \cs{@@_patch_unimath:}
+% after \cs{__um_define_math_chars:}. That's why we use \cs{AtBeginDocument}
+% in the following code.
+%    \begin{macrocode}
+\AddToHook { begindocument/before }
+  {
+    \IfPackageLoadedTF { unicode-math }
+      {
+        \AtBeginDocument { \@@_patch_unimath: }
+      }
+      {
+        \@@_patch_no_unimath_common:
+        \IfPackageLoadedF { mathtools }
+          {
+            \@@_patch_mathtools:
+            \IfPackageLoadedF { amsmath }
+              {
+                \@@_patch_amsmath:
+              }
+          }
+      }
+    \@@_declare_biggg:
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ExplSyntaxOff
+%<@@=>
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Patch for \pkg{amsmath}}\label{subsec:patch.amsmath}
+%    \begin{macrocode}
+%<*patch.amsmath>
+\ProvidesFile{phy-patch.amsmath.sty}[2025/03/01 physics2 patch for amsmath]
+%    \end{macrocode}
+%
+% \begin{macro}{\lvert, \rvert, \lVert, \rVert}
+% The following code comes from \S7.2 (Vertical bar symbols)
+% of \texttt{amsmath.pdf}.
+% 
+% \cs{@xp} is replaced by \cs{expandafter} and
+% \cs{ifx}\cs{@@undefined}\cs[no-index]{\meta{cs}} is replaced by
+% \cs{ifdefined}\cs[no-index]{\meta{cs}}\cs{else}.
+%    \begin{macrocode}
+\def\@tempa#1#2\@nil{%
+  \ifx\delimiter#1\@tempcnta#2\relax\else\@tempcnta\z@\fi
+}
+\expandafter\@tempa\vert\@empty\@nil
+\ifnum\@tempcnta>\z@
+  \advance\@tempcnta "4000000
+  \protected\xdef\lvert{\delimiter\number\@tempcnta\space }
+  \advance\@tempcnta "1000000
+  \protected\xdef\rvert{\delimiter\number\@tempcnta\space }
+\else
+  \ifdefined\lvert\else
+    \DeclareMathDelimiter\lvert
+      {\mathopen}{symbols}{"6A}{largesymbols}{"0C}
+    \DeclareMathDelimiter\rvert
+      {\mathclose}{symbols}{"6A}{largesymbols}{"0C}
+  \fi
+\fi
+\expandafter\@tempa\Vert\@empty\@nil
+\ifnum\@tempcnta>\z@
+  \advance\@tempcnta "4000000
+  \protected\xdef\lVert{\delimiter\number\@tempcnta\space }
+  \advance\@tempcnta "1000000
+  \protected\xdef\rVert{\delimiter\number\@tempcnta\space }
+\else
+  \ifdefined\lVert\else
+    \DeclareMathDelimiter\lVert
+      {\mathopen}{symbols}{"6B}{largesymbols}{"0D}
+    \DeclareMathDelimiter\rVert
+      {\mathclose}{symbols}{"6B}{largesymbols}{"0D}
+  \fi
+\fi
+%    \end{macrocode}
+%\end{macro}
+% \begin{macro}{\resetMathstrut@,\@mathmeasure,\bBigg@}
+%    \begin{macrocode}
+\newdimen\phy@patch@bigsize
+\newbox\phy@patch@mathstrutbox
+\setbox\phy@patch@mathstrutbox=\hbox{}
+\ifx\Umathcharnumdef\@undefined
+  \def\resetMathstrut@{%
+    \begingroup
+    \setbox\z@\hbox{%
+      \mathchardef\@tempa\mathcode`\(\relax
+      \def\@tempb##1"##2##3{\the\textfont"##3\char"}%
+      \expandafter\@tempb\meaning\@tempa \relax
+    }%
+    \edef\@tempa{%
+      \ht\phy@patch@mathstrutbox\the\ht\z@\relax
+      \dp\phy@patch@mathstrutbox\the\dp\z@\relax}%
+    \expandafter\endgroup\@tempa
   }
 \else
-  \PackageInfo{physics2}{It is recommended to load `amsmath' before `physics2'}%
-  \def\DeclareBiggg#1#2{%
-    \phy@tempdima=6pt
-    \phy@tempdima=#2\phy@tempdima
-    \advance\phy@tempdima 3.5pt\relax
-    \DeclareRobustCommand#1[1]{\leavevmode@ifvmode
-      {\hbox{$\left#1\vbox to \phy@tempdima{}\right.\n@space$}}}
-    \AtBeginDocument{\ifdefined\bBigg@\DeclareRobustCommand#1{\bBigg@{#2}}\fi}%
-    \edef\phy@tempa{\expandafter\@gobble\string#1}%
-    \ifcsname\phy@tempa m\endcsname\else
-      \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}%
-      \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}%
-      \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}%
-    \fi
-    \expandafter\def\csname phy@ab@chk\string#1\endcsname{}%
+  \def\resetMathstrut@{%
+    \begingroup
+    \Umathcharnumdef\@tempa\Umathcodenum`\(\relax
+    \def\@tempb##1"##2"##3"##4\relax{%
+      \endgroup
+      \ht\phy@patch@mathstrutbox=\fontcharht\textfont"##3 "##4\relax
+      \dp\phy@patch@mathstrutbox=\fontchardp\textfont"##3 "##4\relax}%
+    \expandafter\@tempb\meaning\@tempa \relax
   }
 \fi
-\DeclareBiggg\biggg{3}
-\DeclareBiggg\Biggg{3.5}
+\addto@hook\every@math@size{\resetMathstrut@}
+\addto@hook\every@math@size{%
+  \global\phy@patch@bigsize 1.2\ht\phy@patch@mathstrutbox
+  \global\advance\phy@patch@bigsize 1.2\dp\phy@patch@mathstrutbox }
+\def\@mathmeasure#1#2#3{\setbox#1\hbox{%
+  \m@th$#2#3$}}
+\def\bBigg@#1#2{\leavevmode@ifvmode
+  {\@mathmeasure\z@{\nulldelimiterspace\z@}%
+     {\left#2\vcenter to#1\phy@patch@bigsize{}\right.}%
+  \box\z@}}
+\DeclareRobustCommand\big{\bBigg@{1}}
+\DeclareRobustCommand\Big{\bBigg@{1.5}}
+\DeclareRobustCommand\bigg{\bBigg@{2}}
+\DeclareRobustCommand\Bigg{\bBigg@{2.5}}
 %    \end{macrocode}
-% \begin{function}{\phy@mathvphantom}
-%   \begin{syntax}
-%     \cs{phy@mathvphantom} \marg{math mode material}
-%   \end{syntax}
-%   This command is just like \cs{vphantom} in \LaTeXe\ kernel but only works
-%   in math mode.
-% \end{function}
+% \end{macro}
 %    \begin{macrocode}
-\def\phy@mathvphantom#1{\setbox\phy@tempboxa=\hbox{}%
-  \mathchoice
-    {\setbox\@tempboxa\hbox{$\displaystyle#1$}%
-      \ht\phy@tempboxa=\ht\@tempboxa
-      \dp\phy@tempboxa=\dp\@tempboxa
-      \box\phy@tempboxa}
-    {\setbox\@tempboxa\hbox{$\textstyle#1$}%
-      \ht\phy@tempboxa=\ht\@tempboxa
-      \dp\phy@tempboxa=\dp\@tempboxa
-      \box\phy@tempboxa}
-    {\setbox\@tempboxa\hbox{$\scriptstyle#1$}%
-      \ht\phy@tempboxa=\ht\@tempboxa
-      \dp\phy@tempboxa=\dp\@tempboxa
-      \box\phy@tempboxa}
-    {\setbox\@tempboxa\hbox{$\scriptscriptstyle#1$}%
-      \ht\phy@tempboxa=\ht\@tempboxa
-      \dp\phy@tempboxa=\dp\@tempboxa
-      \box\phy@tempboxa}%
-}
-%</package>
+%</patch.amsmath>
 %    \end{macrocode}
 \endinput

@@ -17,6 +17,7 @@ function build_doc() {
 function build_code_doc() {
   for i in {1..$1}; do
     xelatex physics2-code.dtx
+    makeindex -s gind.ist physics2-code
   done
 }
 

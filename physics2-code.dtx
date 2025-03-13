@@ -119,6 +119,7 @@ The Current Maintainer of this work is
 \generate{
   \usedir{tex/latex/physics2}
     \file{physics2.sty}          {\from{physics2-code.src.base.dtx}{package}}
+    \file{phy-patch.amsmath.sty} {\from{physics2-code.src.base.dtx}{patch.amsmath}}
     \file{phy-ab.sty}            {\from{physics2-code.src.ab.dtx}{ab}}
     \file{phy-xab.sty}           {\from{physics2-code.src.ab.dtx}{xab}}
     \file{phy-ab.legacy.sty}     {\from{physics2-code.src.ab.dtx}{ab.legacy}}
@@ -127,7 +128,7 @@ The Current Maintainer of this work is
     \file{phy-xmat.sty}          {\from{physics2-code.src.matrix.dtx}{xmat}}
     \file{phy-diagmat.sty}       {\from{physics2-code.src.matrix.dtx}{diagmat}}
     \file{phy-doubleprod.sty}    {\from{physics2-code.src.operator.dtx}{doubleprod}}
-    \file{phy-difop.sty}         {\from{physics2-code.src.operator.dtx}{difop}}
+    \file{phy-diffop.sty}        {\from{physics2-code.src.operator.dtx}{diffop}}
     \file{phy-nabla.legacy.sty}  {\from{physics2-code.src.operator.dtx}{nabla.legacy}}
     \file{phy-op.legacy.sty}     {\from{physics2-code.src.operator.dtx}{op.legacy}}
     \file{phy-bm-um.legacy.sty}  {\from{physics2-code.src.misc.dtx}{bm-um.legacy}}
@@ -174,21 +175,20 @@ The Current Maintainer of this work is
 %<*driver>
 \ProvidesFile{physics2-code.dtx}[2024/01/22 (c) Copyright 2022-2024 by Zhang Tingxuan]
 \documentclass{l3doc}
-\usepackage{doc}
 \hypersetup{hidelinks}
-\usepackage{color}
-\definecolor{pkgcolor}{RGB}{0,120,80}
-\definecolor{moducolor}{RGB}{0,0,150}
+\definecolor{pkg}{RGB}{0,120,80}
+\definecolor{mod}{RGB}{0,0,150}
 \definecolor{gray}{rgb}{.5,.5,.5}
-\DeclareRobustCommand\pkg[1]{\texorpdfstring{\textcolor{pkgcolor}{\textsf{#1}}}{“#1”}}
-\DeclareRobustCommand\modu[1]{\texorpdfstring{\textcolor{moducolor}{\textsf{#1}}}{“#1”}}
-\DeclareRobustCommand\note{\textbf{Note:} }
-\usepackage{amsmath}
-\usepackage{fontspec}
-\setmonofont{Latin Modern Mono Light}
-\usepackage{fancyvrb}
-\fvset{gobble=2,xleftmargin=2em}
+\DeclareRobustCommand\pkg[1]{\texorpdfstring{\textcolor{pkg}{\textsf{#1}}}{“#1”}}
+\DeclareRobustCommand\modu[1]{\texorpdfstring{\textcolor{mod}{\textsf{#1}}}{“#1”}}
+\usepackage{amsmath,fontspec,physics2}
+\setmonofont{cmunbtl}[Extension=.otf,ItalicFont=cmunbto,BoldFont=cmuntt,BoldItalicFont=cmunst]
+\fvset{gobble=2,fontsize=\small,numbers=left,numbersep=0pt,vspace=\MacrocodeTopsep,xleftmargin=\MacroIndent}
 \makeatletter
+\renewcommand\theFancyVerbLine{{\color{gray}\sffamily\tiny\ifnum\c@FancyVerbLine=1
+  EXAMPLE\quad\fi\arabic{FancyVerbLine}}\ }
+\def\@getver#1 #2 #3\fin{#1\quad#2}
+\xdef\@date{\expandafter\expandafter\expandafter\@getver\csname ver@physics2.sty\endcsname\fin}
 \@addtoreset{CodelineNo}{section}
 \def\DeclareSourceFile#1{%
   \markright{Source file: \texttt{physics2-code.src.#1.dtx}}%
@@ -200,6 +200,7 @@ The Current Maintainer of this work is
   \let\@oddhead\relax%
   \let\@mkboth\markboth
 }
+%% BEGIN
 \newbox\@tempboxb
 \DeclareDocumentCommand\macrodef{O{4em}O{.6}mo+m}{\leavevmode
 \ensuremath{%
@@ -235,18 +236,34 @@ The Current Maintainer of this work is
   \ttwd=\wd\@tempboxa
 }
 \updatettwd
+%% END
+\ExplSyntaxOn
+\seq_new:N \l__phydoc_tmpa_seq
+\seq_new:N \l__phydoc_tmpb_seq
+\prg_set_conditional:Npnn \__codedoc_if_macro_internal:n #1 { p , T , F , TF }
+  {
+    \bool_if:NTF \l__codedoc_macro_internal_bool
+      { \prg_return_true: }
+      { \prg_return_false: }
+  }
+\DeclareDocumentCommand \relatedint { m }
+  { \par { \small\textbf{Related~internal~command(s):}~ \relatedint_auxi:n {#1} . } \par }
+\cs_new:Npn \relatedint_auxi:n #1
+  {
+    \seq_set_from_clist:Nn \l__phydoc_tmpa_seq {#1}
+    \seq_set_map:NNn \l__phydoc_tmpb_seq \l__phydoc_tmpa_seq { \cs{##1} }
+    \seq_use:Nnnn \l__phydoc_tmpb_seq { ~and~ } { ,~ } { ,~and~ }
+  }
+\ExplSyntaxOff
 \makeatother
 \title{Code documentation to the \pkg{physics2} package}
-\author{Zhang Tingxuan}
-\date{2024/12/10 v2.0.0}
+\author{Zhang Tingxuan\\\url{https://www.github.com/AlphaZTX/physics2}}
+\date{2025/03/01 v2.0.0}
 \begin{document}
   \maketitle
   \begin{abstract}
-  This document gives notes to the source code of the \pkg{physics2} package
-  and all modules released together with \pkg{physics2}. The rule for naming
-  source files is \texttt{physics2-code.src.\meta{collection}.dtx}, where one
-  collection can contain more than one modules that share similar topics. The
-  collection name of the \pkg{physics2} package itself is ``base''.
+  This document tells how to write a module of \pkg{physics2} and gives notes
+  on the code of \pkg{physics2} and its modules.
   \end{abstract}
   \tableofcontents\newpage
   \pagestyle{phy}
@@ -257,6 +274,8 @@ The Current Maintainer of this work is
   \DocInput{physics2-code.src.operator.dtx}
   \DocInput{physics2-code.src.misc.dtx}
   \DocInput{physics2-code.src.helper.dtx}
+  \clearpage
+  \PrintIndex
 \end{document}
 %</driver>
 % \fi
