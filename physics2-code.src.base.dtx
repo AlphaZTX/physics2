@@ -14,24 +14,24 @@
 % The \pkg{physics2} package itself provides a standard interface for loading
 % modules. A module is a pure text file that contains \TeX\ code. One module
 % provides one bundle of functions. The file name of a module is like
-% \texttt{phy-\meta{module}.sty}. It's recommended that functions in a module
+% \texttt{phys.\meta{module}.sty}. It's recommended that functions in a module
 % are aimed at a specific topic and share similar usage. Modules can handle
 % key-value options.
 %
 % The beginning of a module's content should be like
 % \begin{verbatim}
-% \ProvidesFile{phy-MODULE_NAME.sty}[YYYY/MM/DD DESCRIPTION]
+% \ProvidesFile{phys.MODULE_NAME.sty}[YYYY/MM/DD DESCRIPTION]
 % \end{verbatim}
-% where \texttt{phy-MODULE_NAME.sty} is the same as the file name of the module.
+% where \texttt{phys.MODULE_NAME.sty} is the same as the file name of the module.
 % After this line, other packages or \pkg{physics2} modules can be required,
 % and options of this module can be processed.
 %
 % For example, the beginning of a module might look like
 % \begin{verbatim}
-% \ProvidesFile{phy-something.sty}
+% \ProvidesFile{phys.something.sty}
 %   [2025/01/01 This module does something]
 % \RequirePackage{...}
-% \phy@requiremodule{...}
+% \RequirePhysicsModule{...}
 % \DeclareKeys{bool-option.if=phy@ModBoolA}
 % \SetKeys{bool-option=true}
 % \ProcessKeyOptions
@@ -60,15 +60,30 @@
 % Common temporary variables (L3 style) that can be shared by any module.
 % \end{variable}
 %
-% \begin{function}{\usephysicsmodule,\phy@requiremodule}
+% \begin{function}{\usephysicsmodule,\RequirePhysicsModule}
 % \begin{syntax}
 % \cs{usephysicsmodule} \oarg{key-val options} \marg{module} \oarg{date}
-% \cs{phy@requiremodule} \oarg{key-val options} \marg{module} \oarg{date}
+% \cs{RequirePhysicsModule} \oarg{key-val options} \marg{module} \oarg{date}
 % \end{syntax}
 % Loads modules. The usage is the same as \cs{RequirePackage}.
-% \cs{usephysicsmodule} is a user command, and \cs{phy@requiremodule} is a
+% \cs{usephysicsmodule} is a user command, and \cs{RequirePhysicsModule} is a
 % developer command.
 % \relatedint{phy@modulewithdate}
+% \end{function}
+%
+% \begin{function}{\PassOptionsToPhysicsModule}
+% \begin{syntax}
+% \cs{PassOptionsToPhysicsModule} \marg{option list} \marg{module}
+% \end{syntax}
+% Passes options to a module. For example,
+% \begin{verbatim}
+% \PassOptionsToPhysicsModule{foo=bar}{baz}
+% \RequirePhysicsModule{baz}
+% \end{verbatim}
+% is equivalent to
+% \begin{verbatim}
+% \RequirePhysicsModule[foo=bar]{baz}
+% \end{verbatim}
 % \end{function}
 %
 % \begin{variable}{\phy@ModBoolA,\phy@ModBoolB}
@@ -176,11 +191,11 @@
 %    \begin{macrocode}
 \gdef\phy@ModuleError#1#2#3{%
   \GenericError{%
-    (phy-#1)\@spaces\@spaces\@spaces\@spaces
+    (phys.#1)\@spaces\@spaces\@spaces\@spaces
   }{%
     Module #1 (of physics2) Error: #2%
   }{%
-     See the physics2 package documentation (texdoc physics2) for explanation.%
+    See the physics2 package documentation (texdoc physics2) for explanation.%
   }{#3}%
 }
 %    \end{macrocode}
@@ -190,7 +205,7 @@
 %    \begin{macrocode}
 \def\phy@ModuleWarning#1#2{%
   \GenericWarning{%
-    (phy-#1)\@spaces\@spaces\@spaces\@spaces
+    (phys.#1)\@spaces\@spaces\@spaces\@spaces
   }{%
     Module #1 (of physics2) Warning: #2%
   }%
@@ -230,11 +245,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\usephysicsmodule, \phy@requiremodule}
+% \begin{macro}{\usephysicsmodule, \RequirePhysicsModule}
 %    \begin{macrocode}
 \def\usephysicsmodule{\@ifnextchar[%]
   {\phy@modulewithopt}{\phy@modulewithopt[]}}
-\let\phy@requiremodule\usephysicsmodule
+\let\RequirePhysicsModule\usephysicsmodule
 \@onlypreamble\usephysicsmodule
 \def\phy@modulewithopt[#1]#2{\@ifnextchar[%]
   {\phy@modulewithdate[{#1}]#2}{\phy@modulewithdate[{#1}]#2[]}}
@@ -248,7 +263,7 @@
     \ifx\@nnil##1\relax\else
       \ifx\@nnil##1\@nnil\else
         \phy@ResetModBools
-        \noexpand\@onefilewithoptions{phy-##1}[{\unexpanded{#1}}][{#3}]%
+        \noexpand\@onefilewithoptions{phys.##1}[{\unexpanded{#1}}][{#3}]%
         \noexpand\@pkgextension
       \fi
       \expandafter\reserved@b
@@ -256,6 +271,12 @@
     \edef\reserved@a{\zap@space#2 \@empty}%
     \edef\reserved@a{\expandafter\reserved@b\reserved@a,\@nnil,}%
   \reserved@a}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PassOptionsToPhysicsModule}
+%    \begin{macrocode}
+\def\PassOptionsToPhysicsModule#1#2{\@pass@ptions\@pkgextension{#1}{phys.#2}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -308,32 +329,32 @@
 %
 % \begin{macro}{\DeclareBiggg,\@@_declare_biggg:nn}
 %    \begin{macrocode}
-\cs_new_nopar:Npn \DeclareBiggg #1#2
+\cs_set_nopar:Npn \DeclareBiggg #1#2
   {
     \AddToHook { begindocument/before }
       { \@@_declare_biggg:nn {#1} {#2} }
   }
-\cs_new_nopar:Npn \@@_declare_biggg:nn #1#2
+\cs_set_nopar:Npn \@@_declare_biggg:nn #1#2
   {
     \DeclareRobustCommand#1{\bBigg@{#2}}%
     \edef\phy@tempa{\expandafter\@gobble\string#1}%
     \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}%
     \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}%
     \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}%
-    \expandafter\def\csname phy@ab@chk\string#1\endcsname{}%
+    \expandafter\def\csname phy.ab.chk\string#1\endcsname{}%
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@@_declare_biggg:}
 %    \begin{macrocode}
-\cs_new_nopar:Npn \@@_declare_biggg:
+\cs_set_nopar:Npn \@@_declare_biggg:
   {
-    \expandafter\def\csname phy@ab@chk\string*\endcsname{}
-    \expandafter\def\csname phy@ab@chk\string\big\endcsname{}
-    \expandafter\def\csname phy@ab@chk\string\Big\endcsname{}
-    \expandafter\def\csname phy@ab@chk\string\bigg\endcsname{}
-    \expandafter\def\csname phy@ab@chk\string\Bigg\endcsname{}
+    \expandafter\def\csname phy.ab.chk\string*\endcsname{}
+    \expandafter\def\csname phy.ab.chk\string\big\endcsname{}
+    \expandafter\def\csname phy.ab.chk\string\Big\endcsname{}
+    \expandafter\def\csname phy.ab.chk\string\bigg\endcsname{}
+    \expandafter\def\csname phy.ab.chk\string\Bigg\endcsname{}
     \@@_declare_biggg:nn \biggg { 3 }
     \@@_declare_biggg:nn \Biggg { 3.5 }
   }
@@ -342,7 +363,7 @@
 %
 % \begin{macro}{\@@_reset_math_class:nnn}
 %    \begin{macrocode}
-\cs_new_nopar:Npn \@@_reset_math_class:nnn #1 #2 #3
+\cs_set_nopar:Npn \@@_reset_math_class:nnn #1 #2 #3
   { }
 %    \end{macrocode}
 % \end{macro}
@@ -360,7 +381,7 @@
 % meaning of \cs{vert} is a \cs{protected}\cs{long} macro whose expansion is
 % ``\texttt{\char`\|}''.
 %    \begin{macrocode}
-\cs_new_nopar:Npn \@@_patch_unimath:
+\cs_set_nopar:Npn \@@_patch_unimath:
   {
     \cs_gset_protected_nopar:Npe \vert { \char_generate:nn {"007C} {12} }
   }
@@ -373,7 +394,7 @@
 % also need \cs{vert} and \cs{|} to be different. So we use the same method
 % as \cs{@@_patch_unimath:}.
 %    \begin{macrocode}
-\cs_new_nopar:Npn \@@_patch_no_unimath_common:
+\cs_set_nopar:Npn \@@_patch_no_unimath_common:
   {
     \cs_gset_protected_nopar:Npn \| { \Vert }
   }
@@ -382,9 +403,9 @@
 %
 % \begin{macro}{\@@_patch_amsmath:}
 %    \begin{macrocode}
-\cs_new_nopar:Npn \@@_patch_amsmath:
+\cs_set_nopar:Npn \@@_patch_amsmath:
   {
-    \phy@requiremodule { patch.amsmath }
+    \RequirePhysicsModule { patch.amsmath }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -395,7 +416,7 @@
 % The reason why we need to define them is that modules like \modu{ab} need
 % them.
 %    \begin{macrocode}
-\cs_new_nopar:Npn \@@_patch_mathtools:
+\cs_set_nopar:Npn \@@_patch_mathtools:
   {
     \protected\def\lparen{(}
     \protected\def\rparen{)}
@@ -496,13 +517,21 @@
 %</package>
 %    \end{macrocode}
 %
-% \subsection{Patch for \pkg{amsmath}}\label{subsec:patch.amsmath}
+% \subsubsection*{Patch for \pkg{amsmath}}\label{subsubsec:patch.amsmath}
+%
+% \begin{function}{\lvert,\rvert,\lVert,\rVert}
+% The left/right specific versions of \cs{vert} and \cs{Vert}.
+% \end{function}
+%
+% \begin{function}{\bBigg@}
+% \end{function}
+%
 %    \begin{macrocode}
 %<*patch.amsmath>
-\ProvidesFile{phy-patch.amsmath.sty}[2025/03/01 physics2 patch for amsmath]
+\ProvidesFile{phys.patch.amsmath.sty}[2025/03/01 physics2 patch for amsmath]
 %    \end{macrocode}
 %
-% \begin{macro}{\lvert, \rvert, \lVert, \rVert}
+% \begin{macro}{\lvert,\rvert,\lVert,\rVert}
 % The following code comes from \S7.2 (Vertical bar symbols)
 % of \texttt{amsmath.pdf}.
 % 
@@ -543,6 +572,7 @@
 \fi
 %    \end{macrocode}
 %\end{macro}
+%
 % \begin{macro}{\resetMathstrut@,\@mathmeasure,\bBigg@}
 %    \begin{macrocode}
 \newdimen\phy@patch@bigsize
@@ -591,4 +621,4 @@
 %    \begin{macrocode}
 %</patch.amsmath>
 %    \end{macrocode}
-\endinput
+% \endinput

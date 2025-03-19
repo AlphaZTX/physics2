@@ -20,7 +20,7 @@
 %                                 physics2-code.src.<collection>.dtx,
 %           and the derived files physics2.ins,
 %                                 physics2.sty,
-%                                 phy-<module>.sty,
+%                                 phys.<module>.sty,
 %                                 physics2-code.pdf,
 %                             and README.md.
 %
@@ -110,7 +110,7 @@ The Current Maintainer of this work is
                                  physics2-code.src.<collection>.dtx,
            and the derived files physics2.ins,
                                  physics2.sty,
-                                 phy-<module>.sty,
+                                 phys.<module>.sty,
                                  physics2-code.pdf,
                              and README.md.
 
@@ -119,21 +119,21 @@ The Current Maintainer of this work is
 \generate{
   \usedir{tex/latex/physics2}
     \file{physics2.sty}          {\from{physics2-code.src.base.dtx}{package}}
-    \file{phy-patch.amsmath.sty} {\from{physics2-code.src.base.dtx}{patch.amsmath}}
-    \file{phy-ab.sty}            {\from{physics2-code.src.ab.dtx}{ab}}
-    \file{phy-xab.sty}           {\from{physics2-code.src.ab.dtx}{xab}}
-    \file{phy-ab.legacy.sty}     {\from{physics2-code.src.ab.dtx}{ab.legacy}}
-    \file{phy-ab.braket.sty}     {\from{physics2-code.src.braket.dtx}{ab.braket}}
-    \file{phy-braket.sty}        {\from{physics2-code.src.braket.dtx}{braket}}
-    \file{phy-xmat.sty}          {\from{physics2-code.src.matrix.dtx}{xmat}}
-    \file{phy-diagmat.sty}       {\from{physics2-code.src.matrix.dtx}{diagmat}}
-    \file{phy-doubleprod.sty}    {\from{physics2-code.src.operator.dtx}{doubleprod}}
-    \file{phy-diffop.sty}        {\from{physics2-code.src.operator.dtx}{diffop}}
-    \file{phy-nabla.legacy.sty}  {\from{physics2-code.src.operator.dtx}{nabla.legacy}}
-    \file{phy-op.legacy.sty}     {\from{physics2-code.src.operator.dtx}{op.legacy}}
-    \file{phy-bm-um.legacy.sty}  {\from{physics2-code.src.misc.dtx}{bm-um.legacy}}
-    \file{phy-qtext.legacy.sty}  {\from{physics2-code.src.misc.dtx}{qtext.legacy}}
-    \file{phy-helper.sty}        {\from{physics2-code.src.helper.dtx}{helper}}
+    \file{phys.patch.amsmath.sty} {\from{physics2-code.src.base.dtx}{patch.amsmath}}
+    \file{phys.ab.sty}            {\from{physics2-code.src.ab.dtx}{ab}}
+    \file{phys.xab.sty}           {\from{physics2-code.src.ab.dtx}{xab}}
+    \file{phys.ab.legacy.sty}     {\from{physics2-code.src.ab.dtx}{ab.legacy}}
+    \file{phys.ab.braket.sty}     {\from{physics2-code.src.braket.dtx}{ab.braket}}
+    \file{phys.braket.sty}        {\from{physics2-code.src.braket.dtx}{braket}}
+    \file{phys.xmat.sty}          {\from{physics2-code.src.matrix.dtx}{xmat}}
+    \file{phys.diagmat.sty}       {\from{physics2-code.src.matrix.dtx}{diagmat}}
+    \file{phys.doubleprod.sty}    {\from{physics2-code.src.operator.dtx}{doubleprod}}
+    \file{phys.diffop.sty}        {\from{physics2-code.src.operator.dtx}{diffop}}
+    \file{phys.nabla.legacy.sty}  {\from{physics2-code.src.operator.dtx}{nabla.legacy}}
+    \file{phys.op.legacy.sty}     {\from{physics2-code.src.operator.dtx}{op.legacy}}
+    \file{phys.bm-um.legacy.sty}  {\from{physics2-code.src.misc.dtx}{bm-um.legacy}}
+    \file{phys.qtext.legacy.sty}  {\from{physics2-code.src.misc.dtx}{qtext.legacy}}
+    \file{phys.helper.sty}        {\from{physics2-code.src.helper.dtx}{helper}}
 %</install>
 %<*internal>
   \usedir{source/latex/physics2}
@@ -152,7 +152,7 @@ The Current Maintainer of this work is
 \Msg{*  following files into a directory searched by TeX:     *}
 \Msg{*                                                        *}
 \Msg{*                    physics2.sty,                       *}
-\Msg{*  (for all modules) phy-<module>.sty.                   *}
+\Msg{*  (for all modules) phys.<module>.sty.                   *}
 \Msg{*                                                        *}
 \Msg{*  The recommended directory is                          *}
 \Msg{*    TEXMFDIST/tex/latex/physics2                        *}
