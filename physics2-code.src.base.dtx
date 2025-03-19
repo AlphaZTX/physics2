@@ -91,11 +91,10 @@
 % when a module is loaded.
 % \end{variable}
 %
-% \begin{function}{\phy@ModuleError,\phy@ModuleWarning,
-%   \@@_module_error:nnn,\@@_module_warning:nn}
+% \begin{function}{\PhysicsModuleError,\PhysicsModuleWarning}
 % \begin{syntax}
-% \cs{phy@ModuleError} \marg{module} \marg{error message} \marg{help message}
-% \cs{phy@ModuleWarning} \marg{module} \marg{warning message}
+% \cs{PhysicsModuleError} \marg{module} \marg{error message} \marg{help message}
+% \cs{PhysicsModuleWarning} \marg{module} \marg{warning message}
 % \cs{@@_module_error:nnn} \marg{module} \marg{error message} \marg{help message}
 % \cs{@@_module_warning:nn} \marg{module} \marg{warning message}
 % \end{syntax}
@@ -187,9 +186,9 @@
   [2025/03/01 v2.0.0 Tools for typesetting math formulae.]
 %    \end{macrocode}
 %
-% \begin{macro}{\phy@ModuleError}
+% \begin{macro}{\PhysicsModuleError}
 %    \begin{macrocode}
-\gdef\phy@ModuleError#1#2#3{%
+\gdef\PhysicsModuleError#1#2#3{%
   \GenericError{%
     (phys.#1)\@spaces\@spaces\@spaces\@spaces
   }{%
@@ -201,9 +200,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\phy@ModuleWarning}
+% \begin{macro}{\PhysicsModuleWarning}
 %    \begin{macrocode}
-\def\phy@ModuleWarning#1#2{%
+\def\PhysicsModuleWarning#1#2{%
   \GenericWarning{%
     (phys.#1)\@spaces\@spaces\@spaces\@spaces
   }{%
@@ -312,12 +311,6 @@
 \int_new:N \l_@@_tmpb_int
 \tl_new:N  \l_@@_tmpa_tl
 \tl_new:N  \l_@@_tmpb_tl
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\@@_module_error:nnn,\@@_module_warning:nn}
-%    \begin{macrocode}
-\cs_set_eq:NN \@@_module_error:nnn  \phy@ModuleError
-\cs_set_eq:NN \@@_module_warning:nn \phy@ModuleWarning
 %    \end{macrocode}
 % \end{macro}
 %
