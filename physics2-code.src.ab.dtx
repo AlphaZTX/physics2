@@ -1,46 +1,245 @@
 % \DeclareSourceFile{ab}
 %
-%
-%
 % \section{The \modu{ab} module}
-% This module is important but the code is hard to read. One of the motivations
-% I manage \pkg{physics2} with \pkg{DocStrip} is that, when I tried to write a
-% new module based on \modu{ab} after 5 months when I maintained \pkg{physics2}
-% the last time, I found that I could not understand the code I wrote at all!
-% Therefore, it's significant to comment out the alien code in \modu{ab}.
+%
+% \subsection{API}
+%
+% \begin{function}{\phy@ab@open,\phy@ab@close}
+% \begin{syntax}
+% \cs{phy@ab@open} \meta{left delimiter}
+% \cs{phy@ab@close} \meta{right delimiter}
+% \end{syntax}
+% Their expansions are either \cs{delopen} \cs{delclose} or \cs{left} cs{right}.
+% Which expansion is resulted in depends on the value of the \texttt{tightbraces}
+% option of this module.
+% \end{function}
+%
+% \begin{function}{\ab}
+% \begin{syntax}
+% \cs{ab} \meta{left delimiter} \meta{subformula} \meta{right delimiter}
+% \cs{ab} \meta{\cs{biggg} or *} \meta{left delimiter} \meta{subformula} \meta{right delimiter}
+% \end{syntax}
+% User-level command.
+% See the \pkg{physics2} package documentation.
+% \end{function}
+%
+% \begin{function}{\@@_ab_ns_declare_cs:nN}
+% \begin{syntax}
+% \cs{@@_ab_ns_declare_cs:nN} \marg{namespace} \meta{command}
+% \end{syntax}
+% Declare a command like \cs{ab} in the namespace \meta{namespace}.
+% \end{function}
+%
+% \subsection{Internal commands}
+%
+% \subsection{Code implementation}
+%
 %    \begin{macrocode}
 %<*ab>
-\ProvidesFile{phy-ab.sty}
-  [2024/06/06 `ab' (autobraces) module of physics2]
+\ProvidesFile{phys.ab.sty}
+  [2024/12/10 `ab' (autobraces) module of physics2]
 %    \end{macrocode}
-% If you don't know when to use \cs{phy@define@key}, \cs{phy@setkeys} and
-% \cs{phy@processkeyopt} in a module, see ahead. In \modu{ab}, the |tightbraces|
-% option can control if the automatically-sized braces are tight or not. Do you
-% remember \cs{delopen} and \cs{delclose}?
+%
+% In \modu{ab}, the \texttt{tightbraces} option determines if the 
+% automatically-sized braces are tight or not.
 %    \begin{macrocode}
-\phy@define@key{ab}{tightbraces}[true]{\def\@phy@abtight{#1}}
-\phy@setkeys{ab}{tightbraces=true}
-\phy@processkeyopt{ab}
+\DeclareKeys{tightbraces.if=phy@ModBoolA}
+\SetKeys{tightbraces=true}
+\ProcessKeyOptions\relax
 %    \end{macrocode}
-% \begin{function}{\phy@abopen, \phy@abclose}
-%   \begin{syntax}
-%     \cs{phy@abopen} \meta{left delimiter}
-%     \cs{phy@abclose} \meta{right delimiter}
-%   \end{syntax}
-%   They are defined either \{\cs{delopen}, \cs{delclose}\} or
-%   \{\cs{left}, \cs{right}\}. If a module requires \modu{ab},
-%   these two commands are likely to be used.
-% \end{function}
+%
+% \begin{macro}{\phy@ab@open,\phy@ab@close}
 %    \begin{macrocode}
-\ifx\@phy@abtight\phy@true
-  \let\phy@abopen\delopen
-  \let\phy@abclose\delclose
+\ifphy@ModBoolA
+  \let\phy@ab@open\delopen
+  \let\phy@ab@close\delclose
 \else
-  \let\phy@abopen\left
-  \let\phy@abclose\right
+  \let\phy@ab@open\left
+  \let\phy@ab@close\right
 \fi
 %    \end{macrocode}
-% \subsection{The implementation of \cs{ab}}
+% \end{macro}
+%
+%    \begin{macrocode}
+%<@@=phy>
+\ExplSyntaxOn
+%    \end{macrocode}
+%
+% \begin{macro}{\@@_ab_ns_declare_cs:nN}
+%    \begin{macrocode}
+\cs_set:Npn \@@_ab_ns_declare_cs:nN #1#2
+  {
+    % \DeclareRobustCommand #2 { \@@_ab:nN {#1} }
+    \cs_new_protected:Npn #2 ##1 { \@@_ab:nN {#1} ##1 }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_ab:nN}
+%    \begin{macrocode}
+\cs_set:Npn \@@_ab:nN #1#2
+  {
+    \ifcsname phy.ab.chk \string #2 \endcsname
+      \def \phy@tempa {1}
+    \else
+      \def \phy@tempa {0}
+    \fi
+    \csname phy.ab.i. #1 \phy@tempa \endcsname #2
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_ab_use:c}
+%    \begin{macrocode}
+\cs_set:Npn \@@_ab_use:c #1 {\csname #1\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_ab_declare_ns:n}
+%    \begin{macrocode}
+\cs_set:Npn \@@_ab_declare_ns:n #1
+  {
+    \long \expandafter \def \csname phy.ab.i. #1 0 \endcsname ##1
+      {
+        \@@_ab_use:c {phy.ab.ns. #1 0. \string ##1} ##1
+      }
+    \long \expandafter \def \csname phy.ab.i. #1 1 \endcsname ##1##2
+      {
+        \begingroup
+        \ifx##1*
+          \let \phy@tempa \@empty
+        \else
+          \let \phy@tempa ##1
+        \fi
+        \@@_ab_use:c {phy.ab.ns. #1 1. \string ##2} \phy@tempa ##2
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_ab_add_cs_to_ns:nNNNN,\@@_ab_add_sym_to_ns:nNNNN,\@@_ab_add_to_ns:nNNNN}
+%    \begin{macrocode}
+\cs_set:Npn \@@_ab_add_cs_to_ns:nNNNN #1#2#3#4#5
+  {
+    \exp_args:Nco \DeclareDocumentCommand { phy.ab.ns. #1 0. \string #2 } { +r #2#3 }
+      { \phy@ab@open #4 ##1 \phy@ab@close #5 }
+    \exp_args:Nco \DeclareDocumentCommand { phy.ab.ns. #1 1. \string #2 } { m +r #2#3 }
+      { \mathopen ##1 #4 ##2 \mathclose ##1 #5 \endgroup }
+  }
+\cs_set:Npn \@@_ab_add_sym_to_ns:nNNNN #1#2#3#4#5
+  {
+    \exp_args:Nco \DeclareDocumentCommand { phy.ab.ns. #1 0. \string #2 } { +r #2#3 }
+      { \phy@ab@open #4 ##1 \phy@ab@close #5 }
+    \exp_args:Nco \DeclareDocumentCommand { phy.ab.ns. #1 1. \string #2 } { m +r #2#3 }
+      { \mathopen ##1 #4 ##2 \mathclose ##1 #5 \endgroup }
+  }
+\cs_set:Npn \@@_ab_add_to_ns:nNNNN #1#2#3#4#5
+  {
+    \@@_ab_add_cs_to_ns:nNNNN  {#1} #4 #5 #4 #5
+    \@@_ab_add_sym_to_ns:nNNNN {#1} #2 #3 #4 #5
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\phy@ab@declare@ns@n,\phy@ab@add@cs@to@ns@nNNNN,
+%               \phy@ab@add@sym@to@ns@nNNNN,\phy@ab@add@to@ns@nNNNN,
+%               \phy@ab@ns@declare@cs@n}
+%    \begin{macrocode}
+\cs_set_eq:NN \phy@ab@declare@ns@n        \@@_ab_declare_ns:n
+\cs_set_eq:NN \phy@ab@add@cs@to@ns@nNNNN  \@@_ab_add_cs_to_ns:nNNNN
+\cs_set_eq:NN \phy@ab@add@sym@to@ns@nNNNN \@@_ab_add_sym_to_ns:nNNNN
+\cs_set_eq:NN \phy@ab@add@to@ns@nNNNN     \@@_ab_add_to_ns:nNNNN
+\cs_set_eq:NN \phy@ab@ns@declare@cs@nN    \@@_ab_ns_declare_cs:nN
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ab}
+%    \begin{macrocode}
+\@@_ab_declare_ns:n       {ab}
+\@@_ab_add_to_ns:nNNNN    {ab}  (      )     \lparen \rparen
+\@@_ab_add_to_ns:nNNNN    {ab}  [      ]     \lbrack \rbrack
+\@@_ab_add_to_ns:nNNNN    {ab} \{     \}     \lbrace \rbrace
+\@@_ab_add_to_ns:nNNNN    {ab}  <      >     \langle \rangle
+\@@_ab_add_to_ns:nNNNN    {ab}  |      |     \vert   \vert
+\@@_ab_add_to_ns:nNNNN    {ab} \|     \|     \Vert   \Vert
+\@@_ab_add_cs_to_ns:nNNNN {ab} \lvert \rvert \vert   \vert
+\@@_ab_add_cs_to_ns:nNNNN {ab} \lVert \rVert \Vert   \Vert
+\@@_ab_ns_declare_cs:nN   {ab} \ab
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+\ExplSyntaxOff
+%<@@=>
+%    \end{macrocode}
+%
+% \begin{function}{\phy@AB@gen}
+%   \begin{syntax}
+%     \cs{phy@AB@gen} \marg{branch name} \meta{left delimiter} \marg{arg spec} \marg{definition}
+%   \end{syntax}
+% \end{function}
+%    \begin{macrocode}
+\def\phy@AB@gen#1#2{\expandafter\DeclareDocumentCommand\csname phy.ab.ns.#1.\string#2\endcsname}
+%    \end{macrocode}
+% \cs{endgroup}'s in the end of the following definitions are corresponding to
+% \cs{begingroup}'s in the definition of \cs{phy@d@l@genxm}.
+%    \begin{macrocode}
+%    \end{macrocode}
+% \begin{function}{\phy.ab.chk\biggg,\phy.ab.chk*}
+%   \begin{syntax}
+%     \cs{ifcsname} phy.ab.chk\cs{string}\meta{token to be tested}\cs{endcsname}
+%   \end{syntax}
+%   This is expanded to true only if \meta{token to be tested} is \texttt{*} or a command
+%   like \cs{biggg}. This is related to \cs{DeclareBiggg} command in \texttt{physics2.sty}.
+% \end{function}
+% \begin{function}{\phy@d@lx}
+%   \begin{syntax}
+%     \cs{phy@d@lx} \marg{biggg or star branch name} \marg{automatic branch name} \meta{next token}
+%   \end{syntax}
+%   When \meta{next token} is a \texttt{*} or command like \cs{biggg}, let \cs{reserved@a} be 
+%   \meta{biggg or star branch name}, that is, \texttt{mb}; when \meta{next token} is a left delimiter,
+%   let \cs{reserved@a} be \meta{automatic branch name}, that is, \texttt{ab}. Finally this command is
+%   expanded to \texttt{\cs{csname} phy@d@lx\meta{branch name}\cs{endcsname} \meta{next token}}.
+% \end{function}
+%    \begin{macrocode}
+\long\def\phy@ab@main#1#2#3{%
+  \ifcsname phy.ab.chk\string#3\endcsname\def\phy@tempa{#1}%
+  \else\def\phy@tempa{#2}%
+  \fi\csname phy.ab.i.\phy@tempa\endcsname#3}
+%    \end{macrocode}
+% \begin{function}{\phy@d@l@genxm, \phy@d@l@genxa}
+%   \begin{syntax}
+%     \cs{phy@d@l@genxm} \marg{biggg or star branch name}
+%     \cs{phy@d@l@genxa} \marg{automatic branch name}
+%   \end{syntax}
+% \end{function}
+%    \begin{macrocode}
+\def\phy@d@l@genxm#1{%
+  \long\expandafter\def\csname phy.ab.i.#1\endcsname##1##2{%
+    \begingroup % \endgroup is at the end of #4 of \phy@AB@gen
+    \ifx##1*\let\phy@tempa=\relax\else\let\phy@tempa=##1\fi
+    \csname phy.ab.ns.#1.\string##2\endcsname\phy@tempa##2}}
+\def\phy@d@l@genxa#1{%
+  \long\expandafter\def\csname phy.ab.i.#1\endcsname##1{%
+    \csname phy.ab.ns.#1.\string##1\endcsname##1}}
+%    \end{macrocode}
+% \begin{function}{\phy.ab.i.ab.m, \phy.ab.i.ab.a}
+%   \begin{syntax}
+%     \cs{phy.ab.i.ab.m} \meta{biggg or *} \meta{left delimiter} \meta{subformula} \meta{right delimiter}
+%     \cs{phy.ab.i.ab.a} \phantom{\meta{biggg or *}} \meta{left delimiter} \meta{subformula} \meta{right delimiter}
+%   \end{syntax}
+% \end{function}
+%    \begin{macrocode}
+% \phy@d@l@genxm{ab1}
+% \phy@d@l@genxa{ab0}
+%    \end{macrocode}
+% \begin{function}{\ab}
+%   The users' command \cs{ab}.
+% \end{function}
+%    \begin{macrocode}
+% \DeclareRobustCommand\ab{\phy@ab@main{ab1}{ab0}}
+%</ab>
+%    \end{macrocode}
+%
 % This is the alienest part of \modu{ab}. It's better to draw something rather
 % than write boring comments. Let's take a look at \cs{ab}'s syntax.
 % After \cs{ab} should be a pair of delimiters; take \texttt{()} as an example.
@@ -55,7 +254,8 @@
 % 
 % \cs{phy@d@lx} is defined as follows:
 % \[
-%   \macrodef {phy@d@lx} [\#1: star or biggg branch name, \meta{mb}; \#2: automatic branch name, \meta{ab}; \#3: the token after \cs{ab}, \meta{tok}]
+%   \macrodef {phy@d@lx} [\#1: star or biggg branch name, \meta{mb}; \#2: automatic branch name, 
+%                         \meta{ab}; \#3: the token after \cs{ab}, \meta{tok}]
 %     {%
 %       \macroifelse {\meta{tok} == biggg or \meta{tok} == star}
 %         {let \meta{next cs} = csname \{phy@d@lx\meta{mb}\}}
@@ -116,121 +316,44 @@
 % If \meta{branch name} is \texttt{mb}, \marg{arg spec} should be |mr()|, where |m| is for biggg or star;
 % If \meta{branch name} is \texttt{ab}, \marg{arg spec} should be |r()|.
 % 
-% \note The ``|(|'' in the example above must not be replaced by a subformula braced by a pair of |{}|.
-% 
-% \begin{function}{\phy@AB@gen}
-%   \begin{syntax}
-%     \cs{phy@AB@gen} \marg{branch name} \meta{left delimiter} \marg{arg spec} \marg{definition}
-%   \end{syntax}
-% \end{function}
-%    \begin{macrocode}
-\def\phy@AB@gen#1#2{\expandafter\DeclareDocumentCommand\csname phy@#1@\string#2\endcsname}
-\phy@AB@gen{ab}({+r()}{\phy@abopen(#1\phy@abclose)}
-\phy@AB@gen{ab}[{+r[]}{\phy@abopen[#1\phy@abclose]}
-\phy@AB@gen{ab}\{{+r\{\}}{\phy@abopen\{#1\phy@abclose\}}
-\phy@AB@gen{ab}|{+r||}{\phy@abopen|#1\phy@abclose|}
-\phy@AB@gen{ab}\|{+r\|\|}{\phy@abopen\|#1\phy@abclose\|}
-\phy@AB@gen{ab}<{+r<>}{\phy@abopen<#1\phy@abclose>}
-\phy@AB@gen{ab}\lbrace{+r\lbrace\rbrace}{\phy@abopen\lbrace#1\phy@abclose\rbrace}
-\phy@AB@gen{ab}\vert{+r\vert\vert}{\phy@abopen\vert#1\phy@abclose\vert}
-\phy@AB@gen{ab}\Vert{+r\Vert\Vert}{\phy@abopen\Vert#1\phy@abclose\Vert}
-\phy@AB@gen{ab}\langle{+r\langle\rangle}{\phy@abopen\langle#1\phy@abclose\rangle}
-%    \end{macrocode}
-% \cs{endgroup}'s in the end of the following definitions are corresponding to
-% \cs{begingroup}'s in the definition of \cs{phy@d@l@genxm}.
-%    \begin{macrocode}
-\phy@AB@gen{mb}({m+r()}{\mathopen#1(#2\mathclose#1)\endgroup}
-\phy@AB@gen{mb}[{m+r[]}{\mathopen#1[#2\mathclose#1]\endgroup}
-\phy@AB@gen{mb}\{{m+r\{\}}{\mathopen#1\lbrace#2\mathclose#1\rbrace\endgroup}
-\phy@AB@gen{mb}|{m+r||}{\mathopen#1\vert#2\mathclose#1\vert\endgroup}
-\phy@AB@gen{mb}\|{m+r\|\|}{\mathopen#1\Vert#2\mathclose#1\Vert\endgroup}
-\phy@AB@gen{mb}<{m+r<>}{\mathopen#1\langle#2\mathclose#1\rangle\endgroup}
-\phy@AB@gen{mb}\lbrace{m+r\lbrace\rbrace}{\mathopen#1\lbrace#2\mathclose#1\rbrace\endgroup}
-\phy@AB@gen{mb}\vert{m+r\vert\vert}{\mathopen#1\vert#2\mathclose#1\vert\endgroup}
-\phy@AB@gen{mb}\Vert{m+r\Vert\Vert}{\mathopen#1\Vert#2\mathclose#1\Vert\endgroup}
-\phy@AB@gen{mb}\langle{m+r\langle\rangle}{\mathopen#1\langle#2\mathclose#1\rangle\endgroup}
-%    \end{macrocode}
-% \begin{function}{\phy@ab@chk\biggg,\phy@ab@chk*}
-%   \begin{syntax}
-%     \cs{ifcsname} phy@ab@chk\cs{string}\meta{token to be tested}\cs{endcsname}
-%   \end{syntax}
-%   This is expanded to true only if \meta{token to be tested} is \texttt{*} or a command
-%   like \cs{biggg}. This is related to \cs{DeclareBiggg} command in \texttt{physics2.sty}.
-% \end{function}
-% \begin{function}{\phy@d@lx}
-%   \begin{syntax}
-%     \cs{phy@d@lx} \marg{biggg or star branch name} \marg{automatic branch name} \meta{next token}
-%   \end{syntax}
-%   When \meta{next token} is a \texttt{*} or command like \cs{biggg}, let \cs{reserved@a} be 
-%   \meta{biggg or star branch name}, that is, \texttt{mb}; when \meta{next token} is a left delimiter,
-%   let \cs{reserved@a} be \meta{automatic branch name}, that is, \texttt{ab}. Finally this command is
-%   expanded to \texttt{\cs{csname} phy@d@lx\meta{branch name}\cs{endcsname} \meta{next token}}.
-% \end{function}
-%    \begin{macrocode}
-\long\def\phy@d@lx#1#2#3{%
-  \ifcsname phy@ab@chk\string#3\endcsname\def\reserved@a{#1}%
-  \else\def\reserved@a{#2}%
-  \fi\csname phy@d@lx\reserved@a\endcsname#3}
-%    \end{macrocode}
-% \begin{function}{\phy@d@l@genxm, \phy@d@l@genxa}
-%   \begin{syntax}
-%     \cs{phy@d@l@genxm} \marg{biggg or star branch name}
-%     \cs{phy@d@l@genxa} \marg{automatic branch name}
-%   \end{syntax}
-% \end{function}
-%    \begin{macrocode}
-\def\phy@d@l@genxm#1{%
-  \long\expandafter\def\csname phy@d@lx#1\endcsname##1##2{%
-    \begingroup % \endgroup is at the end of #4 of \phy@AB@gen
-    \ifx##1*\let\phy@tempa=\relax\else\let\phy@tempa=##1\fi
-    \csname phy@#1@\string##2\endcsname\phy@tempa##2}}
-\def\phy@d@l@genxa#1{%
-  \long\expandafter\def\csname phy@d@lx#1\endcsname##1{%
-    \csname phy@#1@\string##1\endcsname##1}}
-%    \end{macrocode}
-% \begin{function}{\phy@d@lxmb, \phy@d@lxab}
-%   \begin{syntax}
-%     \cs{phy@d@lxmb} \meta{biggg or *} \meta{left delimiter} \meta{subformula} \meta{right delimiter}
-%     \cs{phy@d@lxab} \phantom{\meta{biggg or *}} \meta{left delimiter} \meta{subformula} \meta{right delimiter}
-%   \end{syntax}
-% \end{function}
-%    \begin{macrocode}
-\phy@d@l@genxm{mb}
-\phy@d@l@genxa{ab}
-%    \end{macrocode}
-% \begin{function}{\ab}
-%   The users' command \cs{ab}.
-% \end{function}
-%    \begin{macrocode}
-\DeclareRobustCommand\ab{\phy@d@lx{mb}{ab}}
-%    \end{macrocode}
-% \subsection{\cs{pab}-like commands}
+% Note: The ``|(|'' in the example above must not be replaced by a subformula braced by a pair of |{}|.
+%
+%
+%
+% \section{The \modu{xab} module}
+%
 % This is so simple. No need to comment a lot.
 % 
-% \begin{function}{\phy@d@l@geny}
+% \begin{function}{\phy@xab@delcare}
 %   \begin{syntax}
-%     \cs{phy@d@l@geny} \meta{command} \meta{left delimiter} \meta{right delimiter}
+%     \cs{phy@xab@delcare} \meta{command} \meta{left delimiter} \meta{right delimiter}
 %   \end{syntax}
 %   This command used to define commands like \cs{pab}.
 % \end{function}
 %    \begin{macrocode}
-\def\phy@d@l@geny#1#2#3{%
-  \DeclareDocumentCommand#1{so+m}{% ##1: star; ##2: bigg (csname); ##3: subformula.
+%<*xab>
+\ProvidesFile{phys.xab.sty}
+  [2024/12/10 `xab' module of physics2]
+\DeclareUnknownKeyHandler{\PassOptionsToPhysicsModule{\CurrentOption}{ab}}
+\ProcessKeyOptions\relax
+\RequirePhysicsModule{ab}
+\def\phy@xab@delcare#1#2#3{%
+  \DeclareDocumentCommand#1{so+m}{%
     \IfBooleanTF{##1}%
       {#2##3#3}%
       {\IfValueTF{##2}%
         {\csname##2l\endcsname#2##3\csname##2r\endcsname#3}%
-        {\phy@abopen#2##3\phy@abclose#3}%
+        {\phy@ab@open#2##3\phy@ab@close#3}%
       }%
   }%
 }
-\phy@d@l@geny\pab()
-\phy@d@l@geny\bab[]
-\phy@d@l@geny\Bab\lbrace\rbrace
-\phy@d@l@geny\vab\vert\vert
-\phy@d@l@geny\aab\langle\rangle
-\phy@d@l@geny\Vab\Vert\Vert
-%</ab>
+\phy@xab@delcare\pab\lparen\rparen
+\phy@xab@delcare\bab\lbrack\rbrack
+\phy@xab@delcare\Bab\lbrace\rbrace
+\phy@xab@delcare\aab\langle\rangle
+\phy@xab@delcare\vab\vert\vert
+\phy@xab@delcare\Vab\Vert\Vert
+%</xab>
 %    \end{macrocode}
 %
 %
@@ -238,29 +361,30 @@
 % \section{The \modu{ab.legacy} module}
 %    \begin{macrocode}
 %<*ab.legacy>
-\ProvidesFile{phy-ab.legacy.sty}
+\ProvidesFile{phys.ab.legacy.sty}
   [2023/10/24 `ab.legacy' module of physics2]
+\DeclareUnknownKeyHandler{\PassOptionsToPhysicsModule{\CurrentOption}{ab}}
+\ProcessKeyOptions\relax
 %    \end{macrocode}
-% Requires \modu{ab}'s |tight| option.
 %    \begin{macrocode}
-\phy@requiremodule{ab}
-\phy@define@key{ab.legacy}{order}[\mathcal{O}]{\def\phy@ab@ordersym{#1}}
-\phy@setkeys{ab.legacy}{order}
-\phy@processkeyopt{ab.legacy}
-\phy@d@l@geny\abs\vert\vert
-\phy@d@l@geny\norm\Vert\Vert
+\RequirePhysicsModule{xab}
+\DeclareKeys{order.store=\phy@ab@ordersym}
+\SetKeys{order=\mathcal{O}}
+\ProcessKeyOptions\relax
+\phy@xab@delcare\abs\vert\vert
+\phy@xab@delcare\norm\Vert\Vert
 \DeclareDocumentCommand\order{som}{%
   \phy@ab@ordersym
   \IfBooleanTF{#1}
     {(#3)}
     {\IfValueTF{#2}
       {\csname#2l\endcsname(#3\csname#2r\endcsname)}
-      {\phy@abopen(#3\phy@abclose)}%
+      {\phy@ab@open(#3\phy@ab@close)}%
     }%
 }
-\phy@d@l@geny\eval.\vert
-\phy@d@l@geny\peval(\vert
-\phy@d@l@geny\beval[\vert
+\phy@xab@delcare\eval.\vert
+\phy@xab@delcare\peval(\vert
+\phy@xab@delcare\beval[\vert
 %</ab.legacy>
 %    \end{macrocode}
-\endinput
+% \endinput

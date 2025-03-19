@@ -186,6 +186,28 @@
   [2025/03/01 v2.0.0 Tools for typesetting math formulae.]
 %    \end{macrocode}
 %
+% \begin{macro}[int]{\phy@tempcnta,\phy@tempdima,\phy@tempdimb,
+%                    \phy@tempskipa,\phy@tempmuskipa,\phy@tempboxa,
+%                    \ifphy@tempswa,\phy@temptoksa}
+%    \begin{macrocode}
+\newcount  \phy@tempcnta
+\newdimen  \phy@tempdima
+\newdimen  \phy@tempdimb
+\newskip   \phy@tempskipa
+\newmuskip \phy@tempmuskipa
+\newbox    \phy@tempboxa
+\newif     \ifphy@tempswa
+\newtoks   \phy@temptoksa
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\phy@ModBoolA,\phy@ModBoolB}
+%    \begin{macrocode}
+\newif     \ifphy@ModBoolA
+\newif     \ifphy@ModBoolB
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\PhysicsModuleError}
 %    \begin{macrocode}
 \gdef\PhysicsModuleError#1#2#3{%
@@ -209,28 +231,6 @@
     Module #1 (of physics2) Warning: #2%
   }%
 }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{\phy@tempcnta,\phy@tempdima,\phy@tempdimb,
-%                    \phy@tempskipa,\phy@tempmuskipa,\phy@tempboxa,
-%                    \ifphy@tempswa,\phy@temptoksa}
-%    \begin{macrocode}
-\newcount  \phy@tempcnta
-\newdimen  \phy@tempdima
-\newdimen  \phy@tempdimb
-\newskip   \phy@tempskipa
-\newmuskip \phy@tempmuskipa
-\newbox    \phy@tempboxa
-\newif     \ifphy@tempswa
-\newtoks   \phy@temptoksa
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{\phy@ModBoolA,\phy@ModBoolB}
-%    \begin{macrocode}
-\newif     \ifphy@ModBoolA
-\newif     \ifphy@ModBoolB
 %    \end{macrocode}
 % \end{macro}
 %
@@ -296,8 +296,8 @@
 %
 % \begin{macro}{\delopen,\delclose}
 %    \begin{macrocode}
-\DeclareRobustCommand\delopen{\mathopen{}\mathclose\bgroup\left}
-\DeclareRobustCommand\delclose{\aftergroup\egroup\right}
+\protected\def\delopen{\mathopen{}\mathclose\bgroup\left}
+\protected\def\delclose{\aftergroup\egroup\right}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -316,7 +316,7 @@
 %
 % \begin{macro}{\@@_math_vphantom:n}
 %    \begin{macrocode}
-\cs_set_eq:NN \@@_math_vphantom:n   \phy@mathvphantom
+\cs_set_eq:NN \@@_math_vphantom:n \phy@mathvphantom
 %    \end{macrocode}
 % \end{macro}
 %
@@ -329,11 +329,11 @@
   }
 \cs_set_nopar:Npn \@@_declare_biggg:nn #1#2
   {
-    \DeclareRobustCommand#1{\bBigg@{#2}}%
-    \edef\phy@tempa{\expandafter\@gobble\string#1}%
-    \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}%
-    \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}%
-    \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}%
+    \DeclareRobustCommand#1{\bBigg@{#2}}
+    \edef\phy@tempa{\expandafter\@gobble\string#1}
+    \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}
+    \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}
+    \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}
     \expandafter\def\csname phy.ab.chk\string#1\endcsname{}%
   }
 %    \end{macrocode}
@@ -348,15 +348,15 @@
     \expandafter\def\csname phy.ab.chk\string\Big\endcsname{}
     \expandafter\def\csname phy.ab.chk\string\bigg\endcsname{}
     \expandafter\def\csname phy.ab.chk\string\Bigg\endcsname{}
-    \@@_declare_biggg:nn \biggg { 3 }
-    \@@_declare_biggg:nn \Biggg { 3.5 }
+    \@@_declare_biggg:nn \biggg {3}
+    \@@_declare_biggg:nn \Biggg {3.5}
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@@_reset_math_class:nnn}
 %    \begin{macrocode}
-\cs_set_nopar:Npn \@@_reset_math_class:nnn #1 #2 #3
+\cs_set_nopar:Npn \@@_reset_math_class:nnn #1#2#3
   { }
 %    \end{macrocode}
 % \end{macro}
