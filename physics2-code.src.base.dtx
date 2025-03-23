@@ -60,6 +60,11 @@
 % Common temporary variables (L3 style) that can be shared by any module.
 % \end{variable}
 %
+% \begin{variable}{\l_@@_pass_a_tl}
+% Temporary token list variables. They are used as arguments to be passed
+% and are frequently changed.
+% \end{variable}
+%
 % \begin{function}{\usephysicsmodule,\RequirePhysicsModule}
 % \begin{syntax}
 % \cs{usephysicsmodule} \oarg{key-val options} \marg{module} \oarg{date}
@@ -305,12 +310,14 @@
 \ExplSyntaxOn
 %    \end{macrocode}
 %
-% \begin{macro}[int]{\l_@@_tmpa_int,\l_@@_tmpb_int,\l_@@_tmpa_tl,\l_@@_tmpb_tl}
+% \begin{macro}[int]{\l_@@_tmpa_int,\l_@@_tmpb_int,
+%                    \l_@@_tmpa_tl,\l_@@_tmpb_tl,\l_@@_pass_a_tl}
 %    \begin{macrocode}
 \int_new:N \l_@@_tmpa_int
 \int_new:N \l_@@_tmpb_int
 \tl_new:N  \l_@@_tmpa_tl
 \tl_new:N  \l_@@_tmpb_tl
+\tl_new:N  \l_@@_pass_a_tl
 %    \end{macrocode}
 % \end{macro}
 %
@@ -327,6 +334,51 @@
     \AddToHook { begindocument/before }
       { \@@_declare_biggg:nn {#1} {#2} }
   }
+\cs_set_nopar:Npn \AutoDeclareBiggg #1
+  {
+    \AddToHook { begindocument/before }
+      { \@@_declare_biggg_auto:N {#1} }
+  }
+\cs_set_nopar:Npn \@@_declare_biggg_auto:N #1
+  {
+    \group_begin:
+    \tl_set:Ne \l_@@_tmpa_tl { \cs_to_str:N #1 }
+    \exp_after:wN \@@_biggg_parse:w \l_@@_tmpa_tl \q_stop
+    \group_end:
+    \exp_args:NNe \@@_declare_biggg:nn #1 { \l_@@_pass_a_tl }
+  }
+\cs_set_nopar:Npn \@@_biggg_parse:w #1#2#3 \q_stop
+  {
+    \int_zero:N \l_@@_tmpa_int
+    \int_zero:N \l_@@_tmpb_int
+    \tl_map_inline:nn { #3 }
+      {
+        \int_incr:N \l_@@_tmpa_int
+        \token_if_eq_charcode:NNT ##1 g { \int_incr:N \l_@@_tmpb_int }
+      }
+    \bool_lazy_all:nF
+      {
+        {
+          \bool_lazy_or_p:nn
+            { \token_if_eq_charcode_p:NN #1 B }
+            { \token_if_eq_charcode_p:NN #1 b }
+        }
+        { \token_if_eq_charcode_p:NN #2 i }
+        { \int_compare_p:nNn \l_@@_tmpa_int = \l_@@_tmpb_int }
+      }
+      {
+        \PackageError {physics2}
+          {
+            Invalid~argument~of~\string\DeclareBiggg :~#1#2#3
+          }
+          {
+            The~argument~of~\string\DeclareBiggg\space should~be~like~
+            \string\Biggg\space or~\string\biggg.
+          }
+      }
+    \tl_gset:Ne \l_@@_pass_a_tl { \int_use:N \l_@@_tmpa_int }
+    \token_if_eq_charcode:NNT #1 B { \tl_gput_right:Nn \l_@@_pass_a_tl { .5 } }
+  }
 \cs_set_nopar:Npn \@@_declare_biggg:nn #1#2
   {
     \DeclareRobustCommand#1{\bBigg@{#2}}
@@ -334,7 +386,7 @@
     \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}
     \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}
     \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}
-    \expandafter\def\csname phy.ab.chk\string#1\endcsname{}%
+    \expandafter\def\csname @@_chk_big_\string#1\endcsname{}%
   }
 %    \end{macrocode}
 % \end{macro}
@@ -343,11 +395,11 @@
 %    \begin{macrocode}
 \cs_set_nopar:Npn \@@_declare_biggg:
   {
-    \expandafter\def\csname phy.ab.chk\string*\endcsname{}
-    \expandafter\def\csname phy.ab.chk\string\big\endcsname{}
-    \expandafter\def\csname phy.ab.chk\string\Big\endcsname{}
-    \expandafter\def\csname phy.ab.chk\string\bigg\endcsname{}
-    \expandafter\def\csname phy.ab.chk\string\Bigg\endcsname{}
+    \expandafter\def\csname @@_chk_big_\string*\endcsname{}
+    \expandafter\def\csname @@_chk_big_\string\big\endcsname{}
+    \expandafter\def\csname @@_chk_big_\string\Big\endcsname{}
+    \expandafter\def\csname @@_chk_big_\string\bigg\endcsname{}
+    \expandafter\def\csname @@_chk_big_\string\Bigg\endcsname{}
     \@@_declare_biggg:nn \biggg {3}
     \@@_declare_biggg:nn \Biggg {3.5}
   }
