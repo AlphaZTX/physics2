@@ -327,12 +327,12 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\DeclareBiggg,\@@_declare_biggg:nn}
+% \begin{macro}{\DeclareBiggg,\@@_declare_biggg:Nn}
 %    \begin{macrocode}
 \cs_set_nopar:Npn \DeclareBiggg #1#2
   {
     \AddToHook { begindocument/before }
-      { \@@_declare_biggg:nn {#1} {#2} }
+      { \@@_declare_biggg:Nn #1 {#2} }
   }
 \cs_set_nopar:Npn \AutoDeclareBiggg #1
   {
@@ -345,7 +345,7 @@
     \tl_set:Ne \l_@@_tmpa_tl { \cs_to_str:N #1 }
     \exp_after:wN \@@_biggg_parse:w \l_@@_tmpa_tl \q_stop
     \group_end:
-    \exp_args:NNe \@@_declare_biggg:nn #1 { \l_@@_pass_a_tl }
+    \exp_args:NNe \@@_declare_biggg:Nn #1 { \l_@@_pass_a_tl }
   }
 \cs_set_nopar:Npn \@@_biggg_parse:w #1#2#3 \q_stop
   {
@@ -379,14 +379,14 @@
     \tl_gset:Ne \l_@@_pass_a_tl { \int_use:N \l_@@_tmpa_int }
     \token_if_eq_charcode:NNT #1 B { \tl_gput_right:Nn \l_@@_pass_a_tl { .5 } }
   }
-\cs_set_nopar:Npn \@@_declare_biggg:nn #1#2
+\cs_set_nopar:Npn \@@_declare_biggg:Nn #1#2
   {
-    \DeclareRobustCommand#1{\bBigg@{#2}}
-    \edef\phy@tempa{\expandafter\@gobble\string#1}
-    \expandafter\DeclareRobustCommand\csname\phy@tempa l\endcsname{\mathopen#1}
-    \expandafter\DeclareRobustCommand\csname\phy@tempa m\endcsname{\mathrel#1}
-    \expandafter\DeclareRobustCommand\csname\phy@tempa r\endcsname{\mathclose#1}
-    \expandafter\def\csname @@_chk_big_\string#1\endcsname{}%
+    \cs_set_protected_nopar:Npn #1 {\bBigg@{#2}}
+    \cs_set_nopar:Npe \phy@tempa { \exp_after:wN \use_none:n \token_to_str:N #1 }
+    \cs_set_protected_nopar:cpn {\phy@tempa l} {\mathopen#1}
+    \cs_set_protected_nopar:cpn {\phy@tempa m} {\mathrel#1}
+    \cs_set_protected_nopar:cpn {\phy@tempa r} {\mathclose#1}
+    \cs_set_nopar:cpn { @@_chk_big_\string#1 } { }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -395,13 +395,13 @@
 %    \begin{macrocode}
 \cs_set_nopar:Npn \@@_declare_biggg:
   {
-    \expandafter\def\csname @@_chk_big_\string*\endcsname{}
-    \expandafter\def\csname @@_chk_big_\string\big\endcsname{}
-    \expandafter\def\csname @@_chk_big_\string\Big\endcsname{}
-    \expandafter\def\csname @@_chk_big_\string\bigg\endcsname{}
-    \expandafter\def\csname @@_chk_big_\string\Bigg\endcsname{}
-    \@@_declare_biggg:nn \biggg {3}
-    \@@_declare_biggg:nn \Biggg {3.5}
+    \cs_set_nopar:cpn { @@_chk_big_\string* } { }
+    \@@_declare_biggg:Nn \big   {1}
+    \@@_declare_biggg:Nn \Big   {1.5}
+    \@@_declare_biggg:Nn \bigg  {2}
+    \@@_declare_biggg:Nn \Bigg  {2.5}
+    \@@_declare_biggg:Nn \biggg {3}
+    \@@_declare_biggg:Nn \Biggg {3.5}
   }
 %    \end{macrocode}
 % \end{macro}
@@ -556,6 +556,31 @@
   }
 %    \end{macrocode}
 %
+% \begin{macro}[TF]{\@@_ab_if_csname:c}
+% This is faster than \cs{cs_if_exist:cTF}, 20\% in \hologo{pdfTeX}, 5\% in
+% \hologo{LuaTeX} and 20\% in \hologo{XeTeX} (tested on 
+% \href{\TeX Page}{https://www.texpage.com}). This command contains only one
+% bool check, one less than \cs{cs_if_exist:cTF}, which makes it faster.
+%    \begin{macrocode}
+\prg_set_conditional:Npnn \@@_if_csname:c #1 { TF }
+  {
+    \if_cs_exist:w #1\cs_end:
+      \prg_return_true: \else: \prg_return_false: \fi:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[TF]{\@@_ab_if_csname:c}
+% An alias of \cs{cs_if_eq:NN}.
+%    \begin{macrocode}
+\prg_set_conditional:Npnn \@@_if_token_eq:NN #1#2 { TF }
+  {
+    \if_meaning:w #1#2
+      \prg_return_true: \else: \prg_return_false: \fi:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 %    \begin{macrocode}
 \ExplSyntaxOff
 %<@@=>
@@ -657,10 +682,6 @@
   {\@mathmeasure\z@{\nulldelimiterspace\z@}%
      {\left#2\vcenter to#1\phy@patch@bigsize{}\right.}%
   \box\z@}}
-\DeclareRobustCommand\big{\bBigg@{1}}
-\DeclareRobustCommand\Big{\bBigg@{1.5}}
-\DeclareRobustCommand\bigg{\bBigg@{2}}
-\DeclareRobustCommand\Bigg{\bBigg@{2.5}}
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
