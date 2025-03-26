@@ -321,6 +321,31 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[TF]{\@@_cs_if_exist:c}
+% This is faster than \cs{cs_if_exist:cTF}, 20\% in \hologo{pdfTeX}, 5\% in
+% \hologo{LuaTeX} and 20\% in \hologo{XeTeX} (tested on 
+% \href{https://www.texpage.com}{\TeX Page}). This command contains only one
+% bool check, one less than \cs{cs_if_exist:cTF}, which makes it faster.
+%    \begin{macrocode}
+\prg_set_conditional:Npnn \@@_cs_if_exist:c #1 { TF }
+  {
+    \if_cs_exist:w #1\cs_end:
+      \prg_return_true: \else: \prg_return_false: \fi:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[TF]{\@@_if_token_eq:c}
+% An alias of \cs{cs_if_eq:NN}.
+%    \begin{macrocode}
+\prg_set_conditional:Npnn \@@_if_token_eq:NN #1#2 { TF }
+  {
+    \if_meaning:w #1#2
+      \prg_return_true: \else: \prg_return_false: \fi:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\@@_math_vphantom:n}
 %    \begin{macrocode}
 \cs_set_eq:NN \@@_math_vphantom:n \phy@mathvphantom
@@ -334,6 +359,20 @@
     \AddToHook { begindocument/before }
       { \@@_declare_biggg:Nn #1 {#2} }
   }
+\cs_set_nopar:Npn \@@_declare_biggg:Nn #1#2
+  {
+    \cs_set_protected_nopar:Npn #1 {\bBigg@{#2}}
+    \cs_set_nopar:Npe \phy@tempa { \exp_after:wN \use_none:n \token_to_str:N #1 }
+    \cs_set_protected_nopar:cpn {\phy@tempa l} {\mathopen#1}
+    \cs_set_protected_nopar:cpn {\phy@tempa m} {\mathrel#1}
+    \cs_set_protected_nopar:cpn {\phy@tempa r} {\mathclose#1}
+    \cs_set_nopar:cpn { @@_chk_big_\string#1 } { }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\AutoDeclareBiggg,\@@_declare_biggg_auto:N,\@@_biggg_parse:w}
+%    \begin{macrocode}
 \cs_set_nopar:Npn \AutoDeclareBiggg #1
   {
     \AddToHook { begindocument/before }
@@ -378,15 +417,6 @@
       }
     \tl_gset:Ne \l_@@_pass_a_tl { \int_use:N \l_@@_tmpa_int }
     \token_if_eq_charcode:NNT #1 B { \tl_gput_right:Nn \l_@@_pass_a_tl { .5 } }
-  }
-\cs_set_nopar:Npn \@@_declare_biggg:Nn #1#2
-  {
-    \cs_set_protected_nopar:Npn #1 {\bBigg@{#2}}
-    \cs_set_nopar:Npe \phy@tempa { \exp_after:wN \use_none:n \token_to_str:N #1 }
-    \cs_set_protected_nopar:cpn {\phy@tempa l} {\mathopen#1}
-    \cs_set_protected_nopar:cpn {\phy@tempa m} {\mathrel#1}
-    \cs_set_protected_nopar:cpn {\phy@tempa r} {\mathclose#1}
-    \cs_set_nopar:cpn { @@_chk_big_\string#1 } { }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -463,11 +493,23 @@
 %    \begin{macrocode}
 \cs_set_nopar:Npn \@@_patch_mathtools:
   {
-    \protected\def\lparen{(}
-    \protected\def\rparen{)}
+    \cs_set_protected_nopar:Npn \lparen { ( }
+    \cs_set_protected_nopar:Npn \rparen { ) }
   }
 %    \end{macrocode}
 % \end{macro}
+%
+% The options of \pkg{physics2}. We use \cs{phy@ResetModBools} instead of
+% \cs{SetKeys}\marg{k-v defaults} to make it a little faster to compile.
+%    \begin{macrocode}
+\DeclareKeys [physics2]
+  {
+    no-helper .if        = phy@ModBoolA ,
+    no-helper .default:n = true
+  }
+\phy@ResetModBools
+\ProcessKeyOptions [physics2]
+%    \end{macrocode}
 %
 % Modules of \pkg{physics2} would use the following math symbol commands:
 % \begin{center}
@@ -553,33 +595,9 @@
           }
       }
     \@@_declare_biggg:
+    \ifphy@ModBoolA \else \RequirePhysicsModule { helper } \fi
   }
 %    \end{macrocode}
-%
-% \begin{macro}[TF]{\@@_ab_if_csname:c}
-% This is faster than \cs{cs_if_exist:cTF}, 20\% in \hologo{pdfTeX}, 5\% in
-% \hologo{LuaTeX} and 20\% in \hologo{XeTeX} (tested on 
-% \href{\TeX Page}{https://www.texpage.com}). This command contains only one
-% bool check, one less than \cs{cs_if_exist:cTF}, which makes it faster.
-%    \begin{macrocode}
-\prg_set_conditional:Npnn \@@_if_csname:c #1 { TF }
-  {
-    \if_cs_exist:w #1\cs_end:
-      \prg_return_true: \else: \prg_return_false: \fi:
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[TF]{\@@_ab_if_csname:c}
-% An alias of \cs{cs_if_eq:NN}.
-%    \begin{macrocode}
-\prg_set_conditional:Npnn \@@_if_token_eq:NN #1#2 { TF }
-  {
-    \if_meaning:w #1#2
-      \prg_return_true: \else: \prg_return_false: \fi:
-  }
-%    \end{macrocode}
-% \end{macro}
 %
 %    \begin{macrocode}
 \ExplSyntaxOff
