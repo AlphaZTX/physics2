@@ -113,16 +113,16 @@ The Current Maintainer of this work is
 \usedir{tex/latex/physics2}
 \generate{
   \file{physics2.sty}           {\from{physics2-code-base.dtx}{package}}
-  \file{phys.patch.amsmath.sty} {\from{physics2-code-base.dtx}{patch.amsmath}}
+  \file{phys.patch.amsmath.sty} {\from{physics2-code-utility.dtx}{patch.amsmath}}
 }
 \generate{
-  \file{phys.helper.sty}        {\from{physics2-code-helper.dtx}{helper-begin}
+  \file{phys.helper.sty}        {\from{physics2-code-utility.dtx}{helper-begin}
                                  \from{physics2-code-ab.dtx}{helper}
                                  \from{physics2-code-braket.dtx}{helper}
                                  \from{physics2-code-matrix.dtx}{helper}
                                  \from{physics2-code-operator.dtx}{helper}
                                  \from{physics2-code-misc.dtx}{helper}
-                                 \from{physics2-code-helper.dtx}{helper-end}}
+                                 \from{physics2-code-utility.dtx}{helper-end}}
 }
 \generate{
   \file{phys.ab.sty}            {\from{physics2-code-ab.dtx}{ab}}
@@ -181,10 +181,11 @@ The Current Maintainer of this work is
 %<*driver>
 \ProvidesFile{physics2-code.dtx}[2024/01/22 (c) Copyright 2022-2024 by Zhang Tingxuan]
 \documentclass{l3doc}
-\hypersetup{hidelinks}
 \definecolor{pkg}{RGB}{0,120,80}
 \definecolor{mod}{RGB}{0,0,150}
 \definecolor{gray}{rgb}{.5,.5,.5}
+\definecolor{lnk}{RGB}{232,0,0}
+\hypersetup{linktocpage,colorlinks=true,linkcolor=lnk}
 \DeclareRobustCommand\pkg[1]{\texorpdfstring{\textcolor{pkg}{\textsf{#1}}}{“#1”}}
 \DeclareRobustCommand\modu[1]{\texorpdfstring{\textcolor{mod}{\textsf{#1}}}{“#1”}}
 \usepackage{amsmath,fontspec,physics2}
@@ -194,8 +195,8 @@ The Current Maintainer of this work is
 \makeatletter
 \renewcommand\theFancyVerbLine{{\color{gray}\sffamily\tiny\ifnum\c@FancyVerbLine=1
   EXAMPLE\quad\fi\arabic{FancyVerbLine}}\ }
-\def\@getver#1 #2 #3\fin{#1\quad#2}
-\xdef\@date{\expandafter\expandafter\expandafter\@getver\csname ver@physics2.sty\endcsname\fin}
+\def\@getver#1 #2 #3\@nil{#1\quad#2}
+\xdef\@date{\expandafter\expandafter\expandafter\@getver\csname ver@physics2.sty\endcsname\@nil}
 \@addtoreset{CodelineNo}{section}
 \def\DeclareSourceFile#1{%
   \markright{Source file: \texttt{physics2-code-#1.dtx}}%
@@ -207,43 +208,6 @@ The Current Maintainer of this work is
   \let\@oddhead\relax%
   \let\@mkboth\markboth
 }
-%% BEGIN
-\newbox\@tempboxb
-\DeclareDocumentCommand\macrodef{O{4em}O{.6}mo+m}{\leavevmode
-\ensuremath{%
-  \setbox\@tempboxa\hbox to #1 {\hss\cs{#3}}%
-  \setbox\@tempboxb\vbox{\hsize=#2\textwidth
-    \textwidth=\hsize
-    \leftskip=\z@
-    \parindent=\z@
-    \textbf{begindef}\IfValueT{#4}{ \textcolor{gray}{(#4)}}\par
-    \begingroup\leftskip2em\parindent-1em#5\par\endgroup
-    \textbf{enddef}%
-  }%
-  \dp\@tempboxb=\dimexpr\ht\@tempboxb-\ht\@tempboxa\relax
-  \ht\@tempboxb=\ht\@tempboxa
-  \box\@tempboxa\leftarrow\box\@tempboxb
-}}
-\protected\long\def\macroifelse#1#2#3{\par
-  \textbf{if} #1 \textbf{then}\par
-  \begingroup\advance\leftskip1em#2\par\endgroup
-  \textbf{else}\par
-  \begingroup\advance\leftskip1em#3\par\endgroup
-  \textbf{endif}\par
-}
-\protected\long\def\macroif#1#2{\par
-  \textbf{if} #1 \textbf{then}\par
-  \begingroup\advance\leftskip1em#2\par\endgroup
-  \textbf{endif}\par
-}
-\protected\def\macrocr{\par}
-\newdimen\ttwd
-\protected\def\updatettwd{%
-  \setbox\@tempboxa\hbox{\normalsize\ttfamily a}
-  \ttwd=\wd\@tempboxa
-}
-\updatettwd
-%% END
 \ExplSyntaxOn
 \seq_new:N \l__phydoc_tmpa_seq
 \seq_new:N \l__phydoc_tmpb_seq
@@ -268,19 +232,15 @@ The Current Maintainer of this work is
 \date{2025/03/01 v2.0.0}
 \begin{document}
   \maketitle
-  \begin{abstract}
-  This document tells how to write a module of \pkg{physics2} and gives notes
-  on the code of \pkg{physics2} and its modules.
-  \end{abstract}
   \tableofcontents\newpage
   \pagestyle{phy}
   \DocInput{physics2-code-base.dtx}
+  \DocInput{physics2-code-utility.dtx}
   \DocInput{physics2-code-ab.dtx}
   \DocInput{physics2-code-braket.dtx}
   \DocInput{physics2-code-matrix.dtx}
   \DocInput{physics2-code-operator.dtx}
   \DocInput{physics2-code-misc.dtx}
-  \DocInput{physics2-code-helper.dtx}
   \clearpage
   \PrintIndex
 \end{document}

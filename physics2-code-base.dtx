@@ -100,8 +100,6 @@
 % \begin{syntax}
 % \cs{PhysicsModuleError} \marg{module} \marg{error message} \marg{help message}
 % \cs{PhysicsModuleWarning} \marg{module} \marg{warning message}
-% \cs{@@_module_error:nnn} \marg{module} \marg{error message} \marg{help message}
-% \cs{@@_module_warning:nn} \marg{module} \marg{warning message}
 % \end{syntax}
 % Error and warning handlers for modules of this package.
 % \end{function}
@@ -239,16 +237,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\phy@ResetModBools}
-% See \cs{phy@modulewithdate}.
-%    \begin{macrocode}
-\protected\def\phy@ResetModBools{%
-  \global\phy@ModBoolAfalse
-  \global\phy@ModBoolBfalse
-}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\usephysicsmodule, \RequirePhysicsModule}
 %    \begin{macrocode}
 \def\usephysicsmodule{\@ifnextchar[%]
@@ -287,7 +275,7 @@
 % \begin{macro}{\phy@mathvphantom,\phy@mathvph@ntom}
 %    \begin{macrocode}
 \def\phy@mathvphantom#1{%
-  \setbox\phy@tempboxa=\hbox{}%
+  \setbox\phy@tempboxa=\null%
   \mathpalette\phy@mathvph@ntom{#1}%
 }
 \def\phy@mathvph@ntom#1#2{%
@@ -311,13 +299,31 @@
 %    \end{macrocode}
 %
 % \begin{macro}[int]{\l_@@_tmpa_int,\l_@@_tmpb_int,
-%                    \l_@@_tmpa_tl,\l_@@_tmpb_tl,\l_@@_pass_a_tl}
+%                    \l_@@_tmpa_tl,\l_@@_tmpb_tl,\l_@@_pass_a_tl,
+%                    \g_@@_debug_mode_bool,
+%                    \l_@@_module_a_bool,\l_@@_module_b_bool}
 %    \begin{macrocode}
-\int_new:N \l_@@_tmpa_int
-\int_new:N \l_@@_tmpb_int
-\tl_new:N  \l_@@_tmpa_tl
-\tl_new:N  \l_@@_tmpb_tl
-\tl_new:N  \l_@@_pass_a_tl
+\int_new:N  \l_@@_tmpa_int
+\int_new:N  \l_@@_tmpb_int
+\tl_new:N   \l_@@_tmpa_tl
+\tl_new:N   \l_@@_tmpb_tl
+\tl_new:N   \l_@@_pass_a_tl
+\bool_new:N \g_@@_debug_mode_bool
+\bool_new:N \l_@@_module_a_bool
+\bool_new:N \l_@@_module_b_bool
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\phy@ResetModBools}
+% See \cs{phy@modulewithdate}.
+%    \begin{macrocode}
+\protected \def \phy@ResetModBools
+  {
+    \global \phy@ModBoolAfalse
+    \global \phy@ModBoolBfalse
+    \bool_gset_false:N \l_@@_module_a_bool
+    \bool_gset_false:N \l_@@_module_b_bool
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -361,12 +367,13 @@
   }
 \cs_set_nopar:Npn \@@_declare_biggg:Nn #1#2
   {
-    \cs_set_protected_nopar:Npn #1 {\bBigg@{#2}}
-    \cs_set_nopar:Npe \phy@tempa { \exp_after:wN \use_none:n \token_to_str:N #1 }
-    \cs_set_protected_nopar:cpn {\phy@tempa l} {\mathopen#1}
-    \cs_set_protected_nopar:cpn {\phy@tempa m} {\mathrel#1}
-    \cs_set_protected_nopar:cpn {\phy@tempa r} {\mathclose#1}
-    \cs_set_nopar:cpn { @@_chk_big_\string#1 } { }
+    \cs_set_protected_nopar:Npn #1 { \bBigg@ { #2 } }
+    \cs_set:Npe \l_@@_tmpa_tl
+      { \exp_after:wN \use_none:n \token_to_str:N #1 }
+    \cs_set_protected_nopar:cpn { \l_@@_tmpa_tl l } { \mathopen  #1 }
+    \cs_set_protected_nopar:cpn { \l_@@_tmpa_tl m } { \mathrel   #1 }
+    \cs_set_protected_nopar:cpn { \l_@@_tmpa_tl r } { \mathclose #1 }
+    \cs_set_nopar:cpn { @@_chk_big_ \string #1 : } { }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -425,13 +432,13 @@
 %    \begin{macrocode}
 \cs_set_nopar:Npn \@@_declare_biggg:
   {
-    \cs_set_nopar:cpn { @@_chk_big_\string* } { }
-    \@@_declare_biggg:Nn \big   {1}
-    \@@_declare_biggg:Nn \Big   {1.5}
-    \@@_declare_biggg:Nn \bigg  {2}
-    \@@_declare_biggg:Nn \Bigg  {2.5}
-    \@@_declare_biggg:Nn \biggg {3}
-    \@@_declare_biggg:Nn \Biggg {3.5}
+    \cs_set_nopar:cpn { @@_chk_big_ \string * : } { }
+    \@@_declare_biggg:Nn \big   { 1   }
+    \@@_declare_biggg:Nn \Big   { 1.5 }
+    \@@_declare_biggg:Nn \bigg  { 2   }
+    \@@_declare_biggg:Nn \Bigg  { 2.5 }
+    \@@_declare_biggg:Nn \biggg { 3   }
+    \@@_declare_biggg:Nn \Biggg { 3.5 }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -493,8 +500,8 @@
 %    \begin{macrocode}
 \cs_set_nopar:Npn \@@_patch_mathtools:
   {
-    \cs_set_protected_nopar:Npn \lparen { ( }
-    \cs_set_protected_nopar:Npn \rparen { ) }
+    \cs_set_protected_nopar:Npe \lparen { ( }
+    \cs_set_protected_nopar:Npe \rparen { ) }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -502,13 +509,31 @@
 % The options of \pkg{physics2}. We use \cs{phy@ResetModBools} instead of
 % \cs{SetKeys}\marg{k-v defaults} to make it a little faster to compile.
 %    \begin{macrocode}
-\DeclareKeys [physics2]
+\DeclareKeys
   {
-    no-helper .if        = phy@ModBoolA ,
-    no-helper .default:n = true
+    debug-mode     .bool_gset:N = \g_@@_debug_mode_bool ,
+    debug-mode-on  .code:n = { \bool_gset_true:N  \g_@@_debug_mode_bool } ,
+    debug-mode-on  .value_forbidden:n = true ,
+    debug-mode-off .code:n = { \bool_gset_false:N \g_@@_debug_mode_bool } ,
+    debug-mode-off .value_forbidden:n = true ,
+    tight-braces   .legacy_if_set:n = phy@ModBoolB ,
+    tight-braces   .default:n = true
   }
-\phy@ResetModBools
-\ProcessKeyOptions [physics2]
+\SetKeys
+  {
+    debug-mode   = true ,
+    tight-braces = true
+  }
+\ProcessKeyOptions \relax
+\ifphy@ModBoolB
+  \tl_set_eq:NN \g_@@_left_token  \delopen
+  \tl_set_eq:NN \g_@@_right_token \delclose
+\else
+  \tl_set_eq:NN \g_@@_left_token  \left
+  \tl_set_eq:NN \g_@@_right_token \right
+\fi
+\tl_set_eq:NN \phy@left@tl  \g_@@_left_token
+\tl_set_eq:NN \phy@right@tl \g_@@_right_token
 %    \end{macrocode}
 %
 % Modules of \pkg{physics2} would use the following math symbol commands:
@@ -581,7 +606,7 @@
   {
     \IfPackageLoadedTF { unicode-math }
       {
-        \AtBeginDocument { \@@_patch_unimath: }
+        \AddToHook { begindocument } { \@@_patch_unimath: }
       }
       {
         \@@_patch_no_unimath_common:
@@ -595,7 +620,8 @@
           }
       }
     \@@_declare_biggg:
-    \ifphy@ModBoolA \else \RequirePhysicsModule { helper } \fi
+    \bool_if:NT \g_@@_debug_mode_bool
+      { \RequirePhysicsModule { helper } }
   }
 %    \end{macrocode}
 %
@@ -605,104 +631,4 @@
 %</package>
 %    \end{macrocode}
 %
-% \subsubsection*{Patch for \pkg{amsmath}}\label{subsubsec:patch.amsmath}
-%
-% \begin{function}{\lvert,\rvert,\lVert,\rVert}
-% The left/right specific versions of \cs{vert} and \cs{Vert}.
-% \end{function}
-%
-% \begin{function}{\bBigg@}
-% \end{function}
-%
-%    \begin{macrocode}
-%<*patch.amsmath>
-\ProvidesFile{phys.patch.amsmath.sty}[2025/03/01 physics2 patch for amsmath]
-%    \end{macrocode}
-%
-% \begin{macro}{\lvert,\rvert,\lVert,\rVert}
-% The following code comes from \S7.2 (Vertical bar symbols)
-% of \texttt{amsmath.pdf}.
-% 
-% \cs{@xp} is replaced by \cs{expandafter} and
-% \cs{ifx}\cs{@@undefined}\cs[no-index]{\meta{cs}} is replaced by
-% \cs{ifdefined}\cs[no-index]{\meta{cs}}\cs{else}.
-%    \begin{macrocode}
-\def\@tempa#1#2\@nil{%
-  \ifx\delimiter#1\@tempcnta#2\relax\else\@tempcnta\z@\fi
-}
-\expandafter\@tempa\vert\@empty\@nil
-\ifnum\@tempcnta>\z@
-  \advance\@tempcnta "4000000
-  \protected\xdef\lvert{\delimiter\number\@tempcnta\space }
-  \advance\@tempcnta "1000000
-  \protected\xdef\rvert{\delimiter\number\@tempcnta\space }
-\else
-  \ifdefined\lvert\else
-    \DeclareMathDelimiter\lvert
-      {\mathopen}{symbols}{"6A}{largesymbols}{"0C}
-    \DeclareMathDelimiter\rvert
-      {\mathclose}{symbols}{"6A}{largesymbols}{"0C}
-  \fi
-\fi
-\expandafter\@tempa\Vert\@empty\@nil
-\ifnum\@tempcnta>\z@
-  \advance\@tempcnta "4000000
-  \protected\xdef\lVert{\delimiter\number\@tempcnta\space }
-  \advance\@tempcnta "1000000
-  \protected\xdef\rVert{\delimiter\number\@tempcnta\space }
-\else
-  \ifdefined\lVert\else
-    \DeclareMathDelimiter\lVert
-      {\mathopen}{symbols}{"6B}{largesymbols}{"0D}
-    \DeclareMathDelimiter\rVert
-      {\mathclose}{symbols}{"6B}{largesymbols}{"0D}
-  \fi
-\fi
-%    \end{macrocode}
-%\end{macro}
-%
-% \begin{macro}{\resetMathstrut@,\@mathmeasure,\bBigg@}
-%    \begin{macrocode}
-\newdimen\phy@patch@bigsize
-\newbox\phy@patch@mathstrutbox
-\setbox\phy@patch@mathstrutbox=\hbox{}
-\ifx\Umathcharnumdef\@undefined
-  \def\resetMathstrut@{%
-    \begingroup
-    \setbox\z@\hbox{%
-      \mathchardef\@tempa\mathcode`\(\relax
-      \def\@tempb##1"##2##3{\the\textfont"##3\char"}%
-      \expandafter\@tempb\meaning\@tempa \relax
-    }%
-    \edef\@tempa{%
-      \ht\phy@patch@mathstrutbox\the\ht\z@\relax
-      \dp\phy@patch@mathstrutbox\the\dp\z@\relax}%
-    \expandafter\endgroup\@tempa
-  }
-\else
-  \def\resetMathstrut@{%
-    \begingroup
-    \Umathcharnumdef\@tempa\Umathcodenum`\(\relax
-    \def\@tempb##1"##2"##3"##4\relax{%
-      \endgroup
-      \ht\phy@patch@mathstrutbox=\fontcharht\textfont"##3 "##4\relax
-      \dp\phy@patch@mathstrutbox=\fontchardp\textfont"##3 "##4\relax}%
-    \expandafter\@tempb\meaning\@tempa \relax
-  }
-\fi
-\addto@hook\every@math@size{\resetMathstrut@}
-\addto@hook\every@math@size{%
-  \global\phy@patch@bigsize 1.2\ht\phy@patch@mathstrutbox
-  \global\advance\phy@patch@bigsize 1.2\dp\phy@patch@mathstrutbox }
-\def\@mathmeasure#1#2#3{\setbox#1\hbox{%
-  \m@th$#2#3$}}
-\def\bBigg@#1#2{\leavevmode@ifvmode
-  {\@mathmeasure\z@{\nulldelimiterspace\z@}%
-     {\left#2\vcenter to#1\phy@patch@bigsize{}\right.}%
-  \box\z@}}
-%    \end{macrocode}
-% \end{macro}
-%    \begin{macrocode}
-%</patch.amsmath>
-%    \end{macrocode}
 % \endinput

@@ -1,0 +1,284 @@
+% \DeclareSourceFile{utility}
+%
+% \section{Patch for \pkg{amsmath}}\label{sec:patch.amsmath}
+%
+% \subsection{API}
+%
+% The following functions are the same as the ones in \pkg{amsmath} and they
+% are required by \pkg{physics2}. If \pkg{amsmath} is not loaded, this module
+% will add these functions.
+%
+% \begin{function}{\lvert,\rvert,\lVert,\rVert}
+% The left/right specific versions of \cs{vert} and \cs{Vert}.
+% \end{function}
+%
+% \begin{function}{\bBigg@}
+% \begin{syntax}
+% \cs{bBigg@} \marg{factor} \meta{delimiter}
+% \end{syntax}
+% Determines the correct height of the delimiter.
+% For example, \cs{big}'s expansion is \cs{bBigg@}\texttt{\{1\}}.
+% \end{function}
+%
+% \subsection{Code implementation}
+%
+%    \begin{macrocode}
+%<*patch.amsmath>
+\ProvidesFile{phys.patch.amsmath.sty}[2025/03/01 physics2 patch for amsmath]
+%    \end{macrocode}
+%
+% \begin{macro}{\lvert,\rvert,\lVert,\rVert}
+% The following code comes from the (sub)section \textit{Vertical bar symbols}
+% of \texttt{amsmath.dtx}.
+% 
+% \cs{@xp} in \pkg{amsmath} is replaced by \cs{expandafter} and
+% \cs{ifx}\cs{@@undefined}\cs[no-index]{\meta{cs}} is replaced by
+% \cs{ifdefined}\cs[no-index]{\meta{cs}}\cs{else}.
+%
+%    \begin{macrocode}
+\def\@tempa#1#2\@nil{%
+  \ifx\delimiter#1\@tempcnta#2\relax\else\@tempcnta\z@\fi
+}
+\expandafter\@tempa\vert\@empty\@nil
+\ifnum\@tempcnta>\z@
+  \advance\@tempcnta "4000000
+  \protected\xdef\lvert{\delimiter\number\@tempcnta\space }
+  \advance\@tempcnta "1000000
+  \protected\xdef\rvert{\delimiter\number\@tempcnta\space }
+\else
+  \ifdefined\lvert\else
+    \DeclareMathDelimiter\lvert
+      {\mathopen}{symbols}{"6A}{largesymbols}{"0C}
+    \DeclareMathDelimiter\rvert
+      {\mathclose}{symbols}{"6A}{largesymbols}{"0C}
+  \fi
+\fi
+\expandafter\@tempa\Vert\@empty\@nil
+\ifnum\@tempcnta>\z@
+  \advance\@tempcnta "4000000
+  \protected\xdef\lVert{\delimiter\number\@tempcnta\space }
+  \advance\@tempcnta "1000000
+  \protected\xdef\rVert{\delimiter\number\@tempcnta\space }
+\else
+  \ifdefined\lVert\else
+    \DeclareMathDelimiter\lVert
+      {\mathopen}{symbols}{"6B}{largesymbols}{"0D}
+    \DeclareMathDelimiter\rVert
+      {\mathclose}{symbols}{"6B}{largesymbols}{"0D}
+  \fi
+\fi
+%    \end{macrocode}
+%\end{macro}
+%
+% \begin{macro}{\resetMathstrut@,\@mathmeasure,\bBigg@}
+%    \begin{macrocode}
+\newdimen\phy@patch@bigsize
+\newbox\phy@patch@mathstrutbox
+\setbox\phy@patch@mathstrutbox=\hbox{}
+\ifx\Umathcharnumdef\@undefined
+  \def\resetMathstrut@{%
+    \begingroup
+    \setbox\z@\hbox{%
+      \mathchardef\@tempa\mathcode`\(\relax
+      \def\@tempb##1"##2##3{\the\textfont"##3\char"}%
+      \expandafter\@tempb\meaning\@tempa \relax
+    }%
+    \edef\@tempa{%
+      \ht\phy@patch@mathstrutbox\the\ht\z@\relax
+      \dp\phy@patch@mathstrutbox\the\dp\z@\relax}%
+    \expandafter\endgroup\@tempa
+  }
+\else
+  \def\resetMathstrut@{%
+    \begingroup
+    \Umathcharnumdef\@tempa\Umathcodenum`\(\relax
+    \def\@tempb##1"##2"##3"##4\relax{%
+      \endgroup
+      \ht\phy@patch@mathstrutbox=\fontcharht\textfont"##3 "##4\relax
+      \dp\phy@patch@mathstrutbox=\fontchardp\textfont"##3 "##4\relax}%
+    \expandafter\@tempb\meaning\@tempa \relax
+  }
+\fi
+\addto@hook\every@math@size{\resetMathstrut@}
+\addto@hook\every@math@size{%
+  \global\phy@patch@bigsize 1.2\ht\phy@patch@mathstrutbox
+  \global\advance\phy@patch@bigsize 1.2\dp\phy@patch@mathstrutbox }
+\def\@mathmeasure#1#2#3{\setbox#1\hbox{%
+  \m@th$#2#3$}}
+\def\bBigg@#1#2{\leavevmode@ifvmode
+  {\@mathmeasure\z@{\nulldelimiterspace\z@}%
+     {\left#2\vcenter to#1\phy@patch@bigsize{}\right.}%
+  \box\z@}}
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+%</patch.amsmath>
+%    \end{macrocode}
+%
+% \section{The \modu{helper} module --- debug mode support}
+%
+% This is the module that provides the debug mode support for \pkg{physics2}.
+% It shouldn't be loaded by users directly.
+%
+% \subsection{API?}
+%
+% These functions are not intended to be used by developers in their own
+% modules. They are only used by the \modu{helper} module. They appear here
+% to help us understand their functionality.
+%
+% \begin{function}{\g_@@_helper_errors_int}
+% Records the number of errors related to \pkg{physics2}. It should be
+% automatically increased by one once an error is detected by the \modu{helper}
+% module.
+% \end{function}
+%
+% \begin{function}{\@@_helper_cs_src:Nn}
+% \begin{syntax}
+% \cs{@@_helper_cs_src:Nn} \meta{command} \meta{module}
+% \end{syntax}
+% Declares in which module the \meta{command} is defined. Take an example.
+% If you are writing a module \modu{foo} with DocStrip, and it is generated
+% with guard \texttt{<foo>} from the according \file{.dtx} file, you can
+% organize your \file{.dtx} file like this:
+% \begin{verbatim}
+% % Some notes.
+% %    \begin{macrocode}
+% %<*foo>
+% \DeclareDocumentCommand \foo { } { replacement text }
+% %</foo>
+% %<@@=phy>
+% %<helper>    \@@_helper_cs_src:Nn \foo { foo }
+% %<@@=>
+% %    \end{macrocode}
+% % \end{verbatim}
+% The \texttt{<helper>} guard is used to insert the code 
+% \end{function}
+%
+% \subsection{Code implementation}
+%
+%    \begin{macrocode}
+%<*helper-begin>
+%<@@=phy>
+\ProvidesFile{phys.helper.sty}[2025/03/01 Debug mode support of physics2]
+\ExplSyntaxOn
+%    \end{macrocode}
+%
+%
+% \begin{macro}[int]{\g_@@_helper_errors_int}
+%    \begin{macrocode}
+\int_new:N \g_@@_helper_errors_int
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\DeclareKeys
+  {
+    tightbraces .code:n =
+      {
+        \PackageError
+          { physics2 }
+          {
+            The~`tightbraces'~key~is~removed~from~`ab'~module.\iow_newline:
+            It~is~now~replaced~by~the~`tight-braces'~key~of~
+            the~`physics2'~package.                           \iow_newline:
+            You~must~have~written~like~this~in~your~preamble: \iow_newline:
+            \@spaces \token_to_str:N
+                \usephysicsmodule[tightbraces=#1]{ab}         \iow_newline:
+            Change~it~to:                                     \iow_newline:
+            \@spaces \token_to_str:N
+                \usepackage[tight-braces=#1]{physics2}        \iow_newline:
+            \@space \token_to_str:N
+                \usephysicsmodule{ab}                         \iow_newline:
+            Don't~forget~there's~a~hyphen~in~the~new          \iow_newline:
+            `tight-braces'~key.
+          }
+          {
+            If~you~still~don't~know~what~to~do,~please~read   \iow_newline:
+            the~package~documentation.                        \iow_newline:
+          }
+      }
+  }
+\ProcessKeyOptions \relax
+%    \end{macrocode}
+%
+% TODO: patch to \cs{@@_ab:nN}, \cs{@@_ab_declare_ns:n} and \cs{@@_ab_use:c}.
+%
+%    \begin{macrocode}
+\msg_new:nnnn { physics2 } { undef-cs }
+  {
+    Missing~required~module~`#2'! \iow_newline:
+    The~control~sequence~\token_to_str:N #1 
+    on~line~\msg_line_number:\space 
+    is~provided~by~module~`#2',~but~you~didn't~load~it.
+  }
+  {
+    Just~write~\token_to_str:N \usephysicsmodule{#2}~
+    after~\token_to_str:N \usepackage{physics2}~in~your~preamble.
+  }
+%    \end{macrocode}
+%
+% \begin{macro}{\@@_helper_cs_src:Nn}
+%    \begin{macrocode}
+\cs_set:Npn \@@_helper_cs_src:Nn #1#2
+  {
+    \cs_if_exist:NF #1
+      {
+        \cs_set:Npn #1
+          {
+            \msg_error:nnnn { physics2 } { undef-cs } { #1 } { #2 }
+            \int_gincr:N \g_@@_helper_errors_int
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\AddToHook { begindocument }
+  {
+%</helper-begin>
+%    \end{macrocode}
+%
+% Here is the code provided by other source files with \verb|%<helper>|
+% prefix.
+%
+%    \begin{macrocode}
+%<*helper-end>
+  }
+\AddToHook { enddocument/end }
+  {
+    \group_begin:
+    \def \on@line { }
+    \int_compare:nNnTF { \g_@@_helper_errors_int } > { 0 }
+      {
+        \PackageWarning { physics2 }
+          {
+            Oops!~There~
+            \ifnum \g_@@_helper_errors_int = 1
+              is~an~error~
+            \else
+              are~\int_use:N \g_@@_helper_errors_int\space errors~
+            \fi                         related~to~`physics2'.\MessageBreak
+            You~can~find~all~the~errors~in~`\c_sys_jobname_str.log'
+          }
+      }
+      {
+        \PackageWarning { physics2 }
+          {
+            You~are~in~the~`debug'~mode~of~`physics2'.        \MessageBreak
+            There~are~no~errors~related~to~`physics2'~in~your \MessageBreak
+            document.~To~avoid~seeing~this~message,~please~add\MessageBreak
+            `debug-mode-off'~option~to~`physics2'.~That~is,   \MessageBreak
+            \@spaces \token_to_str:N
+                \usepackage[debug-mode-off]{physics2}         \MessageBreak
+            If~you~want~to~add~anything~new~to~your~document, \MessageBreak
+            it's~recommended~to~turn~on~the~debug~mode~again
+          }
+      }
+    \group_end:
+  }
+\ExplSyntaxOff
+%</helper-end>
+%<@@=>
+%    \end{macrocode}
+% \endinput
