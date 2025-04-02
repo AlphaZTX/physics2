@@ -1,0 +1,122 @@
+% \part*{Introduction}
+% \addcontentsline{toc}{part}{Introduction}
+%
+% This is a documentation for advanced users and developers of the
+% \pkg{physics2} package. This document includes:
+% \begin{enumerate}
+% \item What is a module of \pkg{physics2}?
+% \item How to write a module?
+% \item The interfaces provided by \pkg{physics2} and the existing modules.
+% \item Code implementation of \pkg{physics2} and the existing modules.
+% \end{enumerate}
+%
+% \section{What is a module?}
+%
+% The \pkg{physics2} package itself provides a standard interface for loading
+% modules. A module is a pure text file that contains \TeX\ code, independent
+% of the \pkg{physics2} package. A module provides a bundle of functions. 
+% The file name of a module is like \texttt{phys.\meta{module}.sty}. 
+%
+% It's recommended that functions in a module should be aimed at \emph{one}
+% specific topic and share similar usage.
+%
+% \section{How to write a module?}
+%
+% The beginning of a module's content should be like
+% \begin{verbatim}
+% \ProvidesFile{phys.MODULE_NAME.sty}[YYYY/MM/DD DESCRIPTION]
+% \end{verbatim}
+% or
+% \begin{verbatim}
+% \ProvidesExplFile{phys.MODULE_NAME.sty}{YYYY/MM/DD}{VER}{DESCRIPTION}
+% \end{verbatim}
+% where \texttt{phys.MODULE_NAME.sty} is the same as the file name of the module.
+%
+% After this line comes the real content of the module. In a module's content,
+% you can process the options of the module, require other packages or
+% \pkg{physics2} modules and define functions.
+%
+% A module handles its key-value options with the new \LaTeX\ kernel interfaces
+% \cs{DeclareKeys}, \cs{SetKeys} and \cs{ProcessKeyOptions} (released in 2022-06-01).
+% For example,
+% \begin{verbatim}[firstnumber=last]
+% \DeclareKeys{bool-option.if=phy@ModBoolA}
+% \SetKeys{bool-option=true}
+% \ProcessKeyOptions
+% \end{verbatim}
+% The code above defines a boolean option \texttt{bool-option} which stores
+% its value in \cs{ifphy@ModBoolA}, with the default value \texttt{true}.
+% The usage of \cs{DeclareKeys}, etc., is introduced in \file{clsguide.pdf}.
+% You can run 
+% \texttt{texdoc \href{http://mirrors.ctan.org/macros/latex/base/clsguide.pdf}{clsguide}}
+% to see it.
+% 
+% To load other packages, just use \cs{RequirePackage} command as usual.
+% To load other modules, use \cs{RequirePhysicsModule}. It is equivalent to 
+% \cs{usephysicsmodule}. Options of a module can be passed to another module
+% with \refcs{PassOptionsToPhysicsModule}, whose syntax is the same as
+% \cs{PassOptionsToPackage}. Note that there is no commands like
+% \cs[no-index]{RequirePhysicsModuleWithOptions} to load a module with
+% specific options. Finally the requirement of packages and modules in a module
+% will look like
+% \begin{verbatim}[firstnumber=last]
+% \PassOptionsToPackage{...}{PKG}
+% \RequirePackage{PKG_LIST}
+% \PassOptionsToPhysicsModule{...}{MOD}
+% \RequirePhysicsModule{MOD_LIST}
+% \end{verbatim}
+%
+% \section{While using DocStrip}
+%
+% It's encouraged to generate the final module files with DocStrip. Run
+% \texttt{texdoc \href{http://mirrors.ctan.org/macros/latex/base/docstrip.pdf}{docstrip}}
+% to see the documentation.
+%
+% In DocStrip, an important concept ``guard'' is introduced. A guard is an
+% expression enclosed in \verb|<| and \verb|>|, following a \verb|%| symbol at
+% the beginning of a line. For example, these are guards:
+% \begin{verbatim}
+% %<*foo>
+% %</foo>
+% %<bar>
+% %<@@=phy>
+% %<@@=>
+% \end{verbatim}
+% They will be typeset as \guard{*foo}, \guard{/foo}, \guard{bar}, \guard{@@=phy}
+% and \guard{@@=}. Guards with format \guard{@@=\meta{module}} is special
+% because they handles the \texttt{@@} to \meta{module} replacement. The guard
+% \guard{@@=} cancels the replacement. The replacement rule is
+% \begin{enumerate}
+% \item First, deal with \texttt{@@@@} as a special case.
+% \item Then change all \verb|__@@| to \verb|__|\meta{module}.
+% \item Then change all remaining \verb|_@@| to \verb|__|\meta{module}.
+% \item Then change all remaining \texttt{@@} to \verb|__|\meta{module}.
+% \item Finally, tidy up by changing each ``disguised \texttt{@@@@}'' to \texttt{@@}.
+% \end{enumerate}
+% So the following code
+% \begin{verbatim}
+% %<@@=phy>
+% \@@_foo:
+% \end{verbatim}
+% will eventually become
+% \begin{verbatim}
+% \__phy_foo:
+% \end{verbatim}
+% It's useful when you are using \LaTeX3 syntax, and all the \LaTeX3 interfaces
+% of \pkg{physics2} and the existing modules are written with guard \guard{@@=phy}.
+%
+% If you are writing a module in \LaTeXe\ ``traditional'' syntax, avoid using
+% two consecutive ``\texttt{@}'' symbols in your interface, because module
+% authors using \LaTeX3 syntax may forget to change \texttt{@@} to \texttt{@@@@}
+% if they want to require your module, which may cause hard-to-debug errors.
+%
+% \section{What interfaces does \pkg{physics2} expose to me?}
+%
+% The \pkg{physics2} package and the existing modules provide interfaces for
+% you to use. The interfaces are listed in this document. They are introduced
+% in sections with name ``API''.
+%
+% Do not use those commands introduced in sections with name ``Internal commands''.
+% They may be changed during the development of \pkg{physics2}.
+%
+% \endinput

@@ -1,53 +1,12 @@
 % \DeclareSourceFile{base}
 %
-% This file describes the \pkg{physics2} package and its required patch file
-% (module \modu{patch.amsmath}).
+% This file describes the \pkg{physics2} package (\file{physics2.sty}).
 %
 % \section{The \pkg{physics2} package}
 %
 %    \begin{macrocode}
 %<@@=phy>
 %    \end{macrocode}
-%
-% \subsection{How to write a module}
-%
-% The \pkg{physics2} package itself provides a standard interface for loading
-% modules. A module is a pure text file that contains \TeX\ code. One module
-% provides one bundle of functions. The file name of a module is like
-% \texttt{phys.\meta{module}.sty}. It's recommended that functions in a module
-% are aimed at a specific topic and share similar usage. Modules can handle
-% key-value options.
-%
-% The beginning of a module's content should be like
-% \begin{verbatim}
-% \ProvidesFile{phys.MODULE_NAME.sty}[YYYY/MM/DD DESCRIPTION]
-% \end{verbatim}
-% where \texttt{phys.MODULE_NAME.sty} is the same as the file name of the module.
-% After this line, other packages or \pkg{physics2} modules can be required,
-% and options of this module can be processed.
-%
-% For example, the beginning of a module might look like
-% \begin{verbatim}
-% \ProvidesFile{phys.something.sty}
-%   [2025/01/01 This module does something]
-% \RequirePackage{...}
-% \RequirePhysicsModule{...}
-% \DeclareKeys{bool-option.if=phy@ModBoolA}
-% \SetKeys{bool-option=true}
-% \ProcessKeyOptions
-% \ifphy@ModBoolA
-%   ...
-% \end{verbatim}
-% It should be explained that a module's options can be declared with
-% \cs{DeclareKeys}, which is added to \LaTeX\ kernel since release 2022-06-01.
-% The default values of keys can be set with \cs{SetKeys}, and users' settings
-% can be processed with \cs{ProcessKeyOptions}. If you are not familiar with
-% such procedures, you can run \texttt{texdoc clsguide} to get more information.
-%
-% If you are writing a module in \LaTeXe\ ``traditional'' syntax, avoid using
-% two consecutive ``\texttt{@}'' symbols in your internal commands. Two
-% consecutive ``\texttt{@}'' symbols may cause confusion to module authors
-% using \LaTeX3 syntax and DocStrip utility.
 %
 % \subsection{API}\label{subsec:api.physics2}
 %
@@ -61,8 +20,12 @@
 % \end{variable}
 %
 % \begin{variable}{\l_@@_pass_a_tl}
-% Temporary token list variables. They are used as arguments to be passed
-% and are frequently changed.
+% Temporary token list variables. They are used as arguments to be passed.
+% Their value may be changed very frequently, so their lifespan must be very short.
+% Once their values are modified, they should be used immediately.
+% Once they are used, they should be considered destroyed, 
+% regardless of whether functions like \cs{tl_gclear:N} are actually used
+% to clear their values.
 % \end{variable}
 %
 % \begin{function}{\usephysicsmodule,\RequirePhysicsModule}

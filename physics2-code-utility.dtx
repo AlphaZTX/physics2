@@ -138,7 +138,7 @@
 % \end{syntax}
 % Declares in which module the \meta{command} is defined. Take an example.
 % If you are writing a module \modu{foo} with DocStrip, and it is generated
-% with guard \texttt{<foo>} from the according \file{.dtx} file, you can
+% with guard \guard{foo} from the according \file{.dtx} file, you can
 % organize your \file{.dtx} file like this:
 % \begin{verbatim}
 % % Some notes.
@@ -151,7 +151,7 @@
 % %<@@=>
 % %    \end{macrocode}
 % % \end{verbatim}
-% The \texttt{<helper>} guard is used to insert the code 
+% The \guard{helper} guard is used to insert the code 
 % \end{function}
 %
 % \subsection{Code implementation}
@@ -240,7 +240,7 @@
 %    \end{macrocode}
 %
 % Here should be the code provided by other source files with the
-% $\langle$\textsf{helper}$\rangle$ guard. See the following sections.
+% \guard{helper} guard. See the following sections.
 %
 %    \begin{macrocode}
 %<*helper-end>
