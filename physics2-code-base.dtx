@@ -10,6 +10,15 @@
 %
 % \subsection{API}\label{subsec:api.physics2}
 %
+% \begin{variable}{\phy@ModBoolA,\phy@ModBoolB,
+%   \l_@@_module_a_bool,\l_@@_module_b_bool}
+% Booleans used for handling key-value options of a module. They are set false
+% when a module is loaded. Note that \cs{phy@ModBoolA} and \cs{l_@@_module_a_bool}
+% are different. \cs{phy@ModBoolA} is a \LaTeXe\ if switch, whose expansion is
+% either \cs{iftrue} or \cs{iffalse}. \cs{l_@@_module_a_bool} is a \LaTeX3
+% boolean variable, whose expansion is either \texttt{1} or \texttt{0}.
+% \end{variable}
+%
 % \begin{variable}{\phy@tempcnta,\phy@tempdima,\phy@tempdimb,\phy@tempskipa,
 %   \phy@tempmuskipa,\phy@tempboxa,\ifphy@tempswa,\phy@temptoksa}
 % Common temporary variables that can be shared by any module.
@@ -17,15 +26,6 @@
 %
 % \begin{variable}{\l_@@_tmpa_int,\l_@@_tmpb_int,\l_@@_tmpa_tl,\l_@@_tmpb_tl}
 % Common temporary variables (L3 style) that can be shared by any module.
-% \end{variable}
-%
-% \begin{variable}{\l_@@_pass_a_tl}
-% Temporary token list variables. They are used as arguments to be passed.
-% Their value may be changed very frequently, so their lifespan must be very short.
-% Once their values are modified, they should be used immediately.
-% Once they are used, they should be considered destroyed, 
-% regardless of whether functions like \cs{tl_gclear:N} are actually used
-% to clear their values.
 % \end{variable}
 %
 % \begin{function}{\usephysicsmodule,\RequirePhysicsModule}
@@ -54,10 +54,20 @@
 % \end{verbatim}
 % \end{function}
 %
-% \begin{variable}{\phy@ModBoolA,\phy@ModBoolB}
-% Booleans used when handling key-value options of a module. They are set false
-% when a module is loaded.
-% \end{variable}
+% \begin{function}[TF]{\@@_cs_if_exist:c}
+% \begin{syntax}
+% \cs{@@_cs_if_exist:cTF} \marg{control sequence name} \marg{true code} \marg{false code}
+% \end{syntax}
+% Tests if the control sequence is currently defined, but it does not care
+% if its meaning is \cs{relax}.
+% \end{function}
+%
+% \begin{function}[TF]{\@@_if_token_eq:c}
+% \begin{syntax}
+% \cs{@@_if_token_eq:cTF} \marg{control sequence name} \marg{true code} \marg{false code}
+% \end{syntax}
+% Checks if two tokens are identical. Equivalent to \cs[no-index]{cs_if_eq:NN}.
+% \end{function}
 %
 % \begin{function}{\PhysicsModuleError,\PhysicsModuleWarning}
 % \begin{syntax}
@@ -65,15 +75,6 @@
 % \cs{PhysicsModuleWarning} \marg{module} \marg{warning message}
 % \end{syntax}
 % Error and warning handlers for modules of this package.
-% \end{function}
-%
-% \begin{function}{\delopen,\delclose}
-% \begin{syntax}
-% \cs{delopen} \meta{left delimiter} \meta{math mode material} \cs{delclose} \meta{right delimiter}
-% \end{syntax}
-% Re-packaged \cs{left} and \cs{right}. A \cs{left} and \cs{right} pair will
-% be treated as an inner formula, around which 3\,mu skips are inserted. If
-% you don't want the skips, use \cs{delopen} and \cs{delclose} instead.
 % \end{function}
 %
 % \begin{function}{\phy@mathvphantom,\@@_math_vphantom:n}
@@ -85,7 +86,45 @@
 % \relatedint{phy@mathvph@ntom}
 % \end{function}
 %
+% \begin{function}{\@@_reset_math_class:nnn}
+% \begin{syntax}
+% \cs{@@_reset_math_class:nnn} ???^^A\marg{charcode} \marg{previous math class} \marg{new math class}
+% \end{syntax}
+% Incomplete.
+% \end{function}
+%
+% \begin{function}{\delopen,\delclose}
+% \begin{syntax}
+% \cs{delopen} \meta{left delimiter} \meta{math mode material} \cs{delclose} \meta{right delimiter}
+% \end{syntax}
+% Re-packaged \cs{left} and \cs{right}. A \cs{left} and \cs{right} pair will
+% be treated as an inner formula, around which 3\,mu skips are inserted. If
+% you don't want the skips, use \cs{delopen} and \cs{delclose} instead.
+% \end{function}
+%
+% \begin{function}{\DeclareBiggg}
+% \begin{syntax}
+% \cs{DeclareBiggg} \meta{biggg command} \marg{factor}
+% \end{syntax}
+% Declares a biggg command whose size is determined by \meta{factor}.
+% The argument \meta{factor} is equivalent to the first argument of
+% \csref{bBigg@}.
+% \end{function}
+%
+% \begin{function}{\AutoDeclareBiggg}
+% \begin{syntax}
+% \cs{AutoDeclareBiggg} \meta{biggg command}
+% \end{syntax}
+% Declares a biggg command whose size is determined automatically.
+% Easier to use than \cs{DeclareBiggg}.
+% \end{function}
+%
 % \subsection{Internal commands}
+%
+% \begin{variable}{\g_@@_debug_mode_bool}
+% A global variable telling whether debug mode is turned on.
+% The \modu{helper} module will be required if we're in debug mode.
+% \end{variable}
 %
 % \begin{function}{\phy@modulewithdate}
 % \begin{syntax}
@@ -107,40 +146,56 @@
 % false. It's called every time a separate module is loaded.
 % \end{function}
 %
-% \begin{function}{\phy@m@thvphantom}
+% \begin{function}{\phy@mathvph@ntom}
 % \begin{syntax}
-% \cs{phy@m@thvphantom} \meta{math style command} \marg{math mode material}
+% \cs{phy@mathvph@ntom} \meta{math style command} \marg{math mode material}
 % \end{syntax}
 % Generate a zero-width box with the height and depth of the math material in a
 % specific math style. \meta{math style command} is \cs[no-index]{displaystyle}, etc.
 % \end{function}
 %
-% \begin{function}{\@@_reset_math_class:nnn}
+% \begin{function}{\@@_declare_biggg:Nn}
 % \begin{syntax}
-% \cs{@@_reset_math_class:nn} \marg{charcode} \marg{previous math class} \marg{new math class}
+% \cs{@@_declare_biggg:Nn} \meta{biggg command} \marg{factor}
 % \end{syntax}
-% Incomplete.
+% Internal version of \csref{DeclareBiggg}.
+% \end{function}
+%
+% \begin{function}{\@@_declare_biggg_auto:N}
+% \begin{syntax}
+% \cs{@@_declare_biggg_auto:N} \meta{biggg command}
+% \end{syntax}
+% Internal version of \csref{AutoDeclareBiggg}.
+% \relatedint{@@_declare_biggg:Nn,@@_biggg_parse:w}
+% \end{function}
+%
+% \begin{function}{\@@_biggg_parse:w}
+% \begin{syntax}
+% \cs{@@_biggg_parse:w} \meta{string} \cs{q_stop}
+% \end{syntax}
+% Gets the \meta{factor} of \csref{@@_declare_biggg:Nn} from \meta{string}.
+% \meta{string} should contain one \texttt{b} or \texttt{B}, one \texttt{i}
+% and a sequence of \texttt{g}.
+% \end{function}
+%
+% \begin{function}{\@@_declare_biggg:}
+% Declares all the biggg commands in the \pkg{physics2} package.
 % \end{function}
 %
 % \begin{function}{\@@_patch_unimath:}
-% \begin{syntax}
-% \cs{@@_patch_unimath:}
-% \end{syntax}
-% Patch for \pkg{unicode-math}. The current functions are
-% \begin{itemize}
-% \item Making \cs{vert} different from ``\texttt{\char`\|}'' in math mode.
-% \end{itemize}
 % See \S\ref{subsec:code.base} for details.
 % \end{function}
 %
-% \begin{function}{\@@_patch_no_unimath_common:,\@@_patch_mathtools:}
-% \begin{syntax}
-% \cs{@@_patch_no_unimath_common:}
-% \end{syntax}
+% \begin{function}{\@@_patch_no_unimath_common:}
+% See \S\ref{subsec:code.base} for details.
+% \end{function}
+%
+% \begin{function}{\@@_patch_mathtools:}
 % See \S\ref{subsec:code.base} for details.
 % \end{function}
 %
 % \begin{function}{\@@_patch_amsmath:}
+% See \S\ref{subsec:code.base} for details.
 % \end{function}
 %
 % \subsection{Code implementation}\label{subsec:code.base}
@@ -262,7 +317,7 @@
 %    \end{macrocode}
 %
 % \begin{macro}[int]{\l_@@_tmpa_int,\l_@@_tmpb_int,
-%                    \l_@@_tmpa_tl,\l_@@_tmpb_tl,\l_@@_pass_a_tl,
+%                    \l_@@_tmpa_tl,\l_@@_tmpb_tl,
 %                    \g_@@_debug_mode_bool,
 %                    \l_@@_module_a_bool,\l_@@_module_b_bool}
 %    \begin{macrocode}
@@ -270,7 +325,6 @@
 \int_new:N  \l_@@_tmpb_int
 \tl_new:N   \l_@@_tmpa_tl
 \tl_new:N   \l_@@_tmpb_tl
-\tl_new:N   \l_@@_pass_a_tl
 \bool_new:N \g_@@_debug_mode_bool
 \bool_new:N \l_@@_module_a_bool
 \bool_new:N \l_@@_module_b_bool
@@ -350,11 +404,9 @@
   }
 \cs_set_nopar:Npn \@@_declare_biggg_auto:N #1
   {
-    \group_begin:
     \tl_set:Ne \l_@@_tmpa_tl { \cs_to_str:N #1 }
     \exp_after:wN \@@_biggg_parse:w \l_@@_tmpa_tl \q_stop
-    \group_end:
-    \exp_args:NNe \@@_declare_biggg:Nn #1 { \l_@@_pass_a_tl }
+    \exp_args:NNe \@@_declare_biggg:Nn #1 { \l_@@_tmpa_tl }
   }
 \cs_set_nopar:Npn \@@_biggg_parse:w #1#2#3 \q_stop
   {
@@ -385,8 +437,8 @@
             \string\Biggg\space or~\string\biggg.
           }
       }
-    \tl_gset:Ne \l_@@_pass_a_tl { \int_use:N \l_@@_tmpa_int }
-    \token_if_eq_charcode:NNT #1 B { \tl_gput_right:Nn \l_@@_pass_a_tl { .5 } }
+    \tl_set:Ne \l_@@_tmpa_tl { \int_use:N \l_@@_tmpa_int }
+    \token_if_eq_charcode:NNT #1 B { \tl_put_right:Nn \l_@@_tmpa_tl { .5 } }
   }
 %    \end{macrocode}
 % \end{macro}

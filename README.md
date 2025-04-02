@@ -17,9 +17,9 @@ Run
 ./build.sh
 ```
 
-## For developers and deep users
+## For developers and advanced users
 
-If you want to contribute to this repo, you can
+If you want to contribute to this repository, you can
 
 - pull requests [here](https://github.com/AlphaZTX/physics2/pulls);
 - report bugs or request enhancement [here](https://github.com/AlphaZTX/physics2/issues).

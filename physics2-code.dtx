@@ -17,10 +17,11 @@
 % The Current Maintainer of this work is Zhang Tingxuan.
 %
 % This work consists of the files physics2-code.dtx,
-%                                 physics2-code-<collection>.dtx,
-%           and the derived files physics2.ins,
+%                                 physics2-code-*.dtx,
+%               the derived files physics2.ins,
 %                                 physics2.sty,
-%                                 phys.<module>.sty,
+%                                 phys.*.sty,
+%         the documentation files physics2.pdf,
 %                                 physics2-code.pdf,
 %                             and README.md.
 %
@@ -48,9 +49,9 @@ Run
 ./build.sh
 ```
 
-## For developers and deep users
+## For developers and advanced users
 
-If you want to contribute to this repo, you can
+If you want to contribute to this repository, you can
 
 - pull requests [here](https://github.com/AlphaZTX/physics2/pulls);
 - report bugs or request enhancement [here](https://github.com/AlphaZTX/physics2/issues).
@@ -181,21 +182,23 @@ The Current Maintainer of this work is
 %<*driver>
 \ProvidesFile{physics2-code.dtx}[2024/01/22 (c) Copyright 2022-2024 by Zhang Tingxuan]
 \documentclass{l3doc}
+\setlist{noitemsep}
 \definecolor{pkg}{RGB}{0,120,80}
 \definecolor{mod}{RGB}{0,0,150}
 \definecolor{gray}{rgb}{.5,.5,.5}
 \definecolor{lnk}{RGB}{232,0,0}
 \hypersetup{linktocpage,colorlinks=true,linkcolor=lnk}
-\DeclareRobustCommand\pkg[1]{\texorpdfstring{\textcolor{pkg}{\textsf{#1}}}{“#1”}}
-\DeclareRobustCommand\modu[1]{\texorpdfstring{\textcolor{mod}{\textsf{#1}}}{“#1”}}
 \usepackage{amsmath,fontspec,physics2}
 \setmonofont{cmunbtl}[Extension=.otf,ItalicFont=cmunbto,BoldFont=cmuntt,BoldItalicFont=cmunst]
 \fvset{gobble=2,fontsize=\small,numbers=left,numbersep=0pt,vspace=\MacrocodeTopsep,xleftmargin=\MacroIndent}
 \usepackage{hologo}
 \makeatletter
+\protected\def\pkg#1{\texorpdfstring{\textcolor{pkg}{\textsf{#1}}}{“#1”}}
+\protected\def\modu#1{\texorpdfstring{\textcolor{mod}{\textsf{#1}}}{“#1”}}
+\def\first@token#1#2\@nil{#1}
 \renewcommand\theFancyVerbLine{{\color{gray}\sffamily\tiny\ifnum\c@FancyVerbLine=1
   EXAMPLE\quad\fi\arabic{FancyVerbLine}}\ }
-\def\@getver#1 #2 #3\@nil{#1\quad#2}
+\def\@getver#1/#2/#3 #4 #5\@nil{#1-#2-#3\quad#4}
 \xdef\@date{\expandafter\expandafter\expandafter\@getver\csname ver@physics2.sty\endcsname\@nil}
 \@addtoreset{CodelineNo}{section}
 \def\DeclareSourceFile#1{%
@@ -211,29 +214,48 @@ The Current Maintainer of this work is
 \ExplSyntaxOn
 \seq_new:N \l__phydoc_tmpa_seq
 \seq_new:N \l__phydoc_tmpb_seq
+\tl_new:N  \l__phydoc_tmpa_tl
+\tl_new:N  \l__phydoc_tmpb_tl
+\cs_new:Npn \guard #1
+  {
+    \tl_if_head_eq_charcode:nNTF {#1} @
+      { \ensuremath{\langle}\texttt{#1}\ensuremath{\rangle} }
+      { \Module{#1} }
+  }
 \prg_set_conditional:Npnn \__codedoc_if_macro_internal:n #1 { p , T , F , TF }
   {
     \bool_if:NTF \l__codedoc_macro_internal_bool
       { \prg_return_true: }
       { \prg_return_false: }
   }
-\DeclareDocumentCommand \relatedint { m }
-  { \par { \small\textbf{Related~internal~command(s):}~ \relatedint_auxi:n {#1} . } \par }
+  \cs_new_protected:Npn \relatedint #1
+  {
+    \par 
+    { \small\textbf{Related~internal~command(s):}~ \relatedint_auxi:n {#1} . }
+    \par
+  }
 \cs_new:Npn \relatedint_auxi:n #1
   {
     \seq_set_from_clist:Nn \l__phydoc_tmpa_seq {#1}
-    \seq_set_map:NNn \l__phydoc_tmpb_seq \l__phydoc_tmpa_seq { \cs{##1} }
+    \seq_set_map:NNn \l__phydoc_tmpb_seq \l__phydoc_tmpa_seq
+      { \csref {##1} }
     \seq_use:Nnnn \l__phydoc_tmpb_seq { ~and~ } { ,~ } { ,~and~ }
+  }
+\cs_new_protected:Npn \csref #1
+  {
+    \__codedoc_get_hyper_target:oN { #1 } \l__phydoc_tmpa_tl
+    \hyperref [ \l__phydoc_tmpa_tl ] { \cs {#1} }
   }
 \ExplSyntaxOff
 \makeatother
 \title{Code documentation to the \pkg{physics2} package}
 \author{Zhang Tingxuan\\\url{https://www.github.com/AlphaZTX/physics2}}
-\date{2025/03/01 v2.0.0}
+\parskip 2pt plus 1pt minus 0.5pt
 \begin{document}
   \maketitle
   \tableofcontents\newpage
   \pagestyle{phy}
+  \DocInput{physics2-code-doc-intro.dtx}
   \DocInput{physics2-code-base.dtx}
   \DocInput{physics2-code-utility.dtx}
   \DocInput{physics2-code-ab.dtx}
