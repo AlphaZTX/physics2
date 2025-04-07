@@ -243,7 +243,9 @@ The Current Maintainer of this work is
   }
 \cs_new_protected:Npn \csref #1
   {
-    \__codedoc_get_hyper_target:oN { #1 } \l__phydoc_tmpa_tl
+    \tl_set:No \l__phydoc_tmpa_tl { #1 }
+    \__codedoc_replace_at_at:N \l__phydoc_tmpa_tl
+    \__codedoc_get_hyper_target:oN { \l__phydoc_tmpa_tl } \l__phydoc_tmpa_tl
     \hyperref [ \l__phydoc_tmpa_tl ] { \cs {#1} }
   }
 \ExplSyntaxOff
